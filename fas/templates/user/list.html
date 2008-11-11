@@ -2,6 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:py="http://genshi.edgewall.org/"
   xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <?python
+    import GeoIP
+    bad_codes = ['--', 'A1', 'A2']
+  ?>
+
   <xi:include href="../master.html" />
   <head>
     <title>${_('Users List')}</title>
@@ -24,18 +30,21 @@
       <thead>
         <tr>
           <th>${_('Username')}</th>
+          <th>${_('Country')}</th>
           <th>${_('Account Status')}</th>
         </tr>
       </thead>
       <tbody>
         <tr py:for="person in people">
           <td><a href="${tg.url('/user/view/%s' % person.username)}">${person.username}</a></td>
+          <td><span py:replace="GeoIP.country_names[person.country_code]" py:if="GeoIP.country_names.has_key(person.country_code)"/></td>
           <td>
             <span class="approved">${_('CLA Done')}</span>
           </td>
         </tr>
         <tr py:for="person in unapproved_people">
           <td><a href="${tg.url('/user/view/%s' % person.username)}">${person.username}</a></td>
+          <td><span py:replace="GeoIP.country_names[person.country_code]" py:if="GeoIP.country_names.has_key(person.country_code)"/></td>
           <td>
             <span class="unapproved">${_('Not Done')}</span>
           </td>
