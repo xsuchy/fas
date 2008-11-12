@@ -363,7 +363,7 @@ https://admin.fedoraproject.org/accounts/user/verifyemail/%s
     @identity.require(identity.not_anonymous())
     @error_handler(error) # pylint: disable-msg=E0602
     @expose(template="fas.templates.user.list", allow_json=True)
-    def list(self, search=u'a*'):
+    def list(self, search=u'a*', country=None):
         '''List users
 
         This should be fixed up at some point.  Json data needs at least the
@@ -403,9 +403,11 @@ https://admin.fedoraproject.org/accounts/user/verifyemail/%s
         PeopleJoin = PeopleTable.outerjoin(RoleGroupJoin,
                 PersonRoles.person_id==People.id)
 
+        q_cond = People.username.ilike(re_search)
+        if country != None:
+            q_cond = and_(People.country_code==country, q_cond)
         stmt = select([PeopleTable, PersonRolesTable.c.role_status],
-                from_obj=[PeopleJoin]).where(People.username.ilike(re_search)
-                          ).order_by(People.username)
+                from_obj=[PeopleJoin]).where(q_cond).order_by(People.username)
         people = People.query.add_column(PersonRoles.role_status
                 ).from_statement(stmt)
 
