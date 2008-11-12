@@ -44,7 +44,7 @@
         </tr>
         <tr py:for="person in unapproved_people">
           <td><a href="${tg.url('/user/view/%s' % person.username)}">${person.username}</a></td>
-          <td><span py:replace="GeoIP.country_names[person.country_code]" py:if="GeoIP.country_names.has_key(person.country_code)"/></td>
+          <td>${GeoIP.country_names.get(person.country_code, "&nbsp;")}</td>
           <td>
             <span class="unapproved">${_('Not Done')}</span>
           </td>
