@@ -3,6 +3,10 @@
   xmlns:py="http://genshi.edgewall.org/"
   xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="master.html" />
+  <?python
+    import GeoIP
+    bad_codes = ['--', 'A1', 'A2']
+  ?>
   <head>
     <title>${_('Fedora Accounts System')}</title>
   </head>
@@ -14,7 +18,7 @@
     <dd>
     <ul class="queue">
       <li py:for="role in group.unapproved_roles[:5]">
-      ${Markup(_('&lt;strong&gt;&lt;a href="%(userview)s"&gt;%(user)s (%(email)s)&lt;/a&gt;&lt;/strong&gt; requests approval to join &lt;a href="group/view/%(group)s"&gt;%(group)s&lt;/a&gt;.') % {'userview': tg.url('/user/view/%s') % role.member.username, 'user': role.member.username, 'email': role.member.email, 'group': group.name, 'group': group.name})}
+      ${Markup(_('&lt;strong&gt;&lt;a href="%(userview)s"&gt;%(user)s (%(email)s)&lt;/a&gt;&lt;/strong&gt; from %(country)s requests approval to join &lt;a href="group/view/%(group)s"&gt;%(group)s&lt;/a&gt;.') % {'userview': tg.url('/user/view/%s') % role.member.username, 'user': role.member.username, 'email': role.member.email, 'country': GeoIP.country_names.get(role.member.country_code, "somewhere"), 'group': group.name, 'group': group.name})}
       </li>
     </ul>
     </dd>
