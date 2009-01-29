@@ -64,9 +64,9 @@ class PluginControllerMixin(object):
 
     def loadplugins(controller):
         for pluginEntry in pkg_resources.iter_entry_points('%s.plugins' %
-            controller.getpluginident()): 
-            pluginClass = pluginEntry.load() 
-            if hasattr(pluginClass, 'initPlugin'): 
+            controller.getpluginident()):
+            pluginClass = pluginEntry.load()
+            if hasattr(pluginClass, 'initPlugin'):
                 pluginClass.initPlugin(controller)
         startup.call_on_shutdown.append(controller.unloadplugins)
 
@@ -81,7 +81,7 @@ class RootController(controllers.RootController, PluginControllerMixin):
         PluginControllerMixin.__init__(self, *args, **kwargs)
         self.plugins = []
         self.loadplugins()
-    
+
 
 class Controller(controllers.Controller, PluginControllerMixin):
     def __init__(self, *args, **kwargs):
@@ -145,7 +145,7 @@ class FunctionTable(object):
     '''A convenient way of threading through a list of functions'''
     def __init__(self, functions):
         self.functions = deque(functions)
-    
+
     def __call__(self, *args, **keys):
         if len(self.functions) > 1:
             return self.functions.pop()(self, *args, **keys)
@@ -177,7 +177,7 @@ class DependencyChain(object):
         self.dependencies = dict()
         self.exec_order = list()
         self.rltable = RLTable()
-    
+
     def add_dependency(self, name, func, dependencies=[]):
         if name in self.dependencies:
             return
@@ -191,7 +191,7 @@ class DependencyChain(object):
         self.exec_order = a + b
         self.dependencies[Present(name)] = (func, dependencies)
         self.rltable.add_many_r_depends(name, dependencies)
-    
+
     def exec_functions(self):
         if not all(self.exec_order, lambda x: type(x) is Present):
             raise MissingDepedencyException(one(self.exec_order, lambda x: type(x) is Missing))
@@ -215,7 +215,7 @@ def one(iter, cond):
         if cond(elem):
             return elem
 
-#These four classes are meant to be immutable singletons, similar to data types in Haskell        
+#These four classes are meant to be immutable singletons, similar to data types in Haskell
 class MetaMarked(type):
     '''Provides a suitable repr function for all marked strings'''
     def __init__(cls, name, bases, attrs):
@@ -235,7 +235,7 @@ class Dependency(str):
             return ret
     names = dict()
 
-class Missing(Dependency): 
+class Missing(Dependency):
     '''connotes a dependency that is not present'''
     pass
 
@@ -250,7 +250,7 @@ def split(l, item):
 
 def realize_dependencies(loaded, new):
     '''Converts a list of dependencies into a marked list of dependencies based on which ones are already loaded'''
-    return [Present(dependency) if dependency in loaded else Missing(dependency) 
+    return [Present(dependency) if dependency in loaded else Missing(dependency)
             for dependency in new]
 
 def update_dependencies(loaded, new):
@@ -266,5 +266,5 @@ def replace(l, old, new):
 
 
 __all__ = [PluginControllerMixin, RootController, Controller,
-           BadPathException, PathUnavailableException, update_wrapper, 
+           BadPathException, PathUnavailableException, update_wrapper,
            pluggable, plugin]

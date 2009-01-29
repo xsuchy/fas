@@ -79,7 +79,7 @@ mapper(Show, shows_table,
        properties= \
         dict(group=relation(Groups, uselist=False, backref='show'),
              owner=relation(People, backref='shows'),
-             user_signups=relation(People, 
+             user_signups=relation(People,
                                    backref=backref('show', uselist=False),
                                    secondary=user_signups_table)))
 
@@ -89,7 +89,7 @@ class ShowPlugin(controllers.Controller):
     def __init__(self):
         '''Create a Show Controller.'''
         self.path = ''
-        
+
     help = Help()
     @expose(template="fas.templates.error")
     def error(self, tg_errors=None):
@@ -138,13 +138,13 @@ class ShowPlugin(controllers.Controller):
             turbogears.redirect('/show/list')
             return dict()
         return dict(show=show)
-    
+
     @identity.require(turbogears.identity.not_anonymous())
     @expose(template='fas_show.templates.new')
     @error_handler(error) # pylint: disable-msg=E0602
     def new(self):
         return dict()
-    
+
     @identity.require(turbogears.identity.not_anonymous())
     @expose()
     @error_handler(error) # pylint: disable-msg=E0602
@@ -160,14 +160,14 @@ class ShowPlugin(controllers.Controller):
         session.flush()
         turbogears.redirect('/show/view/%s' % name)
         return dict()
-    
+
     @identity.require(turbogears.identity.not_anonymous())
     @expose(template='fas_show.templates.edit')
     @error_handler(error) # pylint: disable-msg=E0602
     def edit(self, show):
         show = Show.by_name(show)
         return dict(show=show)
-    
+
     @identity.require(turbogears.identity.not_anonymous())
     @expose()
     @error_handler(error) # pylint: disable-msg=E0602
@@ -195,17 +195,17 @@ class ShowPlugin(controllers.Controller):
 
     @expose()
     @error_handler(error) # pylint: disable-msg=E0602
-    def add_user(self, show, username, human_name, email, telephone=None, 
+    def add_user(self, show, username, human_name, email, telephone=None,
                postal_address=None, age_check=False):
         if identity.not_anonymous():
             identity.current.logout()
         try:
             user = \
-                self._root.user.create_user(username, human_name, email, 
-                                            telephone, postal_address, 
-                                            age_check, 
+                self._root.user.create_user(username, human_name, email,
+                                            telephone, postal_address,
+                                            age_check,
                                             redirect='/show/join/%s' % show)
-            
+
             show = Show.by_name(show)
             user.show = show
         except IntegrityError:
@@ -217,12 +217,12 @@ class ShowPlugin(controllers.Controller):
             turbogears.redirect('/show/success/%s' % show)
 
         turbogears.redirect('/show/join/%s' % show)
-    
+
     @expose(template='fas_show.templates.success')
     @error_handler(error) # pylint: disable-msg=E0602
     def success(self, show):
         return dict(show=show)
-    
+
     @expose(template='fas_show.templates.fail')
     @error_handler(error) # pylint: disable-msg=E0602
     def fail(self, show):
@@ -231,7 +231,7 @@ class ShowPlugin(controllers.Controller):
     def user_view(self, func, username, *args, **keys):
         username = 'test'
         return func(username)
-    
+
     @classmethod
     def initPlugin(cls, controller):
         cls.log = logging.getLogger('plugin.show')
@@ -251,6 +251,6 @@ class ShowPlugin(controllers.Controller):
         self.log.info('Show plugin shutting down')
         if self.sidebarentries in sidebar.entryfuncs:
             sidebar.entryfuncs.remove(self.sidebarentries)
-            
+
     def sidebarentries(self):
         return [('Shows and Events', self.path)]

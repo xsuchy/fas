@@ -206,9 +206,9 @@ class User(controllers.Controller):
         admin = False
         if isAdmin(user):
             admin = True
-            # TODO: Should admins be able to see personal info?  If so, enable this.  
+            # TODO: Should admins be able to see personal info?  If so, enable this.
             # Either way, let's enable this after the testing period.
-            # 
+            #
             # 2008-5-14 I'd enable this in the template via
             # <py:if test='personal or admin'>click to change</py:if>
             # that way you can have different messages for an admin viewing
@@ -255,8 +255,8 @@ class User(controllers.Controller):
     @validate(validators=UserSave())
     @error_handler(error) # pylint: disable-msg=E0602
     @expose(template='fas.templates.user.edit')
-    def save(self, targetname, human_name, telephone, postal_address, 
-             email, status, ssh_key=None, ircnick=None, gpg_keyid=None, 
+    def save(self, targetname, human_name, telephone, postal_address,
+             email, status, ssh_key=None, ircnick=None, gpg_keyid=None,
              comments='', locale='en', timezone='UTC', country_code='',
              latitude=None, longitude=None, privacy=False):
         languages = available_languages()
@@ -305,7 +305,7 @@ class User(controllers.Controller):
                 target.unverified_email = email
                 target.emailtoken = token
                 message = turbomail.Message(config.get('accounts_email'), email, _('Email Change Requested for %s') % person.username)
-                # TODO: Make this email friendlier. 
+                # TODO: Make this email friendlier.
                 message.plain = _('''
 You have recently requested to change your Fedora Account System email
 to this address.  To complete the email change, you must confirm your
@@ -344,7 +344,7 @@ https://admin.fedoraproject.org/accounts/user/verifyemail/%s
     @error_handler(error) # pylint: disable-msg=E0602
     @expose(template="fas.templates.user.list", allow_json=True)
     def dump(self, search=u'a*', groups=''):
-        
+
         groups_to_return_list = groups.split(',')
         groups_to_return = []
         # Special Logic, find out all the people who are in more then one group
@@ -352,7 +352,7 @@ https://admin.fedoraproject.org/accounts/user/verifyemail/%s
             g = Groups.query().filter(not_(Groups.name.ilike('cla%')))
             for group in g:
                 groups_to_return.append(group.name)
-        
+
         for group_type in groups_to_return_list:
             if group_type.startswith('@'):
                 group_list = Groups.query.filter(Groups.c.group_type.in_([group_type.strip('@')]))
@@ -361,7 +361,7 @@ https://admin.fedoraproject.org/accounts/user/verifyemail/%s
             else:
                 groups_to_return.append(group_type)
         people = People.query.join('roles').filter(PersonRoles.role_status=='approved').join(PersonRoles.group).filter(Groups.c.name.in_( groups_to_return ))
-        
+
         # p becomes what we send back via json
         p = []
         for strip_p in people:
@@ -371,7 +371,7 @@ https://admin.fedoraproject.org/accounts/user/verifyemail/%s
                     'id'        : strip_p.id,
                     'ssh_key'   : strip_p.ssh_key,
                     'human_name': strip_p.human_name,
-                    'password'  : strip_p.password 
+                    'password'  : strip_p.password
                     })
 
         return dict(people=p, unapproved_people=[], search=search)
@@ -564,7 +564,7 @@ https://admin.fedoraproject.org/accounts/user/verifyemail/%s
     @validate(validators=UserCreate())
     @error_handler(error) # pylint: disable-msg=E0602
     @expose(template='fas.templates.new')
-    def create(self, username, human_name, email, telephone=None, 
+    def create(self, username, human_name, email, telephone=None,
                postal_address=None, age_check=False):
         # TODO: perhaps implement a timeout- delete account
         #           if the e-mail is not verified (i.e. the person changes
@@ -575,7 +575,7 @@ https://admin.fedoraproject.org/accounts/user/verifyemail/%s
         if not age_check:
             turbogears.flash(_("We're sorry but out of special concern for children's privacy, we do not knowingly accept online personal information from children under the age of 13. We do not knowingly allow children under the age of 13 to become registered members of our sites or buy products and services on our sites. We do not knowingly collect or solicit personal information about children under 13."))
             turbogears.redirect('/')
-        test = select([PeopleTable.c.username], 
+        test = select([PeopleTable.c.username],
                       func.lower(PeopleTable.c.email)==email.lower())\
                     .execute().fetchall()
         if test:
@@ -583,7 +583,7 @@ https://admin.fedoraproject.org/accounts/user/verifyemail/%s
             turbogears.redirect("/")
             return dict()
         try:
-            self.create_user(username, human_name, email, telephone, 
+            self.create_user(username, human_name, email, telephone,
                              postal_address, age_check)
         except IntegrityError:
             turbogears.flash(_("Your account could not be created.  Please contact %s for assistance.") % config.get('accounts_email'))
@@ -663,7 +663,7 @@ forward to working with you!
         turbomail.enqueue(message)
         person.password = newpass['hash']
         return person
-        
+
     @identity.require(identity.not_anonymous())
     @error_handler(error) # pylint: disable-msg=E0602
     @expose(template="fas.templates.user.changepass")
@@ -698,7 +698,7 @@ forward to working with you!
             Log(author_id=person.id, description='Password change failed!')
             turbogears.flash(_("Your password could not be changed."))
             return dict()
-        else:   
+        else:
             turbogears.flash(_("Your password has been changed."))
             turbogears.redirect('/user/view/%s' % identity.current.user_name)
             return dict()
@@ -781,7 +781,7 @@ https://admin.fedoraproject.org/accounts/user/verifypass/%(user)s/%(token)s
         turbomail.enqueue(message)
         person.passwordtoken = token
         turbogears.flash(_('A password reset URL has been emailed to you.'))
-        turbogears.redirect('/login')  
+        turbogears.redirect('/login')
         return dict()
 
     @error_handler(error) # pylint: disable-msg=E0602
