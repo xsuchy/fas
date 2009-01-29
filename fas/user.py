@@ -57,6 +57,7 @@ from fas.auth import isAdmin, CLADone, canEditUser
 from fas.util import available_languages
 from fas.validators import KnownUser, ValidSSHKey, NonFedoraEmail, \
         ValidLanguage, UnknownUser, ValidUsername
+from fas.plugin import pluggable
 
 admin_group = config.get('admingroup', 'accounts')
 system_group = config.get('systemgroup', 'fas-system')
@@ -187,9 +188,12 @@ class User(controllers.Controller):
     @validate(validators=UserView())
     @error_handler(error) # pylint: disable-msg=E0602
     @expose(template="fas.templates.user.view", allow_json=True)
+    @pluggable
     def view(self, username=None):
         '''View a User.
         '''
+        print 'in userview'
+        print username
         if not username:
             username = identity.current.user_name
         person = People.by_username(username)
