@@ -229,11 +229,6 @@ class ShowPlugin(controllers.Controller):
         return dict(show=show)
 
     def user_view(self, func, username, *args, **keys):
-        print 'in plugin userview'
-        print func
-        print username
-        print args
-        print keys
         username = 'test'
         return func(username)
     
@@ -247,8 +242,6 @@ class ShowPlugin(controllers.Controller):
             self.path = path
             if self.sidebarentries not in sidebar.entryfuncs:
                 sidebar.entryfuncs.append(self.sidebarentries)
-            print type(controller.user.view)
-            print type(cls.user_view)
             controller.user.view = plugin.plugin(controller.user.view, self.user_view, 'show')
         except (plugin.BadPathException,
             plugin.PathUnavailableException), e:

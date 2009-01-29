@@ -192,8 +192,6 @@ class User(controllers.Controller):
     def view(self, username=None):
         '''View a User.
         '''
-        print 'in userview'
-        print username
         if not username:
             username = identity.current.user_name
         person = People.by_username(username)

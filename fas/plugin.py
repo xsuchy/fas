@@ -129,9 +129,6 @@ def pluggable(func):
             functions = func.__plugs__.exec_functions()
         except MissingDepedencyException, e:
             raise PluginMissingException('The plugin %s is missing. It is required for the following plugins: %s' % (e.reason, str(func.__plugs__.rltable[e.reason])))
-        print 'in pluggable wrapper'
-        print [func] + functions
-        return FunctionTable([func] + functions)(*args)
     return update_wrapper(wrapper, func)
 
 def plugin(func, aspect, name, dependencies=[]):
@@ -150,18 +147,11 @@ class FunctionTable(object):
         self.functions = deque(functions)
     
     def __call__(self, *args, **keys):
-        print 'call of function table'
-        print self.functions
-        print args
-        print keys
         if len(self.functions) > 1:
             return self.functions.pop()(self, *args, **keys)
         else:
-            print args
             new_func = self.functions.pop()
-            print new_func
             from inspect import getargspec
-            print getargspec(new_func)
             vals = deque(args)
             for arg in getargspec(new_func)[0][1:]:
                 keys[arg] = vals.popleft()
@@ -189,58 +179,32 @@ class DependencyChain(object):
         self.rltable = RLTable()
     
     def add_dependency(self, name, func, dependencies=[]):
-        print 'adding dependencies'
-        print name
-        print func
-        print dependencies
         if name in self.dependencies:
             return
         new_dependencies = realize_dependencies(self.dependencies, dependencies)
-        print new_dependencies
-        print self.exec_order
         if Missing(name) in self.exec_order:
-            print 'fulfilling depedency'
             replace(self.exec_order, Missing(name), Present(name))
         else:
-            print 'adding new dependency'
             self.exec_order.append(Present(name))
-        print self.exec_order
-        print type(Present(name))
-        print type(self.exec_order[0])
         a, b = split(self.exec_order, Present(name))
-        print 'a is ' + str(a)
-        print 'b is ' + str(b)
         a = update_dependencies(a, new_dependencies)
-        print 'a is ' + str(a)
         self.exec_order = a + b
         self.dependencies[Present(name)] = (func, dependencies)
         self.rltable.add_many_r_depends(name, dependencies)
     
     def exec_functions(self):
-        print self.exec_order
-        print self.exec_order[0]
-        print all(self.exec_order, lambda x: type(x) is Present)
-        print one(self.exec_order, lambda x: type(x) is Missing)
         if not all(self.exec_order, lambda x: type(x) is Present):
-            print one(self.exec_order, lambda x: type(x) is Missing)
             raise MissingDepedencyException(one(self.exec_order, lambda x: type(x) is Missing))
         return [self.dependencies[name][0] for name in self.exec_order]
 
 def MissingDepedencyException(Exception):
     '''flags that not all depedencies have been encountered'''
     def __init__(self, reason):
-        print reason
         self.reason = reason
 
 def all(iter, cond):
     '''if all items in iter are true according to the condition, return true, othrewise false'''
-#     print iter
     for elem in iter:
-        print 'doing elem'
-        print elem
-        print cond(elem)
-        print cond
-        print type(elem) is Present
         if not cond(elem):
             return False
     return True
