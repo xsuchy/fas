@@ -23,9 +23,9 @@ setup(
     data_files = data_files,
     package_data = package_data,
         
-    author = "Mike McGrath",
-    author_email = "mmcgrath@redhat.com",
-    description = "Sample plugin for FAS2",
+    author = "Yaakov Nemoy",
+    author_email = "ynemoy@redhat.com",
+    description = "Survey plugin for FAS2",
     entry_points = {
             'fas.plugins': (
                 'Survey = fas_survey:SurveyPlugin',
