@@ -132,7 +132,7 @@ def pluggable(func):
         return FunctionTable([func] + functions)(*args)
     return update_wrapper(wrapper, func)
 
-def plugin(func, aspect, name, dependencies=[]):
+def plugin(aspect, func, name, dependencies=[]):
     '''A decorator that adds a plugin to the dependency chain
 
     func is the function to run at the right time

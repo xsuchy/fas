@@ -555,6 +555,7 @@ https://admin.fedoraproject.org/accounts/user/verifyemail/%s
 
     @error_handler(error) # pylint: disable-msg=E0602
     @expose(template='fas.templates.user.new')
+    @pluggable
     def new(self):
         if identity.not_anonymous():
             turbogears.flash(_('No need to sign up, you have an account!'))

@@ -242,7 +242,7 @@ class ShowPlugin(controllers.Controller):
             self.path = path
             if self.sidebarentries not in sidebar.entryfuncs:
                 sidebar.entryfuncs.append(self.sidebarentries)
-            controller.user.view = plugin.plugin(controller.user.view, self.user_view, 'show')
+            plugin.plugin(self.user_view, controller.user.view, 'show')
         except (plugin.BadPathException,
             plugin.PathUnavailableException), e:
             cls.log.info('Show plugin hook failure: %s' % e)

@@ -23,6 +23,16 @@ class SurveyPlugin(controllers.Controller):
         value = "my Val"
         return dict(value=value)
 
+    def join_survey(self, func, *args, **keys):
+        print func
+        print str(args)
+        print str(keys)
+        ret = func(*args, **keys)
+        print ret
+        return dict()
+        return ret
+        pass
+
     @classmethod
     def initPlugin(cls, controller):
         cls.log = logging.getLogger('plugin.survey')
@@ -33,6 +43,7 @@ class SurveyPlugin(controllers.Controller):
             self.path = path
             if self.sidebarentries not in sidebar.entryfuncs:
                 sidebar.entryfuncs.append(self.sidebarentries)
+            plugin.plugin(self.join_survey, controller.user.new, 'survey')
         except (plugin.BadPathException,
             plugin.PathUnavailableException), e:
             cls.log.info('Survey plugin hook failure: %s' % e)
