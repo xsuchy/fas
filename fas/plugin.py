@@ -129,6 +129,7 @@ def pluggable(func):
             functions = func.__plugs__.exec_functions()
         except MissingDepedencyException, e:
             raise PluginMissingException('The plugin %s is missing. It is required for the following plugins: %s' % (e.reason, str(func.__plugs__.rltable[e.reason])))
+        return FunctionTable([func] + functions)(*args)
     return update_wrapper(wrapper, func)
 
 def plugin(func, aspect, name, dependencies=[]):
@@ -141,12 +142,6 @@ def plugin(func, aspect, name, dependencies=[]):
     try:
         func._get_plugs().add_dependency(name, aspect, dependencies)
     except AttributeError, e:
-        print dir(func)
-        print dir(func.__class__)
-        print dir(func.im_class)
-        print func.im_class.__name__
-        print func.im_class.__module__
-        print func.im_func.__name__
         if '_get_plugs' in e.message:
             raise UnpluggedException("The function '%s' is not available for plugin usage" % '.'.join([func.im_class.__module__, func.im_class.__name__, func.im_func.__name__]))
         else:
