@@ -138,8 +138,23 @@ def plugin(func, aspect, name, dependencies=[]):
     the name is the name of the plugin adding an intercept function
     dependencies are a list of plugins that must be run first before this one can run
     '''
-    func._get_plugs().add_dependency(name, aspect, dependencies)
+    try:
+        func._get_plugs().add_dependency(name, aspect, dependencies)
+    except AttributeError, e:
+        print dir(func)
+        print dir(func.__class__)
+        print dir(func.im_class)
+        print func.im_class.__name__
+        print func.im_class.__module__
+        print func.im_func.__name__
+        if '_get_plugs' in e.message:
+            raise UnpluggedException("The function '%s' is not available for plugin usage" % '.'.join([func.im_class.__module__, func.im_class.__name__, func.im_func.__name__]))
+        else:
+            raise e
     return func
+
+class UnpluggedException(Exception):
+    pass
 
 class FunctionTable(object):
     '''A convenient way of threading through a list of functions'''
