@@ -565,6 +565,7 @@ https://admin.fedoraproject.org/accounts/user/verifyemail/%s
     @validate(validators=UserCreate())
     @error_handler(error) # pylint: disable-msg=E0602
     @expose(template='fas.templates.new')
+    @pluggable
     def create(self, username, human_name, email, telephone=None,
                postal_address=None, age_check=False):
         # TODO: perhaps implement a timeout- delete account

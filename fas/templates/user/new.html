@@ -23,6 +23,14 @@
         <input type="text" id="email" name="email" />
         <script type="text/javascript">var hb1 = new HelpBalloon({dataURL: '${tg.url('/help/get_help/user_email')}'});</script>
       </div>
+      <div class="field" py:for='plugin in plugins.values()'>
+	<span py:if='type(plugin) is list or isinstance(plugin, list)' py:for='item in plugin'>
+	  ${Markup(item.render())}
+	</span>
+	<span py:if='type(plugin) is not list or not isinstance(plugin, list)'>
+	  ${Markup(plugin.render())}
+	</span>
+      </div>
       <!--
       <div class="field">
         <label for="fedoraPersonBugzillaMail">${_('Bugzilla Email:')}</label>
