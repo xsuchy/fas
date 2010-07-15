@@ -1,0 +1,4 @@
+recursive-include fas/public *
+include fas/public/favicon.ico
+recursive-include fas/i18n *
+recursive-include fas/templates *
