@@ -19,7 +19,7 @@ thirdpartygroup = 'thirdparty'
 
 # Personal Info / Form availability
 # Select/deselect items in the form
-show_postal_address = 0
+show_postal_address = 1
 
 accounts_email = "nobody@fedoraproject.org"
 #accounts_email = "accounts@fedoraproject.org"
