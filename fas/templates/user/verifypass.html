@@ -8,12 +8,13 @@
   </head>
   <body>
     <h2>${_('Reset Password')}</h2>
+    <p>${_('Pick a password or phrase that is long but memorable.  Use a mix of upper and lowercase letters as well as numbers and punctuation.')}</p>
     <form action="${tg.url('/user/setnewpass/%s/%s') % (person.username, token)}" method="post">
       <ul>
         <div class="field"><label for="password">${_('New Password:')}</label> <input type="password" id="password" name="password" /></div>
         <div class="field"><label for="passwordcheck">${_('Confirm Password:')}</label> <input type="password" id="passwordcheck" name="passwordcheck" /></div>
         <div class="field">
-          <input type="submit" value="${_('Change Password')}" />
+          <input class="sub-button" type="submit" value="${_('Change Password')}" />
           <a href="${tg.url('/user/verifypass/%s/%s/cancel') % (person.username, token)}">${_('Cancel')}</a>
         </div>
       </ul>

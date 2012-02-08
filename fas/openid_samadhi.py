@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Copyright 2008 by Jeffrey C. Ollie
+# Copyright 2009 by Red Hat, Inc.
 #
 # This file is part of Samadhi.
 #
@@ -39,7 +40,7 @@ from urllib import unquote
 
 from fas.user import KnownUser
 from fas.model import People
-from fas.auth import CLADone
+from fas.auth import cla_done
 
 def build_url(newpath):
     base_url = config.get('samadhi.baseurl')
@@ -75,9 +76,10 @@ class OpenID(controllers.Controller):
     @expose(template="fas.templates.openid.id")
     def id(self, username):
         person = People.by_username(username)
-        person.filter_private()
-        if not CLADone(person):
+        if not cla_done(person):
             flash(_('This OpenID will not be active until the user has signed the CLA.'))
+
+        person = person.filter_private()
         results = dict(endpoint_url = endpoint_url,
                        yadis_url = build_url(yadis_base_url + '/' + username),
                        user_url = build_url(id_base_url + '/' + username),
@@ -120,7 +122,7 @@ class OpenID(controllers.Controller):
 
         username = identity.current.user.username
         person = People.by_username(username)
-        if not CLADone(person):
+        if not cla_done(person):
             return False
 
         if build_url(id_base_url + '/' + identity.current.user_name) != openid_identity:
@@ -206,12 +208,12 @@ class OpenID(controllers.Controller):
                     'country': identity.current.user.country_code,
                     }
 
-                for field in [f for f in kw['sreg']['send'] if kw['sreg']['send'] == 'yes']:
+                for field in [f for f in kw['sreg']['send'] if kw['sreg']['send'][f] == 'yes']:
                     if field in values:
                         send_values[field] = values[field]
 
             sreg_resp = sreg.SRegResponse.extractResponse(sreg_req, send_values)
-            sreg_resp.toMessage(openid_response.fields)
+            openid_response.addExtension(sreg_resp)
 
         elif 'no' in kw:
             openid_response = openid_request.answer(False)

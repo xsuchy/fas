@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 import turbogears
 from turbogears import controllers, expose, paginate, identity, redirect, widgets, validate, validators, error_handler
-from turbogears.database import session
+from turbogears.database import metadata, mapper, get_engine, session
+from sqlalchemy import Table, Column, Integer, String, MetaData, Boolean, create_engine
+from sqlalchemy.exc import IntegrityError
 
 import cherrypy
+import turbomail
 
 from genshi.template.plugin import TextTemplateEnginePlugin
 
@@ -18,9 +21,73 @@ from fas.auth import *
 from fas.user import KnownUser
 from fas.util import available_languages
 
+from random import choice
+import time, string
+
+ykksm_db_uri = config.get('ykksm_db')
+ykval_db_uri = config.get('ykval_db')
+
+ykksm_metadata = MetaData(ykksm_db_uri)
+ykval_metadata = MetaData(ykval_db_uri)
+
+ykksm_table = Table('yubikeys', ykksm_metadata,
+                Column('serialnr', Integer, primary_key=True),
+                Column('publicname', String, nullable=False),
+                Column('created', String, nullable=False),
+                Column('internalname', String, nullable=False),
+                Column('aeskey', String, nullable=False),
+                Column('lockcode', String, nullable=False),
+                Column('creator', String, nullable=False),
+                Column('active', Boolean, default=True),
+                Column('hardware', Boolean, default=True) )
+
+ykval_table = Table('yubikeys', ykval_metadata,
+                Column('active', Boolean, default=True),
+                Column('created', Integer, nullable=False),
+                Column('modified', Integer, nullable=False),
+                Column('yk_publicname', String, primary_key=True),
+                Column('yk_counter', Integer, nullable=False),
+                Column('yk_use', Integer, nullable=False),
+                Column('yk_low', Integer, nullable=False),
+                Column('yk_high', Integer, nullable=False),
+                Column('nonce', String, default=''),
+                Column('notes', String, default='') )
+
+
+class Ykksm(object):
+    def __init__(self, serialnr, publicname, created, internalname, aeskey, lockcode, creator, active=True, hardware=True):
+        self.serialnr = serialnr
+        self.publicname = publicname
+        self.created = created
+        self.internalname = internalname
+        self.aeskey = aeskey
+        self.lockcode = lockcode
+        self.creator = creator
+        self.active = active
+        self.hardware = hardware
+
+class Ykval(object):
+    def __init__(self, active, created, modified, yk_publicname, yk_counter, yk_use, yk_low, yk_high, nonce, notes):
+        self.active = active
+        self.created = created
+        self.modified = modified
+        self.yk_publicname = yk_publicname
+        self.yk_counter = yk_counter
+        self.yk_use = yk_use
+        self.yk_low = yk_low
+        self.yk_high = yk_high
+        self.nonce = nonce
+        self.notes = notes
+
+mapper(Ykksm, ykksm_table)
+mapper(Ykval, ykval_table)
+
+import subprocess
+
 admin_group = config.get('admingroup', 'accounts')
 system_group = config.get('systemgroup', 'fas-system')
 thirdparty_group = config.get('thirdpartygroup', 'thirdparty')
+client_id = '1'
 
 class YubikeySave(validators.Schema):
     targetname = KnownUser
@@ -34,15 +101,14 @@ def get_configs(configs_list):
     if 'enabled' not in configs:
         configs['enabled'] = '0'
     if 'prefix' not in configs:
-        configs['prefix'] = 'Not Defined'
+        configs['prefix'] = _('Not Defined')
     return configs
 
-class AuthException(BaseException): pass
+class AuthException(Exception): pass
 
 def otp_verify(uid, otp):
     import sys, os, re
     import urllib2
-    client_id='2431'
 
     target = People.by_id(uid)
     configs = get_configs(Configs.query.filter_by(person_id=target.id, application='yubikey').all())
@@ -51,7 +117,7 @@ def otp_verify(uid, otp):
       raise AuthException('Unauthorized/Invalid OTP')
 
 
-    server_prefix = 'http://api.yubico.com/wsapi/verify?id='
+    server_prefix = 'http://localhost/yk-val/verify?id='
     auth_regex = re.compile('^status=(?P<rc>\w{2})')
 
     server_url = server_prefix + client_id + "&otp=" + otp
@@ -69,6 +135,33 @@ def otp_verify(uid, otp):
 
     turbogears.redirect('/yubikey/')
     return dict()
+
+def hex2modhex (string):
+    ''' Convert a hex string to a modified hex string '''
+    replacement = { '0': 'c',
+                    '1': 'b',
+                    '2': 'd',
+                    '3': 'e',
+                    '4': 'f',
+                    '5': 'g',
+                    '6': 'h',
+                    '7': 'i',
+                    '8': 'j',
+                    '9': 'k',
+                    'a': 'l',
+                    'b': 'n',
+                    'c': 'r',
+                    'd': 't',
+                    'e': 'u',
+                    'f': 'v' }
+    new_string = ''
+    for letter in string:
+        new_string = new_string + replacement[letter]
+    return new_string
+
+def gethexrand(length):
+    return ''.join([choice('0123456789abcdef') for i in range(length)]).lower()
+
 
 
 class YubikeyPlugin(controllers.Controller):
@@ -89,9 +182,9 @@ class YubikeyPlugin(controllers.Controller):
             personal = False
         # TODO: We can do this without a db lookup by using something like
         # if groupname in identity.groups: pass
-        # We may want to do that in isAdmin() though. -Toshio
+        # We may want to do that in is_admin() though. -Toshio
         user = People.by_username(turbogears.identity.current.user_name)
-        if isAdmin(user):
+        if is_admin(user):
             admin = True
         else:
             admin = False
@@ -102,6 +195,42 @@ class YubikeyPlugin(controllers.Controller):
 
         configs = get_configs(Configs.query.filter_by(person_id=person.id, application='yubikey').all())
         return dict(admin=admin, person=person, personal=personal, configs=configs)
+
+    @identity.require(turbogears.identity.not_anonymous())
+    @expose(template='json')
+    def genkey(self):
+        
+        username = turbogears.identity.current.user_name
+        person = People.by_username(username)
+
+        created = time.strftime("%Y-%m-%dT%H:%M:%S")
+        hexctr = "%012x" % person.id
+        publicname = hex2modhex(hexctr)
+        internalname = gethexrand(12)
+        aeskey = gethexrand(32)
+        lockcode = gethexrand(12)
+
+        try:
+            new_ykksm = Ykksm(serialnr=person.id, publicname=publicname, created=created, internalname=internalname, aeskey=aeskey, lockcode=lockcode, creator=username)
+            session.add(new_ykksm)
+            session.flush() 
+        except IntegrityError:
+            session.rollback()
+            old_ykksm = session.query(Ykksm).filter_by(serialnr=person.id).all()[0]
+            session.delete(old_ykksm)
+            new_ykksm = Ykksm(serialnr=person.id, publicname=publicname, created=created, internalname=internalname, aeskey=aeskey, lockcode=lockcode, creator=username)
+            old_ykksm = new_ykksm
+            session.flush()
+        try:
+            old_ykval = session.query(Ykval).filter_by(yk_publicname=publicname).all()[0]
+            session.delete(old_ykval)
+            session.flush()
+        except IndexError:
+            # No old record?  Maybe they never used their key
+            pass
+            
+        string = "%s %s %s" % (publicname, internalname, aeskey)
+        return dict(key=string)
 
     @expose(template="fas.templates.error")
     def error(self, tg_errors=None):
@@ -117,7 +246,7 @@ class YubikeyPlugin(controllers.Controller):
         username = turbogears.identity.current.user_name
         person = People.by_username(username)
         target = People.by_username(targetname)
-        admin = isAdmin(person)
+        admin = is_admin(person)
         configs = get_configs(Configs.query.filter_by(person_id=target.id, application='yubikey').all())
         return dict(admin=admin, person=person, configs=configs,target=target)
 
@@ -128,7 +257,7 @@ class YubikeyPlugin(controllers.Controller):
     def save(self, targetname, yubikey_enabled, yubikey_prefix):
         person = People.by_username(turbogears.identity.current.user_name)
         target = People.by_username(targetname)
-        if not canEditUser(person, target):
+        if not can_edit_user(person, target):
             turbogears.flash(_("You do not have permission to edit '%s'") % target.username)
             turbogears.redirect('/yubikey')
             return dict()
@@ -144,7 +273,12 @@ class YubikeyPlugin(controllers.Controller):
         for config in new_configs:
             c = Configs(application='yubikey', attribute=config, value=new_configs[config])
             target.configs.append(c)
-
+        mail_subject=_('Fedora Yubikey changed for %s' % target)
+        mail_text=_('''
+You have changed your Yubikey on your Fedora account %s. If you did not make
+this change, please contact admin@fedoraproject.org''' % target)
+        email='%s@fedoraproject.org' % target
+        send_mail(email, mail_subject, mail_text)
         turbogears.flash(_("Changes saved.  Please allow up to 1 hour for changes to be realized."))
         turbogears.redirect('/yubikey/')
         return dict()
@@ -162,8 +296,9 @@ class YubikeyPlugin(controllers.Controller):
         return dict()
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(format="json", allow_json=True)
+    @expose(format="text", allow_json=True)
     def dump(self):
+        dump_list = []
         person = People.by_username(identity.current.user_name)
         if identity.in_group(admin_group) or \
             identity.in_group(system_group):
@@ -172,8 +307,11 @@ class YubikeyPlugin(controllers.Controller):
                 if attr.person_id not in yubikey_attrs:
                     yubikey_attrs[attr.person_id] = {}
                 yubikey_attrs[attr.person_id][attr.attribute] = attr.value
-            return dict(yubikey_attrs=yubikey_attrs)
-        return dict()
+            for user_id in yubikey_attrs:
+                if yubikey_attrs[user_id]['enabled'] == u'1':
+                    dump_list.append('%s:%s' % (People.by_id(user_id).username, yubikey_attrs[user_id]['prefix']))
+            return '\n'.join(dump_list)
+        return '# Sorry, must be in an admin group to get these'
     
     @expose(template="fas.templates.help")
     def help(self, id='none'):
@@ -210,4 +348,12 @@ class YubikeyPlugin(controllers.Controller):
             sidebar.entryfuncs.remove(self.sidebarentries)
 
     def sidebarentries(self):
-        return [('Yubikey', self.path)]
+        return [(_('Yubikey'), self.path)]
+
+def send_mail(to_addr, subject, text, from_addr=None):
+    if from_addr is None:
+        from_addr = config.get('accounts_email')
+    message = turbomail.Message(from_addr, to_addr, subject)
+    message.plain = text
+    turbomail.enqueue(message)
+

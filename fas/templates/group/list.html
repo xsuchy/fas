@@ -14,8 +14,8 @@
     person = People.by_username(tg.identity.user.username)
     ?>
     <span py:if="Groups.by_name('accounts') in person.approved_memberships">
-      <h2>Create New Group</h2>
-      <a href="${tg.url('/group/new')}">Create Group</a>
+      <h2>${_('Create New Group')}</h2>
+      <a href="${tg.url('/group/new')}">${_('Create Group')}</a>
     </span>
 
     <h2>${_('List (%s)') % search}</h2>
@@ -40,8 +40,8 @@
               <span class="approved" py:if="group in person.approved_memberships">${_('Approved')}</span>
               <span class="unapproved" py:if="group in person.unapproved_memberships">${_('Unapproved')}</span>
             </a>
-            <a py:if="group not in person.memberships" href="${tg.url('/group/application_screen/%s/%s' % (group.name, person.username))}"><span>${_('Apply')}</span></a>
-            <script py:if="group not in person.memberships" type="text/javascript">var hb1 = new HelpBalloon({dataURL: '${tg.url('/help/get_help/group_apply')}'});</script>
+            <a py:if="not group.invite_only and group not in person.memberships" href="${tg.url('/group/application_screen/%s/%s' % (group.name, person.username))}"><span>${_('Apply')}</span></a>
+            <script py:if="not group.invite_only and group not in person.memberships" type="text/javascript">var hb1 = new HelpBalloon({dataURL: '${tg.url('/help/get_help/group_apply')}'});</script>
           </td>
         </tr>
       </tbody>

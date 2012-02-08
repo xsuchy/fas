@@ -26,8 +26,7 @@ thirdparty_group = config.get('thirdpartygroup', 'thirdparty')
 
 class ValidAsteriskPass(validators.FancyValidator):
     pass_regex = re.compile(r'^\d+$')
-
-    messages = {'invalid_pass': _('The password must be numeric and be at least 6 digits long.') }
+    messages = {'invalid_pass': 'The password must be numeric and be at least 6 digits long.' }
 
     def _to_python(self, value, state):
         # pylint: disable-msg=C0111,W0613
@@ -35,7 +34,7 @@ class ValidAsteriskPass(validators.FancyValidator):
 
     def validate_python(self, value, state):
         # pylint: disable-msg=C0111
-        if not self.username_regex.match(value):
+        if not self.pass_regex.match(value):
             raise validators.Invalid(self.message('invalid_pass', state,
                 username=value), value, state)
 
@@ -69,7 +68,7 @@ class AsteriskPlugin(controllers.Controller):
     def index(self):
         username = turbogears.identity.current.user_name
         person = People.by_username(username)
-        if not CLADone(person):
+        if not cla_done(person):
             turbogears.flash(_('You must sign the CLA to have access to this service.'))
         if turbogears.identity.current.user_name == username:
             personal = True
@@ -77,9 +76,9 @@ class AsteriskPlugin(controllers.Controller):
             personal = False
         # TODO: We can do this without a db lookup by using something like
         # if groupname in identity.groups: pass
-        # We may want to do that in isAdmin() though. -Toshio
+        # We may want to do that in is_admin() though. -Toshio
         user = People.by_username(turbogears.identity.current.user_name)
-        if isAdmin(user):
+        if is_admin(user):
             admin = True
         else:
             admin = False
@@ -105,11 +104,11 @@ class AsteriskPlugin(controllers.Controller):
         username = turbogears.identity.current.user_name
         person = People.by_username(username)
         target = People.by_username(targetname)
-        if not CLADone(target):
+        if not cla_done(target):
             turbogears.flash(_('You must sign the CLA to have access to this service.'))
             turbogears.redirect('/user/view/%s' % target.username)
             return dict()
-        admin = isAdmin(person)
+        admin = is_admin(person)
         configs = get_configs(Configs.query.filter_by(person_id=target.id, application='asterisk').all())
         return dict(admin=admin, person=person, configs=configs,target=target)
 
@@ -120,12 +119,12 @@ class AsteriskPlugin(controllers.Controller):
     def save(self, targetname, asterisk_enabled, asterisk_pass):
         person = People.by_username(turbogears.identity.current.user_name)
         target = People.by_username(targetname)
-        if not CLADone(target):
+        if not cla_done(target):
             turbogears.flash(_('You must sign the CLA to have access to this service.'))
             turbogears.redirect('/user/view/%s' % target.username)
             return dict()
         
-        if not canEditUser(person, target):
+        if not can_edit_user(person, target):
             turbogears.flash(_("You do not have permission to edit '%s'") % target.username)
             turbogears.redirect('/asterisk')
             return dict()

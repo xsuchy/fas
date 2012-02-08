@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright © 2008  Ricky Zhou All rights reserved.
-# Copyright © 2008 Red Hat, Inc. All rights reserved.
+# Copyright © 2008  Ricky Zhou
+# Copyright © 2008 Red Hat, Inc.
 #
 # This copyrighted material is made available to anyone wishing to use, modify,
 # copy, or redistribute it subject to the terms and conditions of the GNU
@@ -31,14 +31,14 @@ import re
 
 from sqlalchemy import Table, Column, Integer, Text, ForeignKey
 from sqlalchemy.orm import relation, backref
-from sqlalchemy.exceptions import IntegrityError, InvalidRequestError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 
 from genshi.template.plugin import TextTemplateEnginePlugin
 
 import fas.sidebar as sidebar
 import logging
 import fas.plugin as plugin
-from fas.auth import canViewGroup
+from fas.auth import can_view_group
 
 from fas.model.fasmodel import Groups, GroupsTable, People
 
@@ -118,7 +118,7 @@ class ShowPlugin(controllers.Controller):
         results = Show.query.filter(Show.name.like(re_search)).order_by('name').all()
         shows = list()
         for show in results:
-            if canViewGroup(person, show.group):
+            if can_view_group(person, show.group):
                 shows.append(show)
         if not len(shows):
             turbogears.flash(_("No Shows found matching '%s'") % search)
@@ -133,7 +133,7 @@ class ShowPlugin(controllers.Controller):
         person = People.by_username(username)
         show = Show.by_name(show)
 
-        if not canViewGroup(person, show.group):
+        if not can_view_group(person, show.group):
             turbogears.flash(_("You cannot view '%s'") % show.name)
             turbogears.redirect('/show/list')
             return dict()

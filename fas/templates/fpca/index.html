@@ -9,33 +9,30 @@
     bad_codes = tg.config('country_blacklist', [])
     countries = GeoIP.country_names
 
-    for c in bad_codes:
-        try:
-            del countries[c]
-        except KeyError:
-            pass
+    countries = dict((unicode(c[0]), unicode(c[1], 'latin-1')) for c in countries.iteritems() if c[0] not in bad_codes)
     ?>
 
   <head>
     <title>${_('Fedora Accounts System')}</title>
   </head>
   <body>
-    <h2>${_('Fedora Contributor License Agreement')}</h2>
+    <h2>${_('Fedora Project Contributor Agreement')}</h2>
     ${Markup(_('&lt;a href="%(url)s"&gt;Text Version&lt;/a&gt;') %
-      {'url': tg.url('/cla/text')})}
-    <xi:include href="cla.html" />
+      {'url': tg.url('/fpca/text')})}
+    <xi:include href="fpca.html" />
     ${Markup(_('&lt;a href="%(url)s"&gt;Text Version&lt;/a&gt;') %
-      {'url': tg.url('/cla/text')})}
-    <p py:if="cla">
-    ${Markup(_('You have already successfully completed the CLA.') %
-      {'url': tg.url('/cla/text')})}
-      </p>
+    {'url': tg.url('/fpca/text')})}
+    <py:choose test="cla">
+    <p py:when="True">
+    ${Markup(_('You have already successfully completed the FPCA.') %
+      {'url': tg.url('/fpca/text')})}
+    </p>
 
-    <py:if test="not cla">
+    <py:otherwise>
     <p>If any of the following is inaccurate, please correct it now:
     <script type="text/javascript">var hb1 = new HelpBalloon({dataURL: '${tg.url('/help/get_help/cla_accuracy')}'});</script>
     </p>
-    <form action="${tg.url('/cla/send')}" method="post">
+    <form action="${tg.url('/fpca/send')}" method="post">
       <div class="field">
         <label for="human_name">${_('Full Name')}:</label>
         <input type="text" id="human_name" name="human_name" value="${person.human_name}" />
@@ -72,6 +69,7 @@
         <input type="submit" value="${_('I do not agree')}" />
       </div>
     </form>
-   </py:if>
+  </py:otherwise>
+  </py:choose>
   </body>
 </html>

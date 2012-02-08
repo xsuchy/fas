@@ -11,7 +11,7 @@
     from fas import auth
     from fas.model import People
     viewer = People.by_username(tg.identity.user.username)
-    viewer.filter_private()
+    viewer = viewer.filter_private()
     ?>
     <h2 class="account" py:if="personal">${_('Your Fedora Account')}</h2>
     <h2 class="account" py:if="not personal">${_('%s\'s Fedora Account') % person.username}</h2>
@@ -27,16 +27,16 @@
         <py:if test="person.email">
           <dt>${_('Email:')}</dt>
           <dd>${person.email}
-            <span py:if="personal and person.unverified_email and person.emailtoken">
+            <span py:if="(personal or admin) and person.unverified_email and person.emailtoken">
               ${Markup(_('(pending change to %(email)s - &lt;a href="%(url)s"&gt;cancel&lt;/a&gt;)') % {'email': person.unverified_email, 'url': tg.url('/user/verifyemail/1/cancel')})}
             </span>
           </dd>
         </py:if>
-        <py:if test="person.telephone and personal">
+        <py:if test="person.telephone and (personal or admin)">
           <dt>${_('Telephone Number:')}</dt>
           <dd>${person.telephone}&nbsp;</dd>
         </py:if>
-        <py:if test="person.postal_address and personal and show['show_postal_address']">
+        <py:if test="person.postal_address and (personal or admin) and show['show_postal_address']">
           <dt>${_('Postal Address:')}</dt>
           <dd>${person.postal_address}&nbsp;</dd>
         </py:if>
@@ -59,10 +59,13 @@
         <!-- We should correct this.  Everything else is filtered in the
         - model:People*Select classes.
         - -->
-        <py:if test="personal">
+        <py:if test="personal or admin">
           <dt>${_('Public SSH Key:')}</dt>
-          <dd py:if="person.ssh_key" title="${person.ssh_key}">${person.ssh_key[:20]}....&nbsp;</dd>
-          <dd py:if="not person.ssh_key">No ssh key provided&nbsp;</dd>
+          <dd py:if="person.ssh_key" title="${person.ssh_key}">
+	  <span py:for="key in person.ssh_key.split('\n')" py:strip="True">${key}<br /></span>
+          <a href="${tg.url('/user/clearkey')}">${_('(remove ssh key)')}</a>
+	  </dd>
+    <dd py:if="not person.ssh_key">${_('No ssh key provided')}&nbsp;</dd>
         </py:if>
         <py:if test="person.comments">
           <dt>${_('Comments:')}</dt><dd>${person.comments}&nbsp;</dd>
@@ -72,14 +75,15 @@
         - -->
         <py:if test="personal or admin">
           <dt>${_('Password:')}</dt>
-          <dd><span class="approved">${_('Valid')}</span> <a href="${tg.url('/user/changepass')}">(change)</a></dd>
-          </py:if>
+          <dd>
+          <a href="${tg.url('/user/changepass')}">${_('(change)')}</a>
+          </dd>
+        </py:if>
         <py:if test="person.status">
           <dt>${_('Account Status:')}</dt>
           <dd>
             <div py:choose="person.status" py:strip="True">
               <span py:when="'active'" class="approved">${_('Active')}</span>
-              <span py:when="'vacation'" class="approved">${_('Vacation')}</span>
               <span py:when="'inactive'" class="unapproved">${_('Inactive')}</span>
               <span py:when="'pinged'" class="approved">${_('Pinged')}</span>
               <span py:when="'admin_disabled'" class="unapproved">${_('Disabled')}</span>
@@ -87,18 +91,29 @@
             <script type="text/javascript">var hb1 = new HelpBalloon({dataURL: '${tg.url('/help/get_help/user_account_status')}'});</script>
           </dd>
         </py:if>
-        <dt>${_('CLA:')}</dt>
-        <dd><span py:if="cla" class="approved">${_('CLA Done')}
-            <py:if test="admin">
-            (<a href="${tg.url('/cla/reject/%s' % person.username)}">${_('Reject CLA')}</a>)</py:if>
+        <dt>${_('Contributor Agreement:')}</dt>
+        <dd py:choose="cla">
+        <span py:when="True" class="approved">
+          <py:if test="undeprecated">
+            ${_('CLA Signed')}
+          </py:if>
+          <py:if test="not undeprecated">
+          ${_('CLA Done')} - <span class="unapproved">${_('New CLA Not Signed')}
+            <py:if test="personal">- ${_('We need contributors to sign the new Contributor Agreement')}(<a href="${tg.url('/fpca/')}">${_('Complete it now!')}</a>)</py:if>
+            </span>
+          </py:if>
+          <py:if test="admin">
+            (<a href="${tg.url('/fpca/reject/%s' % person.username)}">${_('Reject FPCA')}</a>)
+          </py:if>
           </span>
-          <span py:if="not cla" class="unapproved">${_('Not Done')}<py:if test="personal"> (<a href="${tg.url('/cla/')}">${_('Complete it!')}</a>)</py:if></span>
+
+          <span py:otherwise="" class="unapproved">${_('Not Signed')}<py:if test="personal"> (<a href="${tg.url('/fpca/')}">${_('Complete it!')}</a>)</py:if></span>
           <script type="text/javascript">var hb2 = new HelpBalloon({dataURL: '${tg.url('/help/get_help/user_cla')}'});</script>
         </dd>
         <dt>${_('Privacy:')}</dt>
         <dd>
-          <span py:if="person.privacy">Account Information Private</span>
-          <span py:if="not person.privacy">Account Information Public</span>
+        <span py:if="person.privacy">${_('Account Information Private')}</span>
+        <span py:if="not person.privacy">${_('Account Information Public')}</span>
           <script type="text/javascript">var hb_privacy = new HelpBalloon({dataURL: '${tg.url('/help/get_help/user_privacy')}'});</script>
         </dd>
       </dl>
@@ -117,14 +132,14 @@
     </ul>
     -->
     <ul id="rolespanel">
-      <py:for each="role in sorted(person.roles, lambda x,y: cmp(x.group.name, y.group.name))">
-      <li py:if="auth.canViewGroup(viewer, role.group)" class="role">
+      <py:for each="role in sorted(person['roles'], lambda x,y: cmp(x.group.name, y.group.name))">
+      <li py:if="auth.can_view_group(viewer, role.group)" class="role">
       <h4><a href="${tg.url('/group/view/%s') % role.group.name}">${role.group.display_name}</a></h4> (${role.role_type})
       <dl>
         <dt>${_('Status:')}</dt>
         <dd>
-        <span class="approved" py:if="role.group in person.approved_memberships">${_('Approved')}</span>
-        <span class="unapproved" py:if="role.group in person.unapproved_memberships">${_('Unapproved')}</span>
+        <span class="approved" py:if="role.role_status == 'approved'">${_('Approved')}</span>
+        <span class="unapproved" py:if="role.role_status == 'unapproved'">${_('Unapproved')}</span>
         </dd>
         <py:if test="personal">
         <dt>${_('Tools:')}</dt>
@@ -132,11 +147,11 @@
         <ul class="tools">
           <li><a href="${tg.url('/group/view/%s' % role.group.name)}">${_('View Group')}</a></li>
           <li><a href="${tg.url('/group/invite/%s' % role.group.name)}">${_('Invite a New Member...')}</a></li>
-          <li py:if="auth.canSponsorGroup(person, role.group)"><a href="${tg.url('/group/view/%s' % role.group.name)}">${_('Manage Group Membership...')}</a></li>
-          <li py:if="auth.canEditGroup(person, role.group)"><a href="${tg.url('/group/edit/%s' % role.group.name)}">${_('Manage Group Details...')}</a></li>
+          <li py:if="auth.can_sponsor_group(People.by_username(person['username']), role.group)"><a href="${tg.url('/group/view/%s' % role.group.name)}">${_('Manage Group Membership...')}</a></li>
+          <li py:if="auth.can_edit_group(People.by_username(person['username']), role.group)"><a href="${tg.url('/group/edit/%s' % role.group.name)}">${_('Manage Group Details...')}</a></li>
         </ul>
         </dd>
-        <py:if test="auth.canSponsorGroup(person, role.group) and role.group.unapproved_roles">
+        <py:if test="auth.can_sponsor_group(People.by_username(person['username']), role.group) and role.group.unapproved_roles">
         <dt>${_('Queue:')}</dt>
         <dd>
         <ul class="queue">

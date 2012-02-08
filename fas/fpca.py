@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+''' Used for processing FPCA requests'''
 #
-# Copyright © 2008  Ricky Zhou All rights reserved.
-# Copyright © 2008 Red Hat, Inc. All rights reserved.
+# Copyright © 2008  Ricky Zhou
+# Copyright © 2008-2011 Red Hat, Inc.
 #
 # This copyrighted material is made available to anyone wishing to use, modify,
 # copy, or redistribute it subject to the terms and conditions of the GNU
@@ -21,43 +22,45 @@
 #            Toshio Kuratomi <toshio@redhat.com>
 #
 import turbogears
-from turbogears import controllers, expose, identity, error_handler, config
+from turbogears import controllers, expose, identity, config
 from turbogears.database import session
 
 import cherrypy
 
-from sqlalchemy.exceptions import SQLError
+from sqlalchemy.exc import DBAPIError
 
 from datetime import datetime
 import GeoIP
 from genshi.template.plugin import TextTemplateEnginePlugin
 
-from fedora.tg.util import request_format
+from fedora.tg.utils import request_format
 
 from fas.model import People, Groups, Log
-from fas.auth import isAdmin, CLADone
+from fas.auth import is_admin, standard_cla_done, undeprecated_cla_done
 from fas.util import send_mail
 import fas
 
-class CLA(controllers.Controller):
+from fas import _
 
-    # Group name for people having signed the CLA
-    CLAGROUPNAME = config.get('cla_fedora_group')
-    # Meta group for everyone who has satisfied the requirements of the CLA
+class FPCA(controllers.Controller):
+    ''' Processes FPCA workflow '''
+    # Group name for people having signed the FPCA
+    CLAGROUPNAME = config.get('cla_standard_group')
+    # Meta group for everyone who has satisfied the requirements of the FPCA
     # (By signing or having a corporate signatue or, etc)
     CLAMETAGROUPNAME = config.get('cla_done_group')
 
     # Values legal in phone numbers
-    PHONEDIGITS = ('0','1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+',
+    PHONEDIGITS = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+',
             '-', ')' ,'(', ' ')
 
     def __init__(self):
-        '''Create a CLA Controller.'''
+        '''Create a FPCA Controller.'''
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template="fas.templates.cla.index")
+    @expose(template="fas.templates.fpca.index")
     def index(self):
-        '''Display the CLAs (and accept/do not accept buttons)'''
+        '''Display the FPCAs (and accept/do not accept buttons)'''
         show = {}
         show['show_postal_address'] = config.get('show_postal_address')
 
@@ -67,12 +70,26 @@ class CLA(controllers.Controller):
             code_len = len(person.country_code)
         except TypeError:
             code_len = 0
-        if not person.telephone or code_len != 2 or person.country_code=='  ':
-            turbogears.flash('A valid country and telephone number are'
-                    ' required to complete the CLA.  Please fill them out below.')
-        cla = CLADone(person)
-        person.filter_private()
-        return dict(cla=cla, person=person, date=datetime.utcnow().ctime(), show=show)
+        if show['show_postal_address']:
+            contactInfo = person.telephone or person.postal_address
+            if person.country_code == 'O1' and not person.telephone:
+                turbogears.flash(_('A telephone number is required to ' + \
+                    'complete the FPCA.  Please fill out below.'))
+            elif not person.country_code or not person.human_name \
+                or not contactInfo:
+                turbogears.flash(_('A valid country and telephone number ' + \
+                    'or postal address is required to complete the FPCA.  ' + \
+                    'Please fill them out below.'))
+        else:
+            if not person.telephone or code_len != 2 or \
+                person.country_code == '  ':
+                turbogears.flash(_('A valid country and telephone number are' +
+                        ' required to complete the FPCA.  Please fill them ' +
+                        'out below.'))
+        (cla, undeprecated_cla) = undeprecated_cla_done(person)
+        person = person.filter_private()
+        return dict(cla=undeprecated_cla, person=person, date=datetime.utcnow().ctime(),
+                    show=show)
 
     def _cla_dependent(self, group):
         '''
@@ -89,7 +106,12 @@ class CLA(controllers.Controller):
             return self._cla_dependent(group.prerequisite)
         return False
 
-    def jsonRequest(self):
+    def json_request(self):
+        ''' Helps define if json is being used for this request
+
+        :returns: 1 or 0 depending on if request is json or not
+        '''
+
         return 'tg_format' in cherrypy.request.params and \
                 cherrypy.request.params['tg_format'] == 'json'
 
@@ -101,75 +123,78 @@ class CLA(controllers.Controller):
         return dict(tg_errors=tg_errors)
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template="genshi-text:fas.templates.cla.cla", format="text", content_type='text/plain; charset=utf-8')
+    @expose(template = "genshi-text:fas.templates.fpca.fpca", format = "text",
+            content_type = 'text/plain; charset=utf-8')
     def text(self):
-        '''View CLA as text'''
+        '''View FPCA as text'''
         username = turbogears.identity.current.user_name
         person = People.by_username(username)
-        person.filter_private()
+        person = person.filter_private()
         return dict(person=person, date=datetime.utcnow().ctime())
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template="genshi-text:fas.templates.cla.cla", format="text", content_type='text/plain; charset=utf-8')
+    @expose(template = "genshi-text:fas.templates.fpca.fpca", format = "text",
+            content_type = 'text/plain; charset=utf-8')
     def download(self):
-        '''Download CLA'''
+        '''Download FPCA'''
         username = turbogears.identity.current.user_name
         person = People.by_username(username)
-        person.filter_private()
+        person = person.filter_private()
         return dict(person=person, date=datetime.utcnow().ctime())
 
     @identity.require(turbogears.identity.not_anonymous())
     @expose(template="fas.templates.user.view", allow_json=True)
-    def reject(self, personName):
-        '''Reject a user's CLA.
+    def reject(self, person_name):
+        '''Reject a user's FPCA.
 
-        This method will remove a user from the CLA group and any other groups
-        that they are in that require the CLA.  It is used when a person has
-        to fulfill some more legal requirements before having a valid CLA.
+        This method will remove a user from the FPCA group and any other groups
+        that they are in that require the FPCA.  It is used when a person has
+        to fulfill some more legal requirements before having a valid FPCA.
 
         Arguments
-        :personName: Name of the person to reject.
+        :person_name: Name of the person to reject.
         '''
         show = {}
         show['show_postal_address'] = config.get('show_postal_address')
         exc = None
         user = People.by_username(turbogears.identity.current.user_name)
-        if not isAdmin(user):
+        if not is_admin(user):
             # Only admins can use this
-            turbogears.flash(_('You are not allowed to reject CLAs.'))
+            turbogears.flash(_('You are not allowed to reject FPCAs.'))
             exc = 'NotAuthorized'
         else:
             # Unapprove the cla and all dependent groups
-            person = People.by_username(personName)
+            person = People.by_username(person_name)
             for role in person.roles:
                 if self._cla_dependent(role.group):
                     role.role_status = 'unapproved'
             try:
                 session.flush()
-            except SQLError, e:
+            except DBAPIError, error:
                 turbogears.flash(_('Error removing cla and dependent groups' \
                         ' for %(person)s\n Error was: %(error)s') %
-                        {'person': personName, 'error': str(e)})
-                exc = 'sqlalchemy.SQLError'
+                        {'person': person_name, 'error': str(error)})
+                exc = 'DBAPIError'
 
         if not exc:
             # Send a message that the ICLA has been revoked
-            dt = datetime.utcnow()
-            Log(author_id=user.id, description='Revoked %s CLA' % person.username, changetime=dt)
+            date_time = datetime.utcnow()
+            Log(author_id=user.id, description='Revoked %s FPCA' %
+                person.username, changetime=date_time)
             revoke_subject = 'Fedora ICLA Revoked'
             revoke_text = '''
 Hello %(human_name)s,
 
-We're sorry to bother you but we had to reject your CLA for now because
+We're sorry to bother you but we had to reject your FPCA for now because
 information you provided has been deemed incorrect.  The most common cause
 of this is people abbreviating their name like "B L Couper" instead of
 providing their actual full name "Bill Lay Couper".  Other causes of this
 include are using a country, or phone number that isn't accurate [1]_.
 If you could edit your account [2]_ to fix any of these problems and resubmit
-the CLA we would appreciate it.
+the FPCA we would appreciate it.
 
 .. [1]: Why does it matter that we have your real name and phone
-        number?   It's because the CLA is a legal document and should we ever
+        number?   It's because the FPCA is a legal document and should we ever
         need to contact you about one of your contributions (as an example,
         because someone contacts *us* claiming that it was really they who
         own the copyright to the contribution) we might need to contact you
@@ -187,32 +212,41 @@ Thanks!
             send_mail(person.email, revoke_subject, revoke_text)
 
             # Yay, sweet success!
-            turbogears.flash(_('CLA Successfully Removed.'))
+            turbogears.flash(_('FPCA Successfully Removed.'))
         # and now we're done
         if request_format() == 'json':
-            returnVal = {}
+            return_val = {}
             if exc:
-                returnVal['exc'] = exc
-            return returnVal
+                return_val['exc'] = exc
+            return return_val
         else:
-            turbogears.redirect('/user/view/%s' % personName)
+            turbogears.redirect('/user/view/%s' % person_name)
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template="fas.templates.cla.index")
-    def send(self, human_name, telephone, country_code, postal_address=None, confirm=False, agree=False):
-        '''Send CLA'''
+    @expose(template="fas.templates.fpca.index")
+    def send(self, human_name, telephone, country_code, postal_address=None,
+        confirm=False, agree=False):
+        '''Send FPCA'''
+
+        # TO DO: Pull show_postal_address in at the class level
+        # as it's used in three methods now
+        show = {}
+        show['show_postal_address'] = config.get('show_postal_address')
+
         username = turbogears.identity.current.user_name
         person = People.by_username(username)
-        if CLADone(person):
-            turbogears.flash(_('You have already completed the CLA.'))
-            turbogears.redirect('/cla/')
+        if standard_cla_done(person):
+            turbogears.flash(_('You have already completed the FPCA.'))
+            turbogears.redirect('/fpca/')
             return dict()
         if not agree:
-            turbogears.flash(_("You have not completed the CLA."))
+            turbogears.flash(_("You have not completed the FPCA."))
             turbogears.redirect('/user/view/%s' % person.username)
         if not confirm:
-            turbogears.flash(_('You must confirm that your personal information is accurate.'))
-            turbogears.redirect('/cla/')
+            turbogears.flash(_(
+                'You must confirm that your personal information is accurate.'
+            ))
+            turbogears.redirect('/fpca/')
 
         # Compare old information to new to see if any changes have been made
         if human_name and person.human_name != human_name:
@@ -228,26 +262,42 @@ Thanks!
             session.flush()
         except Exception:
             turbogears.flash(_("Your updated information could not be saved."))
-            turbogears.redirect('/cla/')
+            turbogears.redirect('/fpca/')
             return dict()
 
         # Heuristics to detect bad data
-        if not person.telephone or \
+        if show['show_postal_address']:
+            contactInfo = person.telephone or person.postal_address
+            if person.country_code == 'O1':
+                if not person.human_name or not person.telephone:
+                    # Message implemented on index
+                    turbogears.redirect('/fpca/')
+            else:
+                if not person.country_code or not person.human_name \
+                    or not contactInfo:
+                    # Message implemented on index
+                    turbogears.redirect('/fpca/')
+        else:
+            if not person.telephone or \
                 not person.human_name or \
                 not person.country_code:
-            turbogears.flash(_('To complete the CLA, we must have your name, telephone number, and country.  Please ensure they have been filled out.'))
-            turbogears.redirect('/cla/')
+                turbogears.flash(_('To complete the FPCA, we must have your ' + \
+                    'name telephone number, and country.  Please ensure they ' + \
+                    'have been filled out.'))
+                turbogears.redirect('/fpca/')
 
         blacklist = config.get('country_blacklist', [])
         country_codes = [c for c in GeoIP.country_codes if c not in blacklist]
 
         if person.country_code not in country_codes:
-            turbogears.flash(_('To complete the CLA, a valid country code must be specified.  Please select one now.'))
-            turbogears.redirect('/cla/')
+            turbogears.flash(_('To complete the FPCA, a valid country code' + \
+            'must be specified.  Please select one now.'))
+            turbogears.redirect('/fpca/')
         if [True for char in person.telephone if char not in self.PHONEDIGITS]:
-            turbogears.flash(_('Telephone numbers can only consist of numbers, "-", "+", "(", ")", or " ".  Please reenter using only those characters.'))
-            turbogears.redirect('/cla/')
-            turbogears.redirect('/cla/')
+            turbogears.flash(_('Telephone numbers can only consist of ' + \
+                'numbers, "-", "+", "(", ")", or " ".  Please reenter using' +\
+                'only those characters.'))
+            turbogears.redirect('/fpca/')
 
         group = Groups.by_name(self.CLAGROUPNAME)
         try:
@@ -259,8 +309,9 @@ Thanks!
             # unapproved) of this group
             pass
         except Exception:
-            turbogears.flash(_("You could not be added to the '%s' group.") % group.name)
-            turbogears.redirect('/cla/')
+            turbogears.flash(_("You could not be added to the '%s' group.") %
+                                group.name)
+            turbogears.redirect('/fpca/')
             return dict()
 
         try:
@@ -268,16 +319,20 @@ Thanks!
             person.sponsor(group, person) # Sponsor!
             session.flush()
         except fas.SponsorError:
-            turbogears.flash(_("You are already a part of the '%s' group.") % group.name)
-            turbogears.redirect('/cla/')
+            turbogears.flash(_("You are already a part of the '%s' group.") %
+                                group.name)
+            turbogears.redirect('/fpca/')
         except:
-            turbogears.flash(_("You could not be added to the '%s' group.") % group.name)
-            turbogears.redirect('/cla/')
+            turbogears.flash(_("You could not be added to the '%s' group.") %
+                                group.name)
+            turbogears.redirect('/fpca/')
 
-        dt = datetime.utcnow()
-        Log(author_id=person.id, description='Completed CLA', changetime=dt)
-        cla_subject = 'Fedora ICLA completed for %(human_name)s (%(username)s)' % \
-                {'username': person.username, 'human_name': person.human_name}
+        date_time = datetime.utcnow()
+        Log(author_id = person.id, description = 'Completed FPCA',
+            changetime = date_time)
+        cla_subject = \
+            'Fedora ICLA completed for %(human_name)s (%(username)s)' % \
+            {'username': person.username, 'human_name': person.human_name}
         cla_text = '''
 Fedora user %(username)s has completed an ICLA (below).
 Username: %(username)s
@@ -285,24 +340,22 @@ Email: %(email)s
 Date: %(date)s
 
 If you need to revoke it, please visit this link:
-    https://admin.fedoraproject.org/accounts/cla/reject/%(username)s
+    https://admin.fedoraproject.org/accounts/fpca/reject/%(username)s
 
-=== CLA ===
+=== FPCA ===
 
 ''' % {'username': person.username,
-'human_name': person.human_name,
 'email': person.email,
-'country_code': person.country_code,
-'telephone': person.telephone,
-'facsimile': person.facsimile,
-'date': dt.ctime(),}
+'date': date_time.ctime(),}
         # Sigh..  if only there were a nicer way.
         plugin = TextTemplateEnginePlugin()
-        #message.plain += plugin.render(template='fas.templates.cla.cla', info=dict(person=person), format='text')
-        cla_text += plugin.transform(dict(person=person), 'fas.templates.cla.cla').render(method='text', encoding=None)
+        cla_text += plugin.transform(dict(person=person),
+                    'fas.templates.fpca.fpca').render(method='text',
+                    encoding=None)
 
         send_mail(config.get('legal_cla_email'), cla_subject, cla_text)
 
-        turbogears.flash(_("You have successfully completed the CLA.  You are now in the '%s' group.") % group.name)
+        turbogears.flash(_("You have successfully completed the FPCA.  You " + \
+                            "are now in the '%s' group.") % group.name)
         turbogears.redirect('/user/view/%s' % person.username)
         return dict()

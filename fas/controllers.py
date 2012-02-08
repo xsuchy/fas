@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright © 2008  Ricky Zhou All rights reserved.
-# Copyright © 2008 Red Hat, Inc. All rights reserved.
+# Copyright © 2008  Ricky Zhou
+# Copyright © 2008-2011 Red Hat, Inc.
 #
 # This copyrighted material is made available to anyone wishing to use, modify,
 # copy, or redistribute it subject to the terms and conditions of the GNU
@@ -18,7 +18,7 @@
 #
 # Author(s): Ricky Zhou <ricky@fedoraproject.org>
 #            Mike McGrath <mmcgrath@redhat.com>
-#            Toshio Kuratomi <tkuratom@redhat.com>
+#            Toshio Kuratomi <toshio@redhat.com>
 #
 from turbogears import expose, config, identity, redirect
 from turbogears.database import session
@@ -29,13 +29,13 @@ import cherrypy
 import time
 
 from fedora.tg import controllers as f_ctrlers
-from fedora.tg.util import request_format
+from fedora.tg.utils import request_format
 
 from fas import release
-from fas.user import User, generate_token
+from fas.user import User
 from fas.group import Group
 from fas.configs import Config
-from fas.cla import CLA
+from fas.fpca import FPCA
 from fas.json_request import JsonRequest
 from fas.help import Help
 from fas.model import Session, People
@@ -43,7 +43,7 @@ from fas.model import SessionTable
 
 from fas.openid_samadhi import OpenID
 
-from fas.auth import CLADone
+from fas.auth import undeprecated_cla_done
 from fas.util import available_languages
 
 from fas import plugin
@@ -53,9 +53,9 @@ import os
 import datetime
 
 try:
-      import cPickle as pickle
+    import cPickle as pickle
 except ImportError:
-      import pickle
+    import pickle
 
 class SQLAlchemyStorage:
     def __init__(self):
@@ -115,13 +115,19 @@ def get_locale(locale=None):
         return cherrypy.request.simple_cookie['fas_locale'].value
     except KeyError:
         pass
-    return turbogears.i18n.utils._get_locale()
+
+    default_language = config.get('default_language',
+            turbogears.i18n.utils._get_locale())
+    return default_language
 
 config.update({'i18n.get_locale': get_locale})
 
 
 def add_custom_stdvars(variables):
-  return variables.update({'gettext': _, "lang": get_locale(), 'available_languages': available_languages(), 'fas_version': release.VERSION})
+    return variables.update({'gettext': _, "lang": get_locale(),
+    'available_languages': available_languages(), 
+    'fas_version': release.VERSION,
+    'webmaster_email': config.get('webmaster_email')})
 turbogears.view.variable_providers.append(add_custom_stdvars)
 
 # from fas import json
@@ -129,13 +135,14 @@ turbogears.view.variable_providers.append(add_custom_stdvars)
 # log = logging.getLogger("fas.controllers")
 
 #TODO: Appropriate flash icons for errors, etc.
-# mmcgrath wonders if it will be handy to expose an encrypted mailer with fas over json for our apps
+# mmcgrath wonders if it will be handy to expose an encrypted mailer with fas
+# over json for our apps
 
 class Root(plugin.RootController):
 
     user = User()
     group = Group()
-    cla = CLA()
+    fpca = FPCA()
     json = JsonRequest()
     config = Config()
     help = Help()
@@ -165,9 +172,10 @@ class Root(plugin.RootController):
     def home(self):
         user_name = turbogears.identity.current.user_name
         person = People.by_username(user_name)
-        cla = CLADone(person)
-        person.filter_private()
-        return dict(person=person, cla=cla)
+        (cla_done, undeprecated_cla) = undeprecated_cla_done(person)
+
+        person = person.filter_private()
+        return dict(person=person, memberships=person['memberships'], cla=undeprecated_cla)
 
     @expose(template="fas.templates.about")
     def about(self):
@@ -195,11 +203,6 @@ class Root(plugin.RootController):
                     ' reset your password below.'))
                 if request_format() != 'json':
                     redirect('/user/resetpass')
-                #username = request.fas_provided_username
-                #token = generate_token()
-                #person = People.by_username(username)
-                #person.passwordtoken = token
-                #redirect('/user/verifypass/%s/%s' % (username, token))
             if request.fas_identity_failure_reason == 'status_account_disabled':
                 turbogears.flash(_('Your account is currently disabled.  For'
                         ' more information, please contact %(admin_email)s' %

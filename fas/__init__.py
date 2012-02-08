@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright © 2008  Ricky Zhou All rights reserved.
-# Copyright © 2008 Red Hat, Inc. All rights reserved.
+# Copyright © 2008  Ricky Zhou
+# Copyright © 2008 Red Hat, Inc.
 #
 # This copyrighted material is made available to anyone wishing to use, modify,
 # copy, or redistribute it subject to the terms and conditions of the GNU
@@ -21,6 +21,11 @@
 #
 from fas import release
 __version__ = release.VERSION
+
+import gettext
+translation = gettext.translation('fas', '/usr/share/locale',
+                fallback=True)
+_ = translation.ugettext
 
 SHARE_CC_GROUP = 'share_country_code'
 SHARE_LOC_GROUP = 'share_location'

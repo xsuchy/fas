@@ -151,27 +151,26 @@ package_data['fas.config'].append('app.cfg')
 setup(
     name=NAME,
     version=VERSION,
-    
+
     description=DESCRIPTION,
     author=AUTHOR,
     author_email=EMAIL,
     url=URL,
     download_url=DOWNLOAD_URL,
     license=LICENSE,
-   
+
     cmdclass={
         'build': Build,
         'install_data': InstallData,
     },
     install_requires = [
         'TurboGears >= 1.0.4',
-        'SQLAlchemy >= 0.4',
+        'SQLAlchemy >= 0.5',
         'TurboMail',
         'python_fedora >= 0.3'
     ],
     scripts = [
         'client/fasClient',
-        'client/fasClient.old',
         'client/restricted-shell',
         'scripts/account-expiry.py',
         'scripts/export-bugzilla.py',
@@ -183,19 +182,19 @@ setup(
     keywords = [
         # Use keywords if you'll be adding your package to the
         # Python Cheeseshop
-        
+
         # if this has widgets, uncomment the next line
         # 'turbogears.widgets',
-        
+
         # if this has a tg-admin command, uncomment the next line
         # 'turbogears.command',
-        
+
         # if this has identity providers, uncomment the next line
         'turbogears.identity.provider',
-    
+
         # If this is a template plugin, uncomment the next line
         # 'python.templating.engines',
-        
+
         # If this is a full application, uncomment the next line
         'turbogears.app',
     ],
@@ -208,7 +207,7 @@ setup(
         # if this is an application that you'll distribute through
         # the Cheeseshop, uncomment the next line
         'Framework :: TurboGears :: Applications',
-        
+
         # if this is a package that includes widgets that you'll distribute
         # through the Cheeseshop, uncomment the next line
         # 'Framework :: TurboGears :: Widgets',
@@ -221,5 +220,21 @@ setup(
             'turbogears.identity.provider': (
                 'safas4 = fas.safasprovider:SaFasIdentityProvider',
             ),
+            'turbogears.widgets': (
+                'tgcaptcha2 = fas.tgcaptcha2.widgets',
+            ),
+            # For the enhanced captcha
+            'tgcaptcha2.jpeg_generators': (
+                'mcdermott = fas.tgcaptcha2.plugins.image.vanasco_dowty:generate_jpeg',
+                'vanasco_dowty = fas.tgcaptcha2.plugins.image.vanasco_dowty:generate_jpeg',
+            ),
+            'tgcaptcha2.text_generators': (
+                'random_ascii = fas.tgcaptcha2.plugins.text.random_ascii:generate_text',
+                'random_equation = fas.tgcaptcha2.plugins.text.random_equation:generate_text',
+            ),
+            'paste.paster_create_template': (
+                'tgcaptcha2 = tgcaptcha2:TGCaptchaConfig',
+            ),
+            # End enhanced captcha
     }
 )

@@ -1,4 +1,4 @@
--- Copyright © 2008  Red Hat, Inc. All rights reserved.
+-- Copyright © 2008  Red Hat, Inc.
 --
 -- This copyrighted material is made available to anyone wishing to use, modify,
 -- copy, or redistribute it subject to the terms and conditions of the GNU
@@ -69,6 +69,7 @@ CREATE TABLE people (
     latitude numeric,
     longitude numeric,
     privacy BOOLEAN DEFAULT FALSE,
+    alias_enabled BOOLEAN DEFAULT TRUE,
     check (status in ('active', 'inactive', 'expired', 'admin_disabled'))
     --check (gpg_keyid ~ '^[0-9A-F]{17}$')
 );
@@ -85,7 +86,7 @@ CREATE TABLE configs (
     -- Please create more config keys rather than abusing this with
     -- large datastructures.
     value TEXT,
-    check (application in ('asterisk', 'moin', 'myfedora' ,'openid', 'yubikey')),
+    check (application in ('asterisk', 'moin', 'myfedora' ,'openid', 'yubikey', 'bugzilla')),
     -- Might end up removing openid, depending on how far we take the provider
     unique (person_id, application, attribute)
 );
@@ -110,6 +111,7 @@ CREATE TABLE groups (
     group_type VARCHAR(16),
     needs_sponsor BOOLEAN DEFAULT FALSE,
     user_can_remove BOOLEAN DEFAULT TRUE,
+    invite_only BOOLEAN DEFAULT FALSE,
     prerequisite_id INTEGER REFERENCES groups(id),
     joinmsg TEXT NULL DEFAULT '',
     apply_rules TEXT,
@@ -120,7 +122,6 @@ CREATE TABLE groups (
 );
 
 create index groups_group_type_idx on groups(group_type);
-create index groups_email_idx on groups(email);
 cluster groups_group_type_idx on groups;
 
 CREATE TABLE person_roles (
@@ -345,6 +346,7 @@ INSERT INTO people (id, username, human_name, password, email) VALUES (100001, '
 -- Create default groups and populate
 INSERT INTO groups (id, name, display_name, owner_id, group_type, user_can_remove) VALUES (100002, 'cla_done', 'CLA Done Group', (SELECT id from people where username='admin'), 'cla', false);
 INSERT INTO groups (id, name, display_name, owner_id, group_type, user_can_remove) VALUES (101441, 'cla_fedora', 'Fedora CLA Group', (SELECT id from people where username='admin'), 'cla', false);
+INSERT INTO groups (id, name, display_name, owner_id, group_type, user_can_remove) VALUES (155928, 'cla_fpca', 'Signers of the Fedora Project Contributor Agreement', (SELECT id from people where username='admin'), 'cla', false);
 INSERT INTO groups (id, name, display_name, owner_id, group_type) VALUES (100006, 'accounts', 'Account System Admins', (SELECT id from people where username='admin'), 'tracking');
 INSERT INTO groups (id, name, display_name, owner_id, group_type) VALUES (100148, 'fedorabugs', 'Fedora Bugs Group', (SELECT id from people where username='admin'), 'tracking');
 INSERT INTO groups (name, display_name, owner_id, group_type) VALUES ('fas-system', 'System users allowed to get password and key information', (SELECT id from people where username='admin'), 'system');

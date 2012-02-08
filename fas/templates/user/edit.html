@@ -8,11 +8,8 @@
     bad_codes = tg.config('country_blacklist', [])
     countries = GeoIP.country_names
 
-    for c in bad_codes:
-        try:
-            del countries[c]
-        except KeyError:
-            pass
+    countries = dict((unicode(c[0]), unicode(c[1], 'latin-1')) for c in countries.iteritems() if c[0] not in bad_codes)
+
   ?>
 
   <xi:include href="../master.html" />
@@ -21,6 +18,10 @@
   </head>
   <body>
     <h2>${_('Edit Account (%s)') % target.username}</h2>
+    <div class="field">
+      <label>${_('Password:')}</label>
+      <a href="${tg.url('/user/changepass')}">${_('(change)')}</a>
+    </div>
     <form action="${tg.url('/user/save/%s' % target.username)}" method="post" enctype="multipart/form-data">
       <div class="field">
         <label for="human_name">${_('Full Name')}:</label>
@@ -126,7 +127,7 @@ Unfortunately, checked can't be used as a boolean, only as a flag.  Silly HTML4 
       <div class="field">
         <label for="status">${_('Status')}:</label>
         <select id="status" name="status">
-          <option py:for="status in ('active', 'vacation', 'inactive')" value="${status}" py:attrs="{'selected': target.status == status and 'selected' or None}">${status}</option>
+          <option py:for="status in ('active', 'inactive')" value="${status}" py:attrs="{'selected': target.status == status and 'selected' or None}">${status}</option>
           <option py:if="admin" value="admin_disabled" py:attrs="{'selected': target.status == 'admin_disabled' and 'selected' or None}">disabled</option>
         </select>
         <script type="text/javascript">var hb7 = new HelpBalloon({dataURL: '${tg.url('/help/get_help/user_account_status')}'});</script>
@@ -143,7 +144,7 @@ Unfortunately, checked can't be used as a boolean, only as a flag.  Silly HTML4 
         <script type="text/javascript">var hb_privacy = new HelpBalloon({dataURL: '${tg.url('/help/get_help/user_privacy')}'});</script>
       </div>
       <div class="field">
-        <input type="submit" value="${_('Save!')}" />
+        <input class="sub-button" type="submit" value="${_('Save!')}" />
         <a href="${tg.url('/user/view/%s' % target.username)}">${_('Cancel')}</a>
       </div>
     </form>

@@ -13,8 +13,8 @@
     from fas import auth
     from fas.model import People
     person = People.by_username(tg.identity.user.username)
-    can_admin = auth.canAdminGroup(person, group)
-    can_sponsor = auth.canSponsorGroup(person, group)
+    can_admin = auth.can_admin_group(person, group)
+    can_sponsor = auth.can_sponsor_group(person, group)
     ?>
     <h2>${group.display_name} (${group.name})</h2>
     <h3>
@@ -23,12 +23,19 @@
       <span py:if="group in person.memberships and not group in person.approved_memberships" class="unapproved">${_('Unapproved')}</span>
       <span py:if="not group in person.memberships">${_('Not a Member')}</span>
     </h3>
-    <form py:if="not group in person.memberships" action="${tg.url('/group/application_screen/%s/%s' % (group.name, person.username))}">
+    <!--
+        TODO: Turning the below form into an anchor ref fixes the CSRF request
+              I'm nto sure if that's intended though>
+    <a py:if="not group.invite_only and not group in person.memberships" href="${tg.url('/group/application_screen/%s/%s' % (group.name, person.username))}"><h3>Apply</h3></a> -->
+    <form py:if="not group.invite_only and not group in person.memberships" action="${tg.url('/group/application_screen/%s/%s' % (group.name, person.username))}" method="POST">
       <div>
         <!--<input type="text" name="requestField" value="${_('Please let me join...')}" />-->
-        <input type="submit" value="${('Apply!')}" />
+        <input type="submit" value="${_('Apply!')}" />
       </div>
     </form>
+    <div py:if="group.invite_only and not group in person.memberships">
+        <p>${_('Group is invite only.  Contact group sponsors for more information.')}</p>
+    </div>
     <a py:if="group in person.memberships" href="${tg.url('/group/remove/%s/%s' % (group.name, person.username))}">${_('Remove me')}</a>
     <script py:if="group in person.memberships" type="text/javascript">var hb7 = new HelpBalloon({dataURL: '${tg.url('/help/get_help/group_remove')}'});</script>
     <h3>Group Details <a py:if="can_admin" href="${tg.url('/group/edit/%s' % group.name)}">${_('(edit)')}</a></h3>
@@ -61,6 +68,10 @@
         </dd>
         </py:if>
 
+        <dt>${_('Invite Only:')}</dt><dd>
+        <py:if test="group.invite_only">${_('Yes')}</py:if>
+        <py:if test="not group.invite_only">${_('No')}</py:if>
+        &nbsp;</dd>
         <dt>${_('Needs Sponsor:')}</dt><dd>
         <py:if test="group.needs_sponsor">${_('Yes')}</py:if>
         <py:if test="not group.needs_sponsor">${_('No')}</py:if>
@@ -80,7 +91,7 @@
           <form action="${tg.url('/group/application_screen/%s' % group.name)}"
             method="post">
             <input type='text' size='15' name='targetname'/>
-            <input type="submit" value="${('Add')}" />
+            <input type="submit" value="${_('Add')}" />
             <script type="text/javascript">var group_user_add = new HelpBalloon({dataURL: '${tg.url('/help/get_help/group_user_add')}'});</script>
           </form>
         </dd>
@@ -92,7 +103,9 @@
     <h3 py:if='me.fedoraRoleStatus == "approved"'>${_('Invite')}</h3>
     <span py:if='me.fedoraRoleStatus == "approved"'>${form(action=tg.url('modifyGroup'), value=value, method='post')}</span>
     -->
-    <a href="${tg.url('/group/members/%s' % group.name)}"><h3>${_('View Member List')}</h3></a>
+    
+    <a py:if='len(group.roles) >= 51' href="${tg.url('/group/members/%s' % group.name)}"><h3>${_('View Member List')}</h3></a>
+    <a py:if="51 > len(group.roles)" href="${tg.url('/group/members/%s/*' % group.name)}"><h3>${_('View Member List')}</h3></a>
     <div py:if="can_sponsor">
       <h3>${_('Sponsorship Queue')}</h3>
       ${member_table(sponsor_queue, group, person)}

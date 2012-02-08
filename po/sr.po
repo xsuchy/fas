@@ -1,156 +1,162 @@
-# translation of sr.po to Serbian
-# Serbian translations for FAS
-# Copyright (C) 2008 Red Hat, Inc.
-# This file is distributed under the same license as the FAS project.
-#
+# Translations template for PROJECT.
+# Copyright (C) 2012 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# 
+# Translators:
 # Marko Mijatovic <jomi86@gmail.com>, 2008.
 # Miloš Komarčević <kmilos@gmail.com>, 2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: fas\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2009-08-06 21:01-0400\n"
-"PO-Revision-Date: 2008-04-05 16:41+0000\n"
-"Last-Translator: Miloš Komarčević <kmilos@gmail.com>\n"
-"Language-Team: Serbian (sr) <fedora-trans-sr@redhat.com>\n"
+"Project-Id-Version: Fedora Account System\n"
+"Report-Msgid-Bugs-To: https://fedorahosted.org/fas/report/3\n"
+"POT-Creation-Date: 2012-01-30 10:23-0800\n"
+"PO-Revision-Date: 2012-01-30 18:44+0000\n"
+"Last-Translator: Toshio Kuratomi <a.badger@gmail.com>\n"
+"Language-Team: Serbian <trans-sr@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: KBabel 1.11.4\n"
+"Generated-By: Babel 0.9.6\n"
+"Language: sr\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
-#: fas/auth.py:285
+#: fas/auth.py:360
 #, python-format
 msgid "%s membership required before application to this group is allowed"
 msgstr "%s чланарина је неопходна да бисте приступ овој групи био дозвољен"
 
-#: fas/cla.py:139
-#, fuzzy
-msgid "You are not allowed to reject CLAs."
-msgstr "Већ сте завршили кликни-кроз CLA."
+#: fas/configs.py:126
+#, python-format
+msgid "You cannot look at configs for %s"
+msgstr ""
 
-#: fas/cla.py:150
+#: fas/configs.py:167
+#, python-format
+msgid "You cannot edit configs for %s"
+msgstr ""
+
+#: fas/configs.py:191
+#, python-format
+msgid "Error saving the config to the database: %s"
+msgstr ""
+
+#: fas/configs.py:195
+msgid "Config value successfully updated"
+msgstr ""
+
+#: fas/controllers.py:202
+msgid "Your old password has expired.  Please reset your password below."
+msgstr ""
+
+#: fas/controllers.py:209
+#, python-format
+msgid ""
+"Your account is currently disabled.  For more information, please contact "
+"%(admin_email)sadmin_email"
+msgstr ""
+
+#: fas/controllers.py:222
+#, python-format
+msgid "The language '%s' is not available."
+msgstr ""
+
+#: fas/fpca.py:76
+msgid ""
+"A telephone number is required to complete the FPCA.  Please fill out below."
+msgstr ""
+
+#: fas/fpca.py:80
+msgid ""
+"A valid country and telephone number or postal address is required to "
+"complete the FPCA.  Please fill them out below."
+msgstr ""
+
+#: fas/fpca.py:86
+msgid ""
+"A valid country and telephone number are required to complete the FPCA.  "
+"Please fill them out below."
+msgstr ""
+
+#: fas/fpca.py:163
+msgid "You are not allowed to reject FPCAs."
+msgstr ""
+
+#: fas/fpca.py:174
 #, python-format
 msgid ""
 "Error removing cla and dependent groups for %(person)s\n"
 " Error was: %(error)s"
 msgstr ""
 
-#: fas/cla.py:190
-msgid "CLA Successfully Removed."
+#: fas/fpca.py:215
+msgid "FPCA Successfully Removed."
 msgstr ""
 
-#: fas/cla.py:207
-#, fuzzy
-msgid "You have already completed the CLA."
-msgstr "Већ сте потписали CLA."
+#: fas/fpca.py:239
+msgid "You have already completed the FPCA."
+msgstr ""
 
-#: fas/cla.py:211
-#, fuzzy
-msgid "You have not completed the CLA."
-msgstr "Већ сте завршили кликни-кроз CLA."
+#: fas/fpca.py:243
+msgid "You have not completed the FPCA."
+msgstr ""
 
-#: fas/cla.py:214
+#: fas/fpca.py:246
 msgid "You must confirm that your personal information is accurate."
 msgstr ""
 
-#: fas/cla.py:230
-#, fuzzy
+#: fas/fpca.py:264
 msgid "Your updated information could not be saved."
-msgstr "Ваша лозинка не може бити промењена."
-
-#: fas/cla.py:238
-#, fuzzy
-msgid ""
-"To complete the CLA, we must have your name, telephone number, and country.  "
-"Please ensure they have been filled out."
 msgstr ""
-"Да би потписали CLA морамо имати Ваш број телефона, поштанску адресу и gpg "
-"идентификациони кључ. Молим проверите да су та поља попуњена."
 
-#: fas/cla.py:245
+#: fas/fpca.py:284
 msgid ""
-"To complete the CLA, a valid country code must be specified.  Please select "
+"To complete the FPCA, we must have your name telephone number, and country."
+"  Please ensure they have been filled out."
+msgstr ""
+
+#: fas/fpca.py:293
+msgid ""
+"To complete the FPCA, a valid country codemust be specified.  Please select "
 "one now."
 msgstr ""
 
-#: fas/cla.py:248
+#: fas/fpca.py:297
 msgid ""
 "Telephone numbers can only consist of numbers, \"-\", \"+\", \"(\", \")\", "
-"or \" \".  Please reenter using only those characters."
+"or \" \".  Please reenter usingonly those characters."
 msgstr ""
 
-#: fas/cla.py:262 fas/cla.py:274
+#: fas/fpca.py:312 fas/fpca.py:326
 #, python-format
 msgid "You could not be added to the '%s' group."
 msgstr "Не можемо вас додати у „%s“ групу."
 
-#: fas/cla.py:271
-#, fuzzy, python-format
+#: fas/fpca.py:322
+#, python-format
 msgid "You are already a part of the '%s' group."
-msgstr "Ви нисте члан „%s“ групе."
-
-#: fas/cla.py:306
-#, fuzzy, python-format
-msgid ""
-"You have successfully completed the CLA.  You are now in the '%s' group."
-msgstr "Успешно сте потписали CLA. Сада сте члан групе „%s“."
-
-#: fas/configs.py:118
-#, fuzzy, python-format
-msgid "You cannot look at configs for %s"
-msgstr "Не можете спонзорисати „%s“"
-
-#: fas/configs.py:159
-#, fuzzy, python-format
-msgid "You cannot edit configs for %s"
-msgstr "Не можете уређивати %s"
-
-#: fas/configs.py:183
-#, python-format
-msgid "Error saving the config to the database: %s"
 msgstr ""
 
-#: fas/configs.py:187
-#, fuzzy
-msgid "Config value successfully updated"
-msgstr "Успешно сте се одјавили."
-
-#: fas/controllers.py:194
-#, fuzzy
-msgid "Your old password has expired.  Please reset your password below."
-msgstr ""
-"Ваша лозинка вам је послата електронском поштом. Молим Вас да се пријавите "
-"помоћу ње и промените вашу лозинку"
-
-#: fas/controllers.py:206
+#: fas/fpca.py:358
 #, python-format
 msgid ""
-"Your account is currently disabled.  For more information, please contact %"
-"(admin_email)sadmin_email"
+"You have successfully completed the FPCA.  You are now in the '%s' group."
 msgstr ""
 
-#: fas/controllers.py:219
-#, fuzzy, python-format
-msgid "The language '%s' is not available."
-msgstr "Група „%s“ не постоји."
-
-#: fas/group.py:159 fas/group.py:195
+#: fas/group.py:163 fas/group.py:199
 #, python-format
 msgid "You cannot view '%s'"
 msgstr "Не можете видети „%s“"
 
-#: fas/group.py:218 fas/group.py:236
+#: fas/group.py:222 fas/group.py:240
 msgid "Only FAS adminstrators can create groups."
 msgstr "Једино FAS администратори могу да праве групе."
 
-#: fas/group.py:257
+#: fas/group.py:265
 #, python-format
 msgid "The group: '%s' could not be created."
 msgstr "Група: „%s“ не може бити направљена."
 
-#: fas/group.py:267
+#: fas/group.py:275
 #, python-format
 msgid ""
 "The group: '%(group)s' has been created, but '%(user)s' could not be added "
@@ -159,45 +165,60 @@ msgstr ""
 "Група: „%(group)s“ је направљена, али „%(user)s“ не може бити додат као "
 "администратор групе."
 
-#: fas/group.py:269
+#: fas/group.py:277
 #, python-format
 msgid "The group: '%s' has been created."
 msgstr "Група: „%s“ је направљена."
 
-#: fas/group.py:284 fas/group.py:302
+#: fas/group.py:292 fas/group.py:310
 #, python-format
 msgid "You cannot edit '%s'."
 msgstr "Не можете уређивати „%s“."
 
-#: fas/group.py:327
+#: fas/group.py:339
 msgid "The group details could not be saved."
 msgstr "Детаљи групе не могу бити сачувани."
 
-#: fas/group.py:331
+#: fas/group.py:343
 msgid "The group details have been saved."
 msgstr "Детаљи групе су сачувани."
 
-#: fas/group.py:360
+#: fas/group.py:375
 #, python-format
 msgid "No Groups found matching '%s'"
 msgstr "Ниједна група није пронађена која одговара „%s“"
 
-#: fas/group.py:385 fas/group.py:407
-#, fuzzy, python-format
+#: fas/group.py:400 fas/group.py:422
+#, python-format
 msgid "%(user)s can not apply to %(group)s."
-msgstr "%(user)s се пријавио за %(group)s!"
+msgstr ""
 
-#: fas/group.py:415
+#: fas/group.py:430
 #, python-format
 msgid "%(user)s could not apply to %(group)s: %(error)s"
 msgstr "%(user)s не може бити додат у%(group)s: %(error)s"
 
-#: fas/group.py:440
+#: fas/group.py:454
+#, python-format
+msgid "Fedora '%(group)s' sponsor needed for %(user)s"
+msgstr ""
+
+#: fas/group.py:457
+#, python-format
+msgid ""
+"\n"
+"Fedora user %(user)s <%(email)s> has requested\n"
+"membership for %(applicant)s in the %(group)s group and needs a sponsor.\n"
+"\n"
+"Please go to %(url)s to take action.  \n"
+msgstr ""
+
+#: fas/group.py:468
 #, python-format
 msgid "Application to the '%(group)s' group"
 msgstr ""
 
-#: fas/group.py:442
+#: fas/group.py:471
 #, python-format
 msgid ""
 "\n"
@@ -206,77 +227,136 @@ msgid ""
 "%(joinmsg)s\n"
 msgstr ""
 
-#: fas/group.py:456
+#: fas/group.py:485
 #, python-format
 msgid "%(user)s has applied to %(group)s!"
 msgstr "%(user)s се пријавио за %(group)s!"
 
-#: fas/group.py:473
+#: fas/group.py:502
 #, python-format
 msgid "You cannot sponsor '%s'"
 msgstr "Не можете спонзорисати „%s“"
 
-#: fas/group.py:480
+#: fas/group.py:509
 #, python-format
 msgid "%(user)s could not be sponsored in %(group)s: %(error)s"
 msgstr "%(user)s не може бити спонзорисан у %(group)s: %(error)s"
 
-#: fas/group.py:496
+#: fas/group.py:513
+#, python-format
+msgid "Your Fedora '%s' membership has been sponsored"
+msgstr ""
+
+#: fas/group.py:514
+#, python-format
+msgid ""
+"\n"
+"%(user)s <%(email)s> has sponsored you for membership in the %(group)s\n"
+"group of the Fedora account system. If applicable, this change should\n"
+"propagate into the e-mail aliases and git repository within an hour.\n"
+msgstr ""
+
+#: fas/group.py:525
 #, python-format
 msgid "'%s' has been sponsored!"
 msgstr "„%s“ је спонзорисан!"
 
-#: fas/group.py:513
+#: fas/group.py:542
 #, python-format
 msgid "You cannot remove '%(user)s' from '%(group)s'."
 msgstr "Не можете уклонити „%(user)s“ из „%(group)s“."
 
-#: fas/group.py:521
+#: fas/group.py:550
 #, python-format
 msgid "%(user)s could not be removed from %(group)s: %(error)s"
 msgstr "%(user)s не може бити уклоњен %(group)s: %(error)s"
 
-#: fas/group.py:538
+#: fas/group.py:554
+#, python-format
+msgid "Your Fedora '%s' membership has been removed"
+msgstr ""
+
+#: fas/group.py:555
+#, python-format
+msgid ""
+"\n"
+"%(user)s <%(email)s> has removed you from the '%(group)s'\n"
+"group of the Fedora Accounts System This change is effective\n"
+"immediately for new operations, and should propagate into the e-mail\n"
+"aliases within an hour.\n"
+msgstr ""
+
+#: fas/group.py:567
 #, python-format
 msgid "%(name)s has been removed from %(group)s"
 msgstr "%(name)s је уклоњен из %(group)s"
 
-#: fas/group.py:556
+#: fas/group.py:584
 #, python-format
 msgid "You cannot upgrade '%s'"
 msgstr "Не можете унапредити „%s“"
 
-#: fas/group.py:563
+#: fas/group.py:591
 #, python-format
 msgid "%(name)s could not be upgraded in %(group)s: %(error)s"
 msgstr "%(name)s не може бити унапређен у %(group)s: %(error)s"
 
-#: fas/group.py:585
+#: fas/group.py:595
+#, python-format
+msgid "Your Fedora '%s' membership has been upgraded"
+msgstr ""
+
+#: fas/group.py:601
+#, python-format
+msgid ""
+"\n"
+"%(user)s <%(email)s> has upgraded you to %(status)s status in the\n"
+"'%(group)s' group of the Fedora Accounts System This change is\n"
+"effective immediately for new operations, and should propagate\n"
+"into the e-mail aliases within an hour.\n"
+msgstr ""
+
+#: fas/group.py:613
 #, python-format
 msgid "%s has been upgraded!"
 msgstr "%s је унапређен!"
 
-#: fas/group.py:601
+#: fas/group.py:629
 #, python-format
 msgid "You cannot downgrade '%s'"
 msgstr "Не можете превести у нижу категорију „%s“"
 
-#: fas/group.py:608
+#: fas/group.py:636
 #, python-format
 msgid "%(name)s could not be downgraded in %(group)s: %(error)s"
 msgstr "%(name)s не може бити преведен у нижу категорију %(group)s: %(error)s"
 
-#: fas/group.py:629
+#: fas/group.py:640
+#, python-format
+msgid "Your Fedora '%s' membership has been downgraded"
+msgstr ""
+
+#: fas/group.py:645
+#, python-format
+msgid ""
+"\n"
+"%(user)s <%(email)s> has downgraded you to %(status)s status in the\n"
+"'%(group)s' group of the Fedora Accounts System This change is\n"
+"effective immediately for new operations, and should propagate\n"
+"into the e-mail aliases within an hour.\n"
+msgstr ""
+
+#: fas/group.py:657
 #, python-format
 msgid "%s has been downgraded!"
 msgstr "%s је преведен у нижу категорију!"
 
-#: fas/group.py:699
+#: fas/group.py:732
 msgid "Come join The Fedora Project!"
 msgstr "Дођи и придружи се Fedora пројекту!"
 
-#: fas/group.py:700
-#, fuzzy, python-format
+#: fas/group.py:733
+#, python-format
 msgid ""
 "\n"
 "%(user)s <%(email)s> has invited you to join the Fedora\n"
@@ -295,53 +375,34 @@ msgid ""
 "\n"
 "Fedora and FOSS are changing the world -- come be a part of it!"
 msgstr ""
-"\n"
-"%(name)s <%(email)s> Вас је позвао да се придружите Fedora\n"
-"пројекту!  Ми смо заједница корисника и програмера који производе\n"
-"целокупан оперативни систем од потпуно слободног софтвера отвореног кода\n"
-"(FOSS).  %(name)s сматра да Ви имате знање и вештине\n"
-"које би Вам помогле да се добро уклопите у Fedora заједницу, и да би Ви "
-"можда\n"
-"били заинтересовани да учествујете.\n"
-"\n"
-"Како би Ви могли да се спојите са Fedora заједницом да користите и развијате "
-"ваше\n"
-"вештине?  Погледајте на http://fedoraproject.org/join-fedora за неке идеје.\n"
-"Наша заједница је више од групе софтверских програмера -- ми такође имамо\n"
-"место за вас, било да сте ви уметник, веб дизајнер, писац, или\n"
-"особа која воли да се дружи.  Рашћете и учити док радите у тиму са другим\n"
-"веома паметним и талентованим људима.\n"
-"\n"
-"Fedora и FOSS мењају свет -- дођи и буди део тога!"
 
-#: fas/group.py:720
+#: fas/group.py:753
 #, python-format
 msgid "Message sent to: %s"
 msgstr "Порука је послата на: %s"
 
-#: fas/group.py:723
+#: fas/group.py:756
 #, python-format
 msgid "You are not in the '%s' group."
 msgstr "Ви нисте члан „%s“ групе."
 
-#: fas/help.py:26 fas/help.py:76
-#, fuzzy
+#: fas/help.py:26 fas/help.py:77
 msgid "Error"
-msgstr "Грешка!"
+msgstr ""
 
-#: fas/help.py:26 fas/help.py:76
+#: fas/help.py:26 fas/help.py:77
 msgid "<p>We could not find that help item</p>"
 msgstr ""
 
 #: fas/help.py:27
-msgid "Accuracy of CLA Information"
+msgid "Accuracy of FPCA Information"
 msgstr ""
 
 #: fas/help.py:27
 msgid ""
-"<p>The CLA is a legal document.  We need to have accurate information "
-"attached to it just in case we ever need to contact you about a contribution "
-"that you make to the project.  Imagine if we were to get a call from a "
+"<p>The FPCA is a legal document.  We need to have accurate information "
+"attached to it just in case we ever need to contact you about a contribution"
+" that you make to the project.  Imagine if we were to get a call from a "
 "lawyer at some other company claiming that they own the copyright to your "
 "work and we have to tell them we have a right to use it because \"Mickey "
 "Moose\" contributed it to us and we have no telephone number to contact "
@@ -365,56 +426,54 @@ msgstr ""
 
 #: fas/help.py:29
 msgid ""
-"<p>This email address should be your prefered email contact and will be used "
-"to send various official emails to.  This is also where your @fedoraproject."
-"org email will get forwarded</p>"
+"<p>This email address should be your prefered email contact and will be used"
+" to send various official emails to.  This is also where your "
+"@fedoraproject.org email will get forwarded</p>"
 msgstr ""
 
 #: fas/help.py:30
-#, fuzzy
 msgid "Full Name (Required)"
-msgstr "Пуно име:"
+msgstr ""
 
 #: fas/help.py:30
 msgid "<p>Your Human Name or \"real life\" name</p>"
 msgstr ""
 
-#: fas/help.py:31 fas/templates/user/edit.html:99
-#, fuzzy
+#: fas/help.py:31 fas/templates/user/edit.html:100
 msgid "GPG Key ID"
-msgstr "PGP кључ"
+msgstr ""
 
 #: fas/help.py:31
 msgid ""
 "<p>A GPG key is generally used to prove that a message or email came from "
-"you or to encrypt information so that only the recipients can read it.  This "
-"can be used when a password reset is sent to your email.</p>"
+"you or to encrypt information so that only the recipients can read it.  This"
+" can be used when a password reset is sent to your email.</p>"
 msgstr ""
 
 #: fas/help.py:32
-#, fuzzy
 msgid "Telephone"
-msgstr "Телефонски број"
+msgstr ""
 
 #: fas/help.py:32 fas/help.py:40
 msgid ""
-"<p>Required in order to complete the <a href=\"http://fedoraproject.org/wiki/"
-"Legal/Licenses/CLA\">CLA</a>.  Sometimes during a time of emergency someone "
-"from the Fedora Project may need to contact you.  For more information see "
-"our <a href=\"http://fedoraproject.org/wiki/Legal/PrivacyPolicy\">Privacy "
+"<p>Required in order to complete the <a "
+"href=\"http://fedoraproject.org/wiki/Legal:Fedora_Project_Contributor_Agreement\">FPCA</a>."
+"  Sometimes during a time of emergency someone from the Fedora Project may "
+"need to contact you.  For more information see our <a "
+"href=\"http://fedoraproject.org/wiki/Legal/PrivacyPolicy\">Privacy "
 "Policy</a></p>"
 msgstr ""
 
-#: fas/help.py:33 fas/templates/cla/index.html:50
-#: fas/templates/user/edit.html:50
+#: fas/help.py:33 fas/templates/fpca/index.html:47
+#: fas/templates/user/edit.html:51
 msgid "Postal Address"
 msgstr "Поштанска адреса"
 
 #: fas/help.py:33
 msgid ""
 "<p>This should be a mailing address where you can be contacted.  See our <a "
-"href=\"http://fedoraproject.org/wiki/Legal/PrivacyPolicy\">Privacy Policy</"
-"a> about any concerns.</p>"
+"href=\"http://fedoraproject.org/wiki/Legal/PrivacyPolicy\">Privacy "
+"Policy</a> about any concerns.</p>"
 msgstr ""
 
 #: fas/help.py:34
@@ -439,39 +498,40 @@ msgstr "Стање налога"
 
 #: fas/help.py:36
 msgid ""
-"<p>Shows account status, possible values include<ul><li>active</"
-"li><li>vacation</li><li>inactive</li></ul></p>"
+"<p>Shows account status, possible values "
+"include<ul><li>active</li><li>inactive</li></ul></p>"
 msgstr ""
 
 #: fas/help.py:37
-#, fuzzy
-msgid "CLA"
-msgstr "CLA:"
+msgid "FPCA"
+msgstr ""
 
 #: fas/help.py:37
 msgid ""
 "<p>In order to become a full Fedora contributor you must complete the <a "
-"href=\"http://fedoraproject.org/wiki/Legal/Licenses/CLA\">Contributor "
-"License Agreement</a>.  This license is a legal agreement between you and "
-"Red Hat.  Full status allows people to contribute content and code and is "
-"recommended for anyone interested in getting involved in the Fedora Project."
-"</p>"
+"href=\"http://fedoraproject.org/wiki/Legal:Fedora_Project_Contributor_Agreement\">Fedora"
+" Project Contributor Agreement</a>.  This license is a legal agreement "
+"between you and Red Hat.  Full status allows people to contribute content "
+"and code and is recommended for anyone interested in getting involved in the"
+" Fedora Project.</p>"
 msgstr ""
 
-#: fas/help.py:38 fas/templates/user/edit.html:104
-#, fuzzy
+#: fas/help.py:38 fas/templates/user/edit.html:105
 msgid "Public RSA SSH Key"
-msgstr "Јавни SSH кључ"
+msgstr ""
 
 #: fas/help.py:38
 msgid ""
-"<p>Many resources require public key authentiaction to work.  By uploading "
+"<p>Many resources require public key authentication to work.  By uploading "
 "your public key to us, you can then log in to our servers.  Type \"man ssh-"
-"keygen\" for more information on creating your key (it must be an RSA key).  "
-"Once created you will want to upload ~/.ssh/id_rsa.pub</p>"
+"keygen\" for more information on creating your key (it must be an RSA key)."
+"  Once created you will want to upload ~/.ssh/id_rsa.pub. <br /><br />If you"
+" wish to login through several hosts, each with their own public key, you "
+"can create a concatenated file of public ssh keys and upload it in lieu of "
+"the individual ssh public key.</p>"
 msgstr ""
 
-#: fas/help.py:39 fas/templates/user/edit.html:120
+#: fas/help.py:39 fas/templates/user/edit.html:121
 msgid "Locale"
 msgstr "Локалитет"
 
@@ -491,10 +551,10 @@ msgstr ""
 
 #: fas/help.py:41
 msgid ""
-"<p>Out of special concern for children's privacy, we do not knowingly accept "
-"online personal information from children under the age of 13. We do not "
-"knowingly allow children under the age of 13 to become registered members of "
-"our sites or buy products and services on our sites. We do not knowingly "
+"<p>Out of special concern for children's privacy, we do not knowingly accept"
+" online personal information from children under the age of 13. We do not "
+"knowingly allow children under the age of 13 to become registered members of"
+" our sites or buy products and services on our sites. We do not knowingly "
 "collect or solicit personal information about children under 13.</p>"
 msgstr ""
 
@@ -504,8 +564,8 @@ msgstr ""
 
 #: fas/help.py:42
 msgid ""
-"<p>In accordance with our privacy policy, you can choose to hide some of the "
-"information given on this page from other people.  Please see the privacy "
+"<p>In accordance with our privacy policy, you can choose to hide some of the"
+" information given on this page from other people.  Please see the privacy "
 "policy for complete details.</p>"
 msgstr ""
 
@@ -516,8 +576,8 @@ msgstr "Пријавите се"
 #: fas/help.py:43
 #, python-format
 msgid ""
-"<p>Applying for a group is like applying for a job and it can certainly take "
-"a while to get in.  Many groups have their own rules about how to actually "
+"<p>Applying for a group is like applying for a job and it can certainly take"
+" a while to get in.  Many groups have their own rules about how to actually "
 "get approved or sponsored.  For more information on how the account system "
 "works see the <a href=\"%s\">about page</a>.</p>"
 msgstr ""
@@ -529,8 +589,8 @@ msgstr "Уклони"
 #: fas/help.py:44
 msgid ""
 "<p>Removing a person from a group will cause that user to no longer be in "
-"the group.  They will need to re-apply to get in.  Admins can remove anyone, "
-"Sponsors can remove users, users can't remove anyone.</p>"
+"the group.  They will need to re-apply to get in.  Admins can remove anyone,"
+" Sponsors can remove users, users can't remove anyone.</p>"
 msgstr ""
 
 #: fas/help.py:45 fas/templates/group/member-list.html:50
@@ -539,9 +599,9 @@ msgstr "Унапреди"
 
 #: fas/help.py:45
 msgid ""
-"<p>Upgrade a persons status in this group.<ul><li>from user -> to sponsor</"
-"li><li>From sponsor -> administrator</li><li>administrators cannot be "
-"upgraded beyond administrator</li></ul></p>"
+"<p>Upgrade a persons status in this group.<ul><li>from user -> to "
+"sponsor</li><li>From sponsor -> administrator</li><li>administrators cannot "
+"be upgraded beyond administrator</li></ul></p>"
 msgstr ""
 
 #: fas/help.py:46 fas/templates/group/member-list.html:54
@@ -580,9 +640,8 @@ msgid ""
 msgstr ""
 
 #: fas/help.py:49
-#, fuzzy
 msgid "Add User"
-msgstr "Додај корисника:"
+msgstr ""
 
 #: fas/help.py:49
 msgid ""
@@ -591,9 +650,8 @@ msgid ""
 msgstr ""
 
 #: fas/help.py:50
-#, fuzzy
 msgid "Group Name"
-msgstr "Назив групе:"
+msgstr ""
 
 #: fas/help.py:50
 msgid ""
@@ -602,27 +660,24 @@ msgid ""
 msgstr ""
 
 #: fas/help.py:51
-#, fuzzy
 msgid "Display Name"
-msgstr "Прикажи име:"
+msgstr ""
 
 #: fas/help.py:51
 msgid "<p>More human readable name of the group</p>"
 msgstr ""
 
 #: fas/help.py:52
-#, fuzzy
 msgid "Group Owner"
-msgstr "Власник групе:"
+msgstr ""
 
 #: fas/help.py:52
 msgid "<p>The name of the owner who will run this group</p>"
 msgstr ""
 
 #: fas/help.py:53 fas/templates/group/list.html:28
-#, fuzzy
 msgid "Group Type"
-msgstr "Врста групе:"
+msgstr ""
 
 #: fas/help.py:53
 msgid ""
@@ -638,9 +693,8 @@ msgstr ""
 
 #: fas/help.py:54
 msgid ""
-"<p>A URL or wiki page for the group (for example, <a href=\"https://"
-"fedoraproject.org/wiki/Infrastructure\">https://fedoraproject.org/wiki/"
-"Infrastructure</a>).</p>"
+"<p>A URL or wiki page for the group (for example, <a "
+"href=\"https://fedoraproject.org/wiki/Infrastructure\">https://fedoraproject.org/wiki/Infrastructure</a>).</p>"
 msgstr ""
 
 #: fas/help.py:55
@@ -659,95 +713,104 @@ msgstr ""
 
 #: fas/help.py:56
 msgid ""
-"<p>A URL for the group's mailing list (for example, <a href=\"http://www."
-"redhat.com/mailman/listinfo/fedora-infrastructure-list\">http://www.redhat."
-"com/mailman/listinfo/fedora-infrastructure-list</a>).</p>"
+"<p>A URL for the group's mailing list (for example, <a "
+"href=\"http://www.redhat.com/mailman/listinfo/fedora-infrastructure-"
+"list\">http://www.redhat.com/mailman/listinfo/fedora-infrastructure-"
+"list</a>).</p>"
 msgstr ""
 
 #: fas/help.py:57
+msgid "Invite Only"
+msgstr ""
+
+#: fas/help.py:57
+msgid ""
+"<p>If users should not normally be able to apply to the group, setting this "
+"will hide the usual \"Apply!\" links and buttons.  Users can still be added "
+"to a group directly by an admin or sponsor.</p>"
+msgstr ""
+
+#: fas/help.py:58
 msgid "Group IRC Channel (Optional)"
 msgstr ""
 
-#: fas/help.py:57
+#: fas/help.py:58
 msgid "<p>An IRC channel for the group (for example, #fedora-admin).</p>"
 msgstr ""
 
-#: fas/help.py:58
+#: fas/help.py:59
 msgid "Group IRC Network (Optional)"
 msgstr ""
 
-#: fas/help.py:58
+#: fas/help.py:59
 msgid ""
 "<p>The IRC Network for the group's IRC channel (for example, Freenode).</p>"
 msgstr ""
 
-#: fas/help.py:59
-#, fuzzy
+#: fas/help.py:60
 msgid "Needs Sponsor"
-msgstr "Потребан спонзор:"
+msgstr ""
 
-#: fas/help.py:59
+#: fas/help.py:60
 msgid ""
 "<p>If your group requires sponsorship (recommended), this means that when a "
-"user is approved by a sponsor.  That relationship is recorded in the account "
-"system.  If user A sponsors user N, then in viewing the members of this "
+"user is approved by a sponsor.  That relationship is recorded in the account"
+" system.  If user A sponsors user N, then in viewing the members of this "
 "group, people will know to contact user A about user N if something goes "
 "wrong.  If this box is unchecked, this means that only approval is needed "
 "and no relationship is recorded about who did the approving</p>"
 msgstr ""
 
-#: fas/help.py:60
-#, fuzzy
+#: fas/help.py:61
 msgid "Self Removal"
-msgstr "Само уклањање:"
-
-#: fas/help.py:60
-msgid ""
-"<p>Should users be able to remove themselves from this group without "
-"sponsor / admin intervention?  (recommended yes)</p>"
 msgstr ""
 
 #: fas/help.py:61
-#, fuzzy
-msgid "Must Belong To"
-msgstr "Мора припадати:"
+msgid ""
+"<p>Should users be able to remove themselves from this group without sponsor"
+" / admin intervention?  (recommended yes)</p>"
+msgstr ""
 
-#: fas/help.py:61
+#: fas/help.py:62
+msgid "Must Belong To"
+msgstr ""
+
+#: fas/help.py:62
+#, python-format
 msgid ""
 "<p>Before a user can join this group, they must belong to the group listed "
-"in this box.  Recommended values are for the 'cla_done' group.</p>"
+"in this box.  Recommended values are for the '%s' group.</p>"
 msgstr ""
 
-#: fas/help.py:62
-#, fuzzy
+#: fas/help.py:63
 msgid "Join Message"
-msgstr "Приступна порука:"
+msgstr ""
 
-#: fas/help.py:62
+#: fas/help.py:63
 msgid ""
 "<p>This message will go out to users when they apply to the group.  It "
 "should be informative and offer tips about what to do next.  A description "
 "of the group would also be valuable here</p>"
 msgstr ""
 
-#: fas/help.py:63
+#: fas/help.py:64
 msgid "Client Side Cert"
 msgstr ""
 
-#: fas/help.py:63
+#: fas/help.py:64
 msgid ""
-"<p>The client side cert is generally used to grant access to upload packages "
-"to Fedora or for other authentication purposes like with koji.  You should "
+"<p>The client side cert is generally used to grant access to upload packages"
+" to Fedora or for other authentication purposes like with koji.  You should "
 "save this certificate to ~/.fedora.cert.  If you are not a package "
 "maintainer there is no need to worry about the client side cert.  Please "
 "note that whenever a new cert is generated, all old ones are revoked.</p>"
 msgstr ""
 
-#: fas/help.py:64
+#: fas/help.py:65
 msgid "Longitude and Latitude"
 msgstr ""
 
-#: fas/help.py:64
+#: fas/help.py:65
 msgid ""
 "<p>Your longitude and latitude.  This optional field should be entered as a "
 "floating point number.  For instance, 312.333 or -21.2.  This may be used "
@@ -755,11 +818,11 @@ msgid ""
 "your account.</p>"
 msgstr ""
 
-#: fas/help.py:65
+#: fas/help.py:66
 msgid "Rules for Application"
 msgstr ""
 
-#: fas/help.py:65
+#: fas/help.py:66
 msgid ""
 "<p>Rules or steps that applicants should follow before appliying to your "
 "group.  This will be shown to users before they apply to your group.</p>"
@@ -775,42 +838,61 @@ msgid ""
 "the OpenID consumer."
 msgstr ""
 
-#: fas/safasprovider.py:262
+#: fas/safasprovider.py:304
 #, python-format
 msgid "Loading: %(visitmod)s"
 msgstr "Учитавам: %(visitmod)s"
 
-#: fas/user.py:231
+#: fas/sidebar.py:23
+msgid "New Group"
+msgstr ""
+
+#: fas/sidebar.py:24
+msgid "User List"
+msgstr ""
+
+#: fas/sidebar.py:26
+msgid "Group List"
+msgstr ""
+
+#: fas/sidebar.py:27
+msgid "Join a Group"
+msgstr ""
+
+#: fas/user.py:80
+msgid "Solve the math problem"
+msgstr ""
+
+#: fas/user.py:249
 #, python-format
 msgid "You cannot edit %s"
 msgstr "Не можете уређивати %s"
 
-#: fas/user.py:255
+#: fas/user.py:312
 #, python-format
 msgid "You do not have permission to edit '%s'"
 msgstr "Немате дозволу да уређујете „%s“"
 
-#: fas/user.py:262
-#, fuzzy
-msgid "Only administrator can enable or disable an account."
-msgstr "Једино FAS администратори могу да праве групе."
+#: fas/user.py:321
+msgid "Only admin can enable or disable an account."
+msgstr ""
 
-#: fas/user.py:283
+#: fas/user.py:346
 msgid "Somebody is already using that email address."
 msgstr ""
 
-#: fas/user.py:286
+#: fas/user.py:351
 msgid ""
-"Before your new email takes effect, you must confirm it.  You should receive "
-"an email with instructions shortly."
+"Before your new email takes effect, you must confirm it.  You should receive"
+" an email with instructions shortly."
 msgstr ""
 
-#: fas/user.py:290
+#: fas/user.py:358
 #, python-format
 msgid "Email Change Requested for %s"
 msgstr ""
 
-#: fas/user.py:291
+#: fas/user.py:360
 #, python-format
 msgid ""
 "\n"
@@ -819,58 +901,83 @@ msgid ""
 "ownership of this email by visiting the following URL (you will need to\n"
 "login with your Fedora account first):\n"
 "\n"
-"https://admin.fedoraproject.org/accounts/user/verifyemail/%s\n"
+"%(verifyurl)s/accounts/user/verifyemail/%(token)s\n"
 msgstr ""
 
-#: fas/user.py:316
+#: fas/user.py:385
 #, python-format
 msgid "Your account details could not be saved: %s"
 msgstr "Детаљи Вашег налога не могу бити сачувани: %s"
 
-#: fas/user.py:320
-#, fuzzy, python-format
+#: fas/user.py:390
+#, python-format
 msgid "Fedora Account Data Update %s"
-msgstr "Fedora систем налога"
+msgstr ""
 
-#: fas/user.py:352
+#: fas/user.py:392
+#, python-format
+msgid ""
+"\n"
+"You have just updated information about your account.  If you did not request\n"
+"these changes please contact admin@fedoraproject.org and let them know.  Your\n"
+"updated information is:\n"
+"\n"
+"  username:       %(username)s\n"
+"  ircnick:        %(ircnick)s\n"
+"  telephone:      %(telephone)s\n"
+"  locale:         %(locale)s\n"
+"  postal_address: %(postal_address)s\n"
+"  timezone:       %(timezone)s\n"
+"  country code:   %(country_code)s\n"
+"  latitude:       %(latitude)s\n"
+"  longitude:      %(longitude)s\n"
+"  privacy flag:   %(privacy)s\n"
+"  ssh_key:        %(ssh_key)s\n"
+"  gpg_keyid:      %(gpg_keyid)s\n"
+"\n"
+"If the above information is incorrect, please log in and fix it:\n"
+"\n"
+"   %(editurl)s/accounts/user/edit/%(username)s\n"
+msgstr ""
+
+#: fas/user.py:427
 msgid "Your account details have been saved."
 msgstr "Детаљи Вашег налога су сачувани."
 
-#: fas/user.py:466
+#: fas/user.py:672
 #, python-format
 msgid "Invalid field specified: %(error)s"
 msgstr ""
 
-#: fas/user.py:480
+#: fas/user.py:686
 #, python-format
 msgid "No users found matching '%s'"
 msgstr "Није пронађен ни један корисник који се поклапа са „%s“"
 
-#: fas/user.py:522
+#: fas/user.py:734
 msgid ""
-"Your pending email change has been canceled.  The email change token has "
+"Your pending email change has been canceled.   The email change token has "
 "been invalidated."
 msgstr ""
 
-#: fas/user.py:526 fas/user.py:543
-#, fuzzy
+#: fas/user.py:739 fas/user.py:761
 msgid "You do not have any pending email changes."
-msgstr "Немате дозволу да уређујете „%s“"
+msgstr ""
 
-#: fas/user.py:530 fas/user.py:547
+#: fas/user.py:743 fas/user.py:765
 msgid "Invalid email change token."
 msgstr ""
 
-#: fas/user.py:556
-#, fuzzy, python-format
+#: fas/user.py:775
+#, python-format
 msgid "You have successfully changed your email to '%s'"
-msgstr "Успешно сте се одјавили."
+msgstr ""
 
-#: fas/user.py:565
+#: fas/user.py:790
 msgid "No need to sign up, you have an account!"
 msgstr "Нема потребе да се региструјете, Ви имате налог!"
 
-#: fas/user.py:581 fas/user.py:607
+#: fas/user.py:819 fas/user.py:873
 msgid ""
 "We're sorry but out of special concern for children's privacy, we do not "
 "knowingly accept online personal information from children under the age of "
@@ -880,18 +987,22 @@ msgid ""
 "under 13."
 msgstr ""
 
-#: fas/user.py:587 fas/user.py:611
+#: fas/user.py:831 fas/user.py:884
 msgid ""
 "Sorry.  That email address is already in use. Perhaps you forgot your "
 "password?"
 msgstr ""
 
-#: fas/user.py:594
+#: fas/user.py:837
+msgid "Sorry.  Email addresses do not match"
+msgstr ""
+
+#: fas/user.py:844
 #, python-format
 msgid "Your account could not be created.  Please contact %s for assistance."
 msgstr ""
 
-#: fas/user.py:599
+#: fas/user.py:851
 msgid ""
 "Your password has been emailed to you.  Please log in with it and change "
 "your password"
@@ -899,12 +1010,12 @@ msgstr ""
 "Ваша лозинка вам је послата електронском поштом. Молим Вас да се пријавите "
 "помоћу ње и промените вашу лозинку"
 
-#: fas/user.py:625
+#: fas/user.py:899
 msgid "Welcome to the Fedora Project!"
 msgstr "Добро дошли у Fedora пројекат!"
 
-#: fas/user.py:625
-#, fuzzy, python-format
+#: fas/user.py:899
+#, python-format
 msgid ""
 "\n"
 "You have created a new Fedora account!\n"
@@ -925,7 +1036,7 @@ msgid ""
 "Fedora, you can visit our join page which provides more information\n"
 "about all the different roles we have available.\n"
 "\n"
-"http://fedoraproject.org/en/join-fedora\n"
+"http://join.fedoraproject.org/\n"
 "\n"
 "If you already know how you want to contribute to Fedora, and have\n"
 "found the group already working in the area you're interested in, then\n"
@@ -946,165 +1057,169 @@ msgid ""
 "And finally, from all of us here at the Fedora Project, we're looking\n"
 "forward to working with you!\n"
 msgstr ""
-"\n"
-"Направили сте нови Fedora налог!\n"
-"Ваша нова лозинка је: %s\n"
-"\n"
-"Молим вас да посетите https://admin.fedoraproject.org/fas/user/changepass\n"
-"да је промените.\n"
-"\n"
-"Добро дошли на Fedora пројекат. Сада када сте се пријавили за\n"
-"налог, вероватно једва чекате да започнете рад, и са таквим\n"
-"ставом ми се надамо да ће вас ова електронска порука водити у правом смеру "
-"да\n"
-"овај процес учините што једноставнијим.\n"
-"\n"
-"Fedora је узбудљив пројекат са доста дешавања, и Ви можете\n"
-"допринети на велики број начина, коришћењем свих врста различитих\n"
-"скупова вештина. Да бисте сазнали више о различитим начинима да допринесете\n"
-"Fedora-и, можете посетити нашу страну која нуди више информација\n"
-"о свим различитим улогама које су доступне.\n"
-"\n"
-"http://fedoraproject.org/en/join-fedora\n"
-"\n"
-"Ако већ знате како желите да допринесете Fedora-и, и пронашли\n"
-"сте групу која већ ради у области која вас интересује, онда\n"
-"за вас постоји још пар корака да кренете.\n"
-"\n"
-"Најважнији међу њима је да се пријавите на дописну листу пројекта\n"
-"за који сте заинтересовани - и ако сте заинтересовани за рад са више\n"
-"од једне групе, будите слободни да се пријавите на колико год хоћете \n"
-"дописних листа! Ово је због тога што су дописне листе место где се велики "
-"део посла\n"
-"организује и додељују се задаци, па да би остали у току будите сигурни\n"
-"да наставите са порукама.\n"
-"\n"
-"Када ово завршите, вероватно је мудро послати кратак увод\n"
-"на листу да се има у виду ваше искуство и то како би волели\n"
-"да помогнете. Одавде, тренутни чланови тима ће Вам помоћи да се\n"
-"снађете као неко ко доприноси развоју Fedora-е.\n"
-"\n"
-"И коначно, од свих нас овде у Fedora пројекту, унапред\n"
-"прижељкујемо рад са Вама!\n"
 
-#: fas/user.py:702
+#: fas/user.py:965
+msgid "passwords did not match"
+msgstr ""
+
+#: fas/user.py:972
+msgid "Your current password did not match"
+msgstr ""
+
+#: fas/user.py:976
+msgid "Your new password cannot be the same as your old one."
+msgstr ""
+
+#: fas/user.py:991
 msgid "Your password could not be changed."
 msgstr "Ваша лозинка не може бити промењена."
 
-#: fas/user.py:705
+#: fas/user.py:994
 msgid "Your password has been changed."
 msgstr "Ваша лозинка је промењена."
 
-#: fas/user.py:712
+#: fas/user.py:1005
 msgid "You are already logged in!"
 msgstr "Ви сте се већ пријавили!"
 
-#: fas/user.py:720
+#: fas/user.py:1019
 msgid "You are already logged in."
 msgstr "Ви сте се већ пријавили."
 
-#: fas/user.py:726
+#: fas/user.py:1025
 msgid "Username email combo does not exist!"
 msgstr "Комбинација корисничког имена и електронске поште не постоји!"
 
-#: fas/user.py:730
+#: fas/user.py:1029
 msgid "username + email combo unknown."
 msgstr "комбинација корисничко име + електронска пошта је непозната."
 
-#: fas/user.py:733 fas/user.py:801 fas/user.py:827
+#: fas/user.py:1032 fas/user.py:1125 fas/user.py:1173
 #, python-format
 msgid ""
 "Your account currently has status %(status)s.  For more information, please "
 "contact %(admin_email)s"
 msgstr ""
 
-#: fas/user.py:737
+#: fas/user.py:1039
 #, python-format
 msgid ""
-"System accounts cannot have their passwords reset online.  Please contact %"
-"(admin_email)s to have it reset"
+"System accounts cannot have their passwords reset online.  Please contact "
+"%(admin_email)s to have it reset"
 msgstr ""
 
-#: fas/user.py:748
+#: fas/user.py:1043
+msgid "Warning: attempted reset of system account"
+msgstr ""
+
+#: fas/user.py:1044
+#, python-format
+msgid ""
+"\n"
+"Warning: Someone attempted to reset the password for system account\n"
+"%(account)s via the web interface.\n"
+msgstr ""
+
+#: fas/user.py:1053
 #, python-format
 msgid ""
 "\n"
 "Somebody (hopefully you) has requested a password reset for your account!\n"
 "To change your password (or to cancel the request), please visit\n"
-"https://admin.fedoraproject.org/accounts/user/verifypass/%(user)s/%(token)s\n"
+"\n"
+"%(verifyurl)s/accounts/user/verifypass/%(user)s/%(token)s\n"
 msgstr ""
 
-#: fas/user.py:760
+#: fas/user.py:1067
 msgid ""
 "This user does not have a GPG Key ID set, so an encrypted email cannot be "
 "sent."
 msgstr ""
 
-#: fas/user.py:764
+#: fas/user.py:1073
 msgid "Your key could not be retrieved from subkeys.pgp.net"
 msgstr "Ваш кључ не може бити учитан са subkeys.pgp.net"
 
-#: fas/user.py:786
-#, fuzzy
+#: fas/user.py:1100
 msgid "Your password reset email could not be encrypted."
-msgstr "Ваша лозинка не може бити промењена."
+msgstr ""
 
-#: fas/user.py:788
+#: fas/user.py:1103
 msgid "Fedora Project Password Reset"
 msgstr "Враћање лозинке Fedora пројекта у почетно стање"
 
-#: fas/user.py:791
-#, fuzzy
+#: fas/user.py:1107
 msgid "A password reset URL has been emailed to you."
-msgstr "Ваша лозинка вам је послата на електронску пошту."
-
-#: fas/user.py:805 fas/user.py:832
-msgid "You do not have any pending password changes."
 msgstr ""
 
-#: fas/user.py:809 fas/user.py:838
+#: fas/user.py:1131
+msgid "You don't have any pending password changes."
+msgstr ""
+
+#: fas/user.py:1135 fas/user.py:1187
 msgid "Invalid password change token."
 msgstr ""
 
-#: fas/user.py:815
-#, fuzzy
+#: fas/user.py:1143
 msgid ""
 "Your password reset has been canceled.  The password change token has been "
 "invalidated."
 msgstr ""
-"Ваша електронска пошта за враћање лозинке у првобитно стање није заштићена.  "
-"Ваша лозинка није промењена."
 
-#: fas/user.py:848
-#, fuzzy
+#: fas/user.py:1169
+msgid "Both passwords must match"
+msgstr ""
+
+#: fas/user.py:1181
+msgid "You do not have any pending password changes."
+msgstr ""
+
+#: fas/user.py:1201
 msgid "Your password can not be the same as your old password."
-msgstr "Ваша лозинка не може бити промењена."
+msgstr ""
 
-#: fas/user.py:862
+#: fas/user.py:1217
 msgid ""
 "You have successfully reset your password.  You should now be able to login "
 "below."
 msgstr ""
 
-#: fas/user.py:886
-#, fuzzy
-msgid "Before generating a certificate, you must first complete the CLA."
-msgstr "Пре генерисања потврде, морате прво потписати CLA."
+#: fas/user.py:1252
+msgid "Before generating a certificate, you must first complete the FPCA."
+msgstr ""
 
-#: fas/user.py:955
-#, fuzzy
+#: fas/user.py:1322
 msgid "Your certificate could not be generated."
-msgstr "Ваша лозинка не може бити промењена."
+msgstr ""
+
+#: fas/user.py:1328
+#, python-format
+msgid "A new certificate has been generated for %s"
+msgstr ""
+
+#: fas/user.py:1330
+msgid ""
+"\n"
+"You have generated a new SSL certificate.  If you did not request this,\n"
+"please cc admin@fedoraproject.org and let them know.\n"
+"\n"
+"Note that certificates generated prior to the current one have been\n"
+"automatically revoked, and should stop working within the hour.\n"
+msgstr ""
+
+#: fas/user.py:1379
+msgid "Your key has been removed."
+msgstr ""
 
 #: fas/validators.py:52
-#, fuzzy, python-format
+#, python-format
 msgid "The group '%(group)s' does not exist."
-msgstr "Група „%s“ не постоји."
+msgstr ""
 
 #: fas/validators.py:70
-#, fuzzy, python-format
+#, python-format
 msgid "The group '%(group)s' already exists."
-msgstr "Група „%s“ већ постоји."
+msgstr ""
 
 #: fas/validators.py:90
 #, python-format
@@ -1116,19 +1231,19 @@ msgid "Invalid sort key."
 msgstr ""
 
 #: fas/validators.py:118
-#, fuzzy, python-format
+#, python-format
 msgid "'%(user)s' does not exist."
-msgstr "„%s“ не постоји."
+msgstr ""
 
 #: fas/validators.py:136
-#, fuzzy, python-format
+#, python-format
 msgid "Error: Could not create - '%(user)s'"
-msgstr "Грешка: не могу да направим - „%s“"
+msgstr ""
 
 #: fas/validators.py:137
-#, fuzzy, python-format
+#, python-format
 msgid "'%(user)s' already exists."
-msgstr "„%s“ већ постоји."
+msgstr ""
 
 #: fas/validators.py:160
 msgid ""
@@ -1138,15 +1253,15 @@ msgstr ""
 "може бити @fedoraproject.org."
 
 #: fas/validators.py:174
-#, fuzzy, python-format
+#, python-format
 msgid "Error - Not a valid RSA SSH key: %(key)s"
-msgstr "Грешка - није валидан ssh кључ: %s"
+msgstr ""
 
 #: fas/validators.py:198
 #, python-format
 msgid ""
-"'%(username)s' is an illegal username.  A valid username must only contain "
-"lowercase alphanumeric characters, and must start with a letter."
+"'%(username)s' is an illegal username.  A valid username must be ASCII, only"
+" contain lowercase alphanumeric characters, and must start with a letter."
 msgstr ""
 
 #: fas/validators.py:201
@@ -1156,28 +1271,60 @@ msgid ""
 msgstr ""
 
 #: fas/validators.py:219
-#, fuzzy, python-format
+#, python-format
 msgid "The language '%(lang)s' is not available."
-msgstr "Група „%s“ не постоји."
+msgstr ""
 
-#: fas/model/fasmodel.py:184
+#: fas/validators.py:234
+msgid ""
+"Passwords must meet certain strength requirements.  If they have a mix of "
+"symbols, upper and lowercase letters, and digits they must be at least 9 "
+"characters.  If they have a mix of upper and lowercase letters and digits "
+"they must be at least 10 characters.  If they have lowercase letters and "
+"digits, they must be at least 12 characters.  Letters alone need to have at "
+"least 3 different characters and be 20 or more characters in length."
+msgstr ""
+
+#: fas/validators.py:235
+msgid "Malicious hackers read xkcd, you know"
+msgstr ""
+
+#: fas/validators.py:304
+msgid "You must enter your legal name"
+msgstr ""
+
+#: fas/validators.py:305
+msgid ""
+"You must include both your last name and first name.  If your name really "
+"only consists of a single letter, you may check the override checkbox to "
+"submit this name."
+msgstr ""
+
+#: fas/validators.py:306
+msgid ""
+"You must include the full form of your names, not just initials.  If your "
+"fullname really has one letter portions, you may check the override checkbox"
+" to submit this name."
+msgstr ""
+
+#: fas/model/fasmodel.py:186
 msgid "user is already in this group"
 msgstr "корисник је већ члан групе"
 
-#: fas/model/fasmodel.py:197 fas/model/fasmodel.py:212
-#: fas/model/fasmodel.py:268
+#: fas/model/fasmodel.py:199 fas/model/fasmodel.py:214
+#: fas/model/fasmodel.py:270
 msgid "user is not a member"
 msgstr "корисник није члан"
 
-#: fas/model/fasmodel.py:201
+#: fas/model/fasmodel.py:203
 msgid "administrators cannot be upgraded any further"
 msgstr "администратори не могу више да се унапређују"
 
-#: fas/model/fasmodel.py:216
+#: fas/model/fasmodel.py:218
 msgid "users cannot be downgraded any further"
 msgstr "корисници не могу више да се преводе у ниже категорије"
 
-#: fas/model/fasmodel.py:225
+#: fas/model/fasmodel.py:227
 msgid "user is not an unapproved member"
 msgstr "корисник није неодобрен члан"
 
@@ -1191,21 +1338,21 @@ msgstr "FAS - Отворени систем налога"
 
 #: fas/templates/about.html:11
 msgid ""
-"FAS is designed around an open architecture.  Unlike the traditional account "
-"systems where a single admin or group of admins decide who gets to be in "
-"what group, FAS is completely designed to be self operating per team.  Every "
-"group is given at least one administrator who can then approve other people "
-"in the group.  Also, unlike traditional account systems.  FAS allows people "
-"to apply for the groups they want to be in.  This paridigm is interesting as "
-"it allows anyone to find out who is in what groups and contact them.  This "
-"openness is brought over from the same philosophies that make Open Source "
-"popular."
+"FAS is designed around an open architecture.  Unlike the traditional account"
+" systems where a single admin or group of admins decide who gets to be in "
+"what group, FAS is completely designed to be self operating per team.  Every"
+" group is given at least one administrator who can then approve other people"
+" in the group.  Also, unlike traditional account systems.  FAS allows people"
+" to apply for the groups they want to be in.  This paridigm is interesting "
+"as it allows anyone to find out who is in what groups and contact them.  "
+"This openness is brought over from the same philosophies that make Open "
+"Source popular."
 msgstr ""
 "FAS је пројектован око отворене архитектуре.  За разлику од традиционалних "
-"система налога, где један администратор или група администратора одлучује ко "
-"ће бити у којој групи, FAS је потпуно пројектован да тимови сами одлучују. "
-"Свака група има бар једног администратора који може потврдити улазак члана у "
-"групу.  Такође, за разлику од традиционалних система налога, FAS дозвољава "
+"система налога, где један администратор или група администратора одлучује ко"
+" ће бити у којој групи, FAS је потпуно пројектован да тимови сами одлучују. "
+"Свака група има бар једног администратора који може потврдити улазак члана у"
+" групу.  Такође, за разлику од традиционалних система налога, FAS дозвољава "
 "људима да приступе групи у којој желе да буду.  Ова парадигма је "
 "интересантна пошто дозвољава сваком да сазна ко је у којој групи и "
 "контактира га.  Ова отвореност је преузета из исте филозофије због које је "
@@ -1224,17 +1371,17 @@ msgid ""
 "access and ask them if they'd have time to mentor you.  Plan on spending at "
 "least a few days learning about the group, doing a mundane task, "
 "participating on the mailing list.  Sometimes this process can take weeks "
-"depending on the group.  It's best to know you will get sponsored before you "
-"apply."
+"depending on the group.  It's best to know you will get sponsored before you"
+" apply."
 msgstr ""
 "Људи не би требало да помисле да се пријављивањем за групу одмах постаје и "
 "члан групе.  Сматрајте то као пријављивање за посао. Обично треба времена.  "
 "Да би имали највише шансе за пролаз, распитајте се о групи за коју се "
-"пријављујете и упознајте неког из те групе.  Нађите неког са спонзорским или "
-"администраторским налогом и питајте их да ли имају времена да Вас подуче.  "
+"пријављујете и упознајте неког из те групе.  Нађите неког са спонзорским или"
+" администраторским налогом и питајте их да ли имају времена да Вас подуче.  "
 "Планирајте да потрошите бар неколико дана учећи о групи, истражујући и "
-"учествујући на дописној листи.  Некада овај процес може потрајати и неколико "
-"недеља зависно од групе.  Најбоље је знати да ћете имати спонзора пре него "
+"учествујући на дописној листи.  Некада овај процес може потрајати и неколико"
+" недеља зависно од групе.  Најбоље је знати да ћете имати спонзора пре него "
 "што се пријавите."
 
 #: fas/templates/about.html:14
@@ -1242,7 +1389,6 @@ msgid "Users, Sponsors, Administrators"
 msgstr "Корисници, спонзори, администратори"
 
 #: fas/templates/about.html:15
-#, fuzzy
 msgid ""
 "Once you're in the group, you're in the group.  Sponsorship and "
 "Administrators typically have special access in the group in questions.  "
@@ -1253,17 +1399,9 @@ msgid ""
 "sponsors.  They also cannot change administrators in any way.  "
 "Administrators can do anything to anyone in the group."
 msgstr ""
-"Једном када уђете у групу, ви сте у групи.  Спонзори и администратори обично "
-"имају посебан приступ групи у питањима.  Неке групе имају спонзорски ниво "
-"који је више укључен, као нпр. привремени носиоци групе.  Али све док систем "
-"налога постоји разлика је једноставна.  Спонзори могу да прихвате нове "
-"кориснике и поставе нове људе за спонзоре.  Они, међутим, не могу да смање "
-"ниво или избришу друге спонзоре.  Они такође не могу да мењају "
-"администраторе на било који начин. Администратори могу да чине било шта "
-"сваком у групи."
 
 #: fas/templates/error.html:7 fas/templates/home.html:7
-#: fas/templates/cla/index.html:20
+#: fas/templates/fpca/index.html:16
 msgid "Fedora Accounts System"
 msgstr "Fedora систем налога"
 
@@ -1275,32 +1413,29 @@ msgstr "Грешка!"
 msgid "The following error(s) have occured with your request:"
 msgstr "Следећа грешка(е) се догодила на Вашем захтеву:"
 
-#: fas/templates/home.html:11
+#: fas/templates/home.html:13
 msgid "To do queue:"
 msgstr ""
 
-#: fas/templates/home.html:17
-#, fuzzy, python-format
+#: fas/templates/home.html:15
+#, python-format
+msgid ""
+"FPCA not completed.  To become a full Fedora Contributor please <a "
+"href=\"%s\">complete the FPCA</a>."
+msgstr ""
+
+#: fas/templates/home.html:16
+#, python-format
+msgid ""
+"You have not submitted an SSH key, some Fedora resources require an SSH key."
+"  Please submit yours by editing <a href=\"%s\">My Account</a>"
+msgstr ""
+
+#: fas/templates/home.html:22
+#, python-format
 msgid ""
 "<strong><a href=\"%(userview)s\">%(user)s (%(email)s)</a></strong> requests "
 "approval to join <a href=\"%(groupview)s\">%(group)s</a>."
-msgstr ""
-"<strong>%(user)s</strong> захтева одобрење за пријем <a href=\"group/view/%"
-"(group)s\">%(group)s</a>."
-
-#: fas/templates/home.html:29
-#, fuzzy, python-format
-msgid ""
-"CLA not completed.  To become a full Fedora Contributor please <a href=\"%s"
-"\">complete the CLA</a>."
-msgstr ""
-"CLA није потписан.  Да бисте постали пуноправни Fedora доприносилац молим "
-
-#: fas/templates/home.html:30
-#, python-format
-msgid ""
-"You have not submitted an SSH key, some Fedora resources require an SSH "
-"key.  Please submit yours by editing <a href=\"%s\">My Account</a>"
 msgstr ""
 
 #: fas/templates/home.html:32
@@ -1360,9 +1495,8 @@ msgid "News"
 msgstr "Вести"
 
 #: fas/templates/master.html:69
-#, fuzzy
 msgid "Locale:"
-msgstr "Локалитет"
+msgstr ""
 
 #: fas/templates/master.html:73
 msgid "OK"
@@ -1380,38 +1514,31 @@ msgstr "Контактирајте нас"
 msgid "Legal & Privacy"
 msgstr "Права и приватност"
 
-#: fas/templates/master.html:89
-msgid "Log Out"
-msgstr "Одјава"
-
-#: fas/templates/master.html:92
+#: fas/templates/master.html:91
 #, python-format
 msgid "FAS version %s"
 msgstr ""
 
-#: fas/templates/master.html:95
-#, fuzzy
+#: fas/templates/master.html:94
+#, python-format
 msgid ""
-"© 2009 Red Hat, Inc. and others.  Please send any comments or corrections to "
-"the <a href=\"mailto:webmaster@fedoraproject.org\">websites team</a>."
+"© 2011 Red Hat, Inc.  Please send any comments or corrections to the <a "
+"href=\"mailto:%(webmaster)s\">websites team</a>."
 msgstr ""
-"Ауторска права 2007 Red Hat, Inc. и други.  Сва права задржана.  Молим Вас "
-"да пошаљете сваки коментар или исправку на <a href=\"mailto:"
-"webmaster@fedoraproject.org\">веб адресу тима</a>."
 
-#: fas/templates/master.html:98
+#: fas/templates/master.html:97
 msgid ""
 "The Fedora Project is maintained and driven by the community and sponsored "
 "by Red Hat.  This is a community maintained site.  Red Hat is not "
 "responsible for content."
 msgstr ""
 "Fedora пројекат је успостављен и вођен од стране заједнице и спонзорисан од "
-"стране Red Hat-а.  Овај сајт је направила заједница.  Red Hat није одговоран "
-"за садржај на њему."
+"стране Red Hat-а.  Овај сајт је направила заједница.  Red Hat није одговоран"
+" за садржај на њему."
 
 #: fas/templates/search-box.html:8
-msgid "\"*\" is a wildcard (Ex: \"cvs*\")"
-msgstr "„*“ је џокер (нпр.: „cvs*“)"
+msgid "\"*\" is a wildcard (Ex: \"git*\")"
+msgstr ""
 
 #: fas/templates/search-box.html:11
 msgid "Search"
@@ -1427,9 +1554,8 @@ msgid "All"
 msgstr "Све"
 
 #: fas/templates/search-box.html:21
-#, fuzzy
 msgid "Types"
-msgstr "Врста:"
+msgstr ""
 
 #: fas/templates/welcome.html:7
 msgid "Welcome to FAS2"
@@ -1437,9 +1563,9 @@ msgstr "Добро дошли у FAS2"
 
 #: fas/templates/welcome.html:18
 msgid ""
-"Welcome to the Fedora Accounts System 2.  Please submit bugs to <a href="
-"\"https://fedorahosted.org/fas/\">https://fedorahosted.org/fas/</a> or stop "
-"by #fedora-admin on irc.freenode.net."
+"Welcome to the Fedora Accounts System.  Please submit bugs to <a "
+"href=\"https://fedorahosted.org/fas/\">https://fedorahosted.org/fas/</a> or "
+"stop by #fedora-admin on irc.freenode.net."
 msgstr ""
 
 #: fas/templates/welcome.html:21
@@ -1447,71 +1573,76 @@ msgid "Log In"
 msgstr "Пријава"
 
 #: fas/templates/welcome.html:22
+msgid "Forgot Password?"
+msgstr ""
+
+#: fas/templates/welcome.html:23
 msgid "New Account"
 msgstr "Нови налог"
 
-#: fas/templates/welcome.html:23
+#: fas/templates/welcome.html:24
 msgid "Why Join?"
 msgstr "Зашто приступити?"
 
-#: fas/templates/cla/index.html:23
-msgid "Fedora Contributor License Agreement"
-msgstr "Лиценцни договор Fedora сарадника"
+#: fas/templates/fpca/index.html:19
+msgid "Fedora Project Contributor Agreement"
+msgstr ""
 
-#: fas/templates/cla/index.html:24 fas/templates/cla/index.html:27
+#: fas/templates/fpca/index.html:20 fas/templates/fpca/index.html:23
 #, python-format
 msgid "<a href=\"%(url)s\">Text Version</a>"
 msgstr ""
 
-#: fas/templates/cla/index.html:30
-#, fuzzy
-msgid "You have already successfully completed the CLA."
-msgstr "Већ сте успешно потписали <a href=\"%s\">CLA</a>."
+#: fas/templates/fpca/index.html:27
+msgid "You have already successfully completed the FPCA."
+msgstr ""
 
-#: fas/templates/cla/index.html:40 fas/templates/user/edit.html:26
-#, fuzzy
+#: fas/templates/fpca/index.html:37 fas/templates/user/edit.html:27
 msgid "Full Name"
-msgstr "Пуно име:"
+msgstr ""
 
-#: fas/templates/cla/index.html:45 fas/templates/user/edit.html:45
+#: fas/templates/fpca/index.html:42 fas/templates/user/edit.html:46
 msgid "Telephone Number"
 msgstr "Телефонски број"
 
-#: fas/templates/cla/index.html:55 fas/templates/user/edit.html:55
+#: fas/templates/fpca/index.html:52 fas/templates/user/edit.html:56
 msgid "Country"
 msgstr ""
 
-#: fas/templates/cla/index.html:57 fas/templates/user/edit.html:57
+#: fas/templates/fpca/index.html:54 fas/templates/user/edit.html:58
 msgid "Select Country"
 msgstr ""
 
-#: fas/templates/cla/index.html:65 fas/templates/user/edit.html:65
+#: fas/templates/fpca/index.html:62 fas/templates/user/edit.html:66
 msgid "If your country is not listed, select \"Other\""
 msgstr ""
 
-#: fas/templates/cla/index.html:68
+#: fas/templates/fpca/index.html:65
 msgid ""
 "I certify that the above information (my name, country, and phone number) "
 "are accurate to the best of my knowledge."
 msgstr ""
 
-#: fas/templates/cla/index.html:71
+#: fas/templates/fpca/index.html:68
 msgid "I agree"
 msgstr ""
 
-#: fas/templates/cla/index.html:72
+#: fas/templates/fpca/index.html:69
 msgid "I do not agree"
 msgstr ""
 
 #: fas/templates/group/apply.html:8
-#, fuzzy
 msgid "Apply to Group"
-msgstr "Пријавите се за нову групу"
+msgstr ""
 
 #: fas/templates/group/apply.html:18
-#, fuzzy
 msgid "Group Rules"
-msgstr "Назив групе:"
+msgstr ""
+
+#: fas/templates/group/apply.html:24 fas/templates/group/members.html:31
+#: fas/templates/group/view.html:33
+msgid "Apply!"
+msgstr ""
 
 #: fas/templates/group/edit.html:7
 msgid "Edit Group"
@@ -1530,11 +1661,11 @@ msgstr "Прикажи име:"
 msgid "Group Type:"
 msgstr "Врста групе:"
 
-#: fas/templates/group/edit.html:23 fas/templates/group/view.html:47
+#: fas/templates/group/edit.html:23 fas/templates/group/view.html:54
 msgid "URL:"
 msgstr ""
 
-#: fas/templates/group/edit.html:28 fas/templates/group/view.html:51
+#: fas/templates/group/edit.html:28 fas/templates/group/view.html:58
 msgid "Mailing List:"
 msgstr ""
 
@@ -1547,38 +1678,42 @@ msgid "IRC Channel:"
 msgstr ""
 
 #: fas/templates/group/edit.html:43
-#, fuzzy
 msgid "IRC Network:"
-msgstr "IRC надимак:"
+msgstr ""
 
 #: fas/templates/group/edit.html:48 fas/templates/group/new.html:23
 msgid "Group Owner:"
 msgstr "Власник групе:"
 
 #: fas/templates/group/edit.html:53 fas/templates/group/new.html:33
-#: fas/templates/group/view.html:64
+#: fas/templates/group/view.html:71
+msgid "Invite Only:"
+msgstr ""
+
+#: fas/templates/group/edit.html:59 fas/templates/group/new.html:38
+#: fas/templates/group/view.html:75
 msgid "Needs Sponsor:"
 msgstr "Потребан спонзор:"
 
-#: fas/templates/group/edit.html:59 fas/templates/group/new.html:38
-#: fas/templates/group/view.html:68
+#: fas/templates/group/edit.html:65 fas/templates/group/new.html:43
+#: fas/templates/group/view.html:79
 msgid "Self Removal:"
 msgstr "Само уклањање:"
 
-#: fas/templates/group/edit.html:65
+#: fas/templates/group/edit.html:71
 msgid "Group Prerequisite:"
 msgstr "Предуслов групе:"
 
-#: fas/templates/group/edit.html:71
+#: fas/templates/group/edit.html:77
 msgid "Group Join Message:"
 msgstr "Приступна порука групе:"
 
-#: fas/templates/group/edit.html:76 fas/templates/group/new.html:53
-#: fas/templates/group/view.html:42
+#: fas/templates/group/edit.html:82 fas/templates/group/new.html:58
+#: fas/templates/group/view.html:49
 msgid "Rules for Application:"
 msgstr ""
 
-#: fas/templates/group/edit.html:81 fas/templates/user/edit.html:146
+#: fas/templates/group/edit.html:87 fas/templates/user/edit.html:147
 msgid "Save!"
 msgstr "Сачувај!"
 
@@ -1610,6 +1745,14 @@ msgstr "Пошаљи!"
 msgid "Groups List"
 msgstr "Списак група"
 
+#: fas/templates/group/list.html:17
+msgid "Create New Group"
+msgstr ""
+
+#: fas/templates/group/list.html:18
+msgid "Create Group"
+msgstr ""
+
 #: fas/templates/group/list.html:21 fas/templates/user/list.html:10
 #, python-format
 msgid "List (%s)"
@@ -1628,11 +1771,10 @@ msgid "Description"
 msgstr "Опис"
 
 #: fas/templates/group/list.html:28
-#, fuzzy
 msgid "Prerequisite"
-msgstr "Предуслов:"
+msgstr ""
 
-#: fas/templates/group/list.html:29 fas/templates/user/edit.html:127
+#: fas/templates/group/list.html:29 fas/templates/user/edit.html:128
 msgid "Status"
 msgstr "Стање"
 
@@ -1642,19 +1784,18 @@ msgid "None"
 msgstr "Ништа"
 
 #: fas/templates/group/list.html:40 fas/templates/group/members.html:24
-#: fas/templates/group/view.html:22 fas/templates/user/view.html:126
+#: fas/templates/group/view.html:22 fas/templates/user/view.html:141
 msgid "Approved"
 msgstr "Одобрено"
 
 #: fas/templates/group/list.html:41 fas/templates/group/members.html:25
-#: fas/templates/group/view.html:23 fas/templates/user/view.html:127
+#: fas/templates/group/view.html:23 fas/templates/user/view.html:142
 msgid "Unapproved"
 msgstr "Није одобрено"
 
 #: fas/templates/group/member-list.html:14
-#, fuzzy
 msgid "User"
-msgstr "Корисник %s"
+msgstr ""
 
 #: fas/templates/group/member-list.html:16
 msgid "Date Added"
@@ -1677,9 +1818,8 @@ msgid "Action"
 msgstr "Деловање"
 
 #: fas/templates/group/members.html:10
-#, fuzzy
 msgid "View Group Members"
-msgstr "Погледај групу"
+msgstr ""
 
 #: fas/templates/group/members.html:23 fas/templates/group/view.html:21
 msgid "My Status:"
@@ -1689,14 +1829,25 @@ msgstr "Моје стање:"
 msgid "Not a Member"
 msgstr "Није члан"
 
-#: fas/templates/group/members.html:34 fas/templates/group/view.html:32
+#: fas/templates/group/members.html:34 fas/templates/group/view.html:39
 msgid "Remove me"
 msgstr "Уклони ме"
 
 #: fas/templates/group/members.html:41
-#, fuzzy
 msgid "Group Details"
-msgstr "Управљај детаљима групе..."
+msgstr ""
+
+#: fas/templates/group/members.html:42
+msgid "administrator"
+msgstr ""
+
+#: fas/templates/group/members.html:42
+msgid "sponsor"
+msgstr ""
+
+#: fas/templates/group/members.html:42
+msgid "user"
+msgstr ""
 
 #: fas/templates/group/members.html:44
 msgid "Members"
@@ -1710,78 +1861,85 @@ msgstr "Направи нову FAS групу"
 msgid "Group Name:"
 msgstr "Назив групе:"
 
-#: fas/templates/group/new.html:43
+#: fas/templates/group/new.html:48
 msgid "Must Belong To:"
 msgstr "Мора припадати:"
 
-#: fas/templates/group/new.html:48 fas/templates/group/view.html:72
+#: fas/templates/group/new.html:53 fas/templates/group/view.html:83
 msgid "Join Message:"
 msgstr "Приступна порука:"
 
-#: fas/templates/group/new.html:58
+#: fas/templates/group/new.html:63
 msgid "Create!"
 msgstr "Направи!"
 
-#: fas/templates/group/view.html:8 fas/templates/user/view.html:133
+#: fas/templates/group/view.html:8 fas/templates/user/view.html:148
 msgid "View Group"
 msgstr "Погледај групу"
 
-#: fas/templates/group/view.html:34 fas/templates/user/view.html:18
+#: fas/templates/group/view.html:37
+msgid "Group is invite only.  Contact group sponsors for more information."
+msgstr ""
+
+#: fas/templates/group/view.html:41 fas/templates/user/view.html:18
 msgid "(edit)"
 msgstr "(уреди)"
 
-#: fas/templates/group/view.html:37
+#: fas/templates/group/view.html:44
 msgid "Name:"
 msgstr "Име:"
 
-#: fas/templates/group/view.html:38
+#: fas/templates/group/view.html:45
 msgid "Description:"
 msgstr "Опис:"
 
-#: fas/templates/group/view.html:39
+#: fas/templates/group/view.html:46
 msgid "Owner:"
 msgstr "Власник:"
 
-#: fas/templates/group/view.html:40
+#: fas/templates/group/view.html:47
 msgid "Type:"
 msgstr "Врста:"
 
-#: fas/templates/group/view.html:44
-#, fuzzy
+#: fas/templates/group/view.html:51
 msgid "Approved Members:"
-msgstr "Одобрено"
+msgstr ""
 
-#: fas/templates/group/view.html:58
-#, fuzzy
+#: fas/templates/group/view.html:65
 msgid "IRC:"
-msgstr "IRC надимак:"
+msgstr ""
 
-#: fas/templates/group/view.html:65 fas/templates/group/view.html:69
+#: fas/templates/group/view.html:72 fas/templates/group/view.html:76
+#: fas/templates/group/view.html:80
 msgid "Yes"
 msgstr "Да"
 
-#: fas/templates/group/view.html:66 fas/templates/group/view.html:70
+#: fas/templates/group/view.html:73 fas/templates/group/view.html:77
+#: fas/templates/group/view.html:81
 msgid "No"
 msgstr "Не"
 
-#: fas/templates/group/view.html:73
+#: fas/templates/group/view.html:84
 msgid "Prerequisite:"
 msgstr "Предуслов:"
 
-#: fas/templates/group/view.html:76
+#: fas/templates/group/view.html:87
 msgid "Created:"
 msgstr "Направљена:"
 
-#: fas/templates/group/view.html:78
+#: fas/templates/group/view.html:89
 msgid "Add User:"
 msgstr "Додај корисника:"
 
-#: fas/templates/group/view.html:95
-#, fuzzy
-msgid "View Member List"
-msgstr "Чланови"
+#: fas/templates/group/view.html:94
+msgid "Add"
+msgstr ""
 
-#: fas/templates/group/view.html:97
+#: fas/templates/group/view.html:107 fas/templates/group/view.html:108
+msgid "View Member List"
+msgstr ""
+
+#: fas/templates/group/view.html:110
 msgid "Sponsorship Queue"
 msgstr ""
 
@@ -1794,9 +1952,8 @@ msgid "<a href=\"$endpoint_url\">This</a> is an OpenID server endpoint."
 msgstr ""
 
 #: fas/templates/openid/about.html:16
-#, fuzzy
 msgid "For more information about OpenID, see:"
-msgstr "Ваша лозинка не може бити промењена."
+msgstr ""
 
 #: fas/templates/openid/about.html:20
 msgid "An OpenID community web site, home of this library."
@@ -1816,8 +1973,8 @@ msgstr ""
 msgid ""
 "A new site has asked to confirm your identity.  If you approve, the site "
 "represented by the trust root below will be told that you control identity "
-"URL listed below. (If you are using a delegated identity, the site will take "
-"care of reversing the delegation on its own.)"
+"URL listed below. (If you are using a delegated identity, the site will take"
+" care of reversing the delegation on its own.)"
 msgstr ""
 
 #: fas/templates/openid/authorizesite.html:17
@@ -1833,9 +1990,8 @@ msgid "Allow this authentication to proceed?"
 msgstr ""
 
 #: fas/templates/openid/authorizesite.html:38
-#, fuzzy
 msgid "yes"
-msgstr "Да"
+msgstr ""
 
 #: fas/templates/openid/authorizesite.html:39
 msgid "no"
@@ -1856,95 +2012,137 @@ msgid "This is an OpenID identity for %(username)s"
 msgstr ""
 
 #: fas/templates/openid/id.html:31
-msgid ""
-"Part of the <a href=\"https://admin.fedoraproject.org/accounts/\">Fedora "
-"Account System<a>."
+#, python-format
+msgid "Part of the <a href=\"%(url)s\">Fedora Account System<a>."
 msgstr ""
 
 #: fas/templates/openid/welcome.html:9
-#, fuzzy
 msgid "Welcome to the Fedora OpenID Provider"
-msgstr "Добро дошли у Fedora пројекат!"
+msgstr ""
 
 #: fas/templates/openid/welcome.html:16
 #, python-format
 msgid ""
-"You are logged in as %(username)s. Your OpenID identity URL is <a href=\"%"
-"(id_base_url)s/%(username)s\">%(id_base_url)s/%(username)s</a>"
+"You are logged in as %(username)s. Your OpenID identity URL is <a "
+"href=\"%(id_base_url)s/%(username)s\">%(id_base_url)s/%(username)s</a>"
 msgstr ""
 
 #: fas/templates/openid/welcome.html:19
-#, fuzzy
 msgid "Logout"
-msgstr "Одјава"
+msgstr ""
 
 #: fas/templates/openid/welcome.html:24
-#, fuzzy, python-format
+#, python-format
 msgid "You are not <a href=\"%(url)s\">logged in</a>."
-msgstr "Ви сте се већ пријавили."
+msgstr ""
 
 #: fas/templates/user/changepass.html:7 fas/templates/user/changepass.html:10
-#: fas/templates/user/changepass.html:16 fas/templates/user/verifypass.html:16
+#: fas/templates/user/changepass.html:24 fas/templates/user/verifypass.html:17
 msgid "Change Password"
 msgstr "Промени лозинку"
 
-#: fas/templates/user/changepass.html:13
+#: fas/templates/user/changepass.html:12
+msgid ""
+"Passphrases need to be of a certain complexity to prevent attackers from "
+"guessing it by having a computer try different combinations of characters in"
+" rapid succession.  To make such brute force attacks harder we enforce some "
+"minimum levels of strength:"
+msgstr ""
+
+#: fas/templates/user/changepass.html:14
+msgid ""
+"A passphrase with symbols, upper and lowercase letters, and digits must be "
+"at least 9 characters"
+msgstr ""
+
+#: fas/templates/user/changepass.html:15
+msgid ""
+"A passphrase with upper and lowercase letters and digits must be at least 10"
+" characters"
+msgstr ""
+
+#: fas/templates/user/changepass.html:16
+msgid ""
+"A passphrase with lowercase letters and digits must be at least 12 "
+"characters"
+msgstr ""
+
+#: fas/templates/user/changepass.html:17
+msgid ""
+"A passphrase with letters alone must be made of at least 3 different "
+"characters and be at least 20 characters long"
+msgstr ""
+
+#: fas/templates/user/changepass.html:19
+msgid ""
+"Remember that these are minimum levels.  You are encouraged to make your "
+"passphrases longer and more complex than the minimum values."
+msgstr ""
+
+#: fas/templates/user/changepass.html:21
 msgid "Current Password:"
 msgstr "Тренутна лозинка:"
 
-#: fas/templates/user/changepass.html:14 fas/templates/user/verifypass.html:13
+#: fas/templates/user/changepass.html:22 fas/templates/user/verifypass.html:14
 msgid "New Password:"
 msgstr "Нова лозинка:"
 
-#: fas/templates/user/changepass.html:15 fas/templates/user/verifypass.html:14
+#: fas/templates/user/changepass.html:23 fas/templates/user/verifypass.html:15
 msgid "Confirm Password:"
 msgstr "Потврдите лозинку:"
 
-#: fas/templates/user/edit.html:20
+#: fas/templates/user/edit.html:17
 msgid "Edit Account"
 msgstr "Уреди налог"
 
-#: fas/templates/user/edit.html:23
+#: fas/templates/user/edit.html:20
 #, python-format
 msgid "Edit Account (%s)"
 msgstr "Уреди налог (%s)"
 
-#: fas/templates/user/edit.html:32
+#: fas/templates/user/edit.html:22 fas/templates/user/view.html:77
+msgid "Password:"
+msgstr "Лозинка:"
+
+#: fas/templates/user/edit.html:23 fas/templates/user/view.html:79
+msgid "(change)"
+msgstr ""
+
+#: fas/templates/user/edit.html:33
 msgid "Email"
 msgstr "Електронска пошта"
 
-#: fas/templates/user/edit.html:35 fas/templates/user/view.html:31
+#: fas/templates/user/edit.html:36 fas/templates/user/view.html:31
 #, python-format
 msgid "(pending change to %(email)s - <a href=\"%(url)s\">cancel</a>)"
 msgstr ""
 
-#: fas/templates/user/edit.html:76
+#: fas/templates/user/edit.html:77
 msgid "Latitude"
 msgstr ""
 
-#: fas/templates/user/edit.html:81
+#: fas/templates/user/edit.html:82
 msgid "Longitude"
 msgstr ""
 
-#: fas/templates/user/edit.html:94
+#: fas/templates/user/edit.html:95
 msgid "IRC Nick"
 msgstr "IRC надимак"
 
-#: fas/templates/user/edit.html:110
+#: fas/templates/user/edit.html:111
 msgid "Time Zone"
 msgstr "Временска зона"
 
-#: fas/templates/user/edit.html:135
+#: fas/templates/user/edit.html:136
 msgid "Comments"
 msgstr "Коментари"
 
-#: fas/templates/user/edit.html:141
-#, fuzzy
+#: fas/templates/user/edit.html:142
 msgid "Privacy"
-msgstr "Права и приватност"
+msgstr ""
 
-#: fas/templates/user/edit.html:147 fas/templates/user/verifyemail.html:17
-#: fas/templates/user/verifypass.html:17
+#: fas/templates/user/edit.html:148 fas/templates/user/verifyemail.html:17
+#: fas/templates/user/verifypass.html:18
 msgid "Cancel"
 msgstr "Откажи"
 
@@ -1974,8 +2172,8 @@ msgstr ""
 #, python-format
 msgid ""
 "Generating SSL Certificates is disabled on this machine.  If you were "
-"brought here by clicking a link it usually means there is a misconfiguration "
-"on the server.  Please contact %(accts_email)s to fix things."
+"brought here by clicking a link it usually means there is a misconfiguration"
+" on the server.  Please contact %(accts_email)s to fix things."
 msgstr ""
 
 #: fas/templates/user/list.html:7
@@ -1990,12 +2188,11 @@ msgstr "„*“ је џокер (нпр.: „ric*“)"
 msgid "Username"
 msgstr "Корисничко име"
 
-#: fas/templates/user/list.html:34 fas/templates/user/view.html:91
-#, fuzzy
+#: fas/templates/user/list.html:34 fas/templates/user/view.html:101
 msgid "CLA Done"
-msgstr "Није учињено"
+msgstr ""
 
-#: fas/templates/user/list.html:40 fas/templates/user/view.html:95
+#: fas/templates/user/list.html:40
 msgid "Not Done"
 msgstr "Није учињено"
 
@@ -2003,32 +2200,61 @@ msgstr "Није учињено"
 msgid "Sign up for a Fedora account"
 msgstr "Пријавите се за Fedora налог"
 
-#: fas/templates/user/new.html:13 fas/templates/user/resetpass.html:13
+#: fas/templates/user/new.html:11
+msgid "NOTE:"
+msgstr ""
+
+#: fas/templates/user/new.html:11
+msgid "Username is permanent"
+msgstr ""
+
+#: fas/templates/user/new.html:11
+msgid ""
+"(i.e. it cannot be changed after registration and will never be deleted from"
+" the system)."
+msgstr ""
+
+#: fas/templates/user/new.html:11
+msgid "Personal information may be updated or removed at any time."
+msgstr ""
+
+#: fas/templates/user/new.html:14 fas/templates/user/resetpass.html:13
 msgid "Username:"
 msgstr "Корисничко име:"
 
-#: fas/templates/user/new.html:17 fas/templates/user/view.html:24
+#: fas/templates/user/new.html:18 fas/templates/user/view.html:24
 msgid "Full Name:"
 msgstr "Пуно име:"
 
-#: fas/templates/user/new.html:22 fas/templates/user/resetpass.html:14
+#: fas/templates/user/new.html:23 fas/templates/user/resetpass.html:14
 #: fas/templates/user/view.html:28
 msgid "Email:"
 msgstr "Електронска пошта:"
 
-#: fas/templates/user/new.html:43
+#: fas/templates/user/new.html:28
+msgid "Verify Email:"
+msgstr ""
+
+#: fas/templates/user/new.html:49
 msgid "I am 13 years of age or older"
 msgstr ""
 
-#: fas/templates/user/new.html:48
+#: fas/templates/user/new.html:55
+msgid "Answer this math equation"
+msgstr ""
+
+#: fas/templates/user/new.html:58
 msgid "Sign up!"
 msgstr "Пријави се!"
 
 #: fas/templates/user/resetpass.html:7 fas/templates/user/resetpass.html:10
-#: fas/templates/user/resetpass.html:19 fas/templates/user/verifypass.html:7
-#: fas/templates/user/verifypass.html:10
+#: fas/templates/user/verifypass.html:7 fas/templates/user/verifypass.html:10
 msgid "Reset Password"
 msgstr "Поново намести лозинку"
+
+#: fas/templates/user/resetpass.html:19
+msgid "Reset"
+msgstr ""
 
 #: fas/templates/user/verifyemail.html:7
 #: fas/templates/user/verifyemail.html:10
@@ -2042,6 +2268,12 @@ msgstr ""
 
 #: fas/templates/user/verifyemail.html:16
 msgid "Confirm"
+msgstr ""
+
+#: fas/templates/user/verifypass.html:11
+msgid ""
+"Pick a password or phrase that is long but memorable.  Use a mix of upper "
+"and lowercase letters as well as numbers and punctuation."
 msgstr ""
 
 #: fas/templates/user/view.html:7
@@ -2089,237 +2321,132 @@ msgstr "PGP кључ:"
 msgid "Public SSH Key:"
 msgstr "Јавни SSH кључ:"
 
+#: fas/templates/user/view.html:66
+msgid "(remove ssh key)"
+msgstr ""
+
 #: fas/templates/user/view.html:68
+msgid "No ssh key provided"
+msgstr ""
+
+#: fas/templates/user/view.html:71
 msgid "Comments:"
 msgstr "Коментари:"
 
-#: fas/templates/user/view.html:74
-msgid "Password:"
-msgstr "Лозинка:"
-
-#: fas/templates/user/view.html:75
-msgid "Valid"
-msgstr "Исправно"
-
-#: fas/templates/user/view.html:78
+#: fas/templates/user/view.html:83
 msgid "Account Status:"
 msgstr "Стање налога:"
 
-#: fas/templates/user/view.html:81
+#: fas/templates/user/view.html:86
 msgid "Active"
 msgstr "Активан"
 
-#: fas/templates/user/view.html:82
-msgid "Vacation"
-msgstr "Одмор"
-
-#: fas/templates/user/view.html:83
+#: fas/templates/user/view.html:87
 msgid "Inactive"
 msgstr "Неактиван"
 
-#: fas/templates/user/view.html:84
+#: fas/templates/user/view.html:88
 msgid "Pinged"
 msgstr "Пронађен"
 
-#: fas/templates/user/view.html:85
+#: fas/templates/user/view.html:89
 msgid "Disabled"
 msgstr ""
 
-#: fas/templates/user/view.html:90
-msgid "CLA:"
-msgstr "CLA:"
-
-#: fas/templates/user/view.html:93
-msgid "Reject CLA"
-msgstr ""
-
-#: fas/templates/user/view.html:95
-msgid "Complete it!"
+#: fas/templates/user/view.html:94
+msgid "Contributor Agreement:"
 msgstr ""
 
 #: fas/templates/user/view.html:98
-#, fuzzy
-msgid "Privacy:"
-msgstr "Права и приватност"
+msgid "CLA Signed"
+msgstr ""
+
+#: fas/templates/user/view.html:101
+msgid "New CLA Not Signed"
+msgstr ""
+
+#: fas/templates/user/view.html:102
+msgid "We need contributors to sign the new Contributor Agreement"
+msgstr ""
+
+#: fas/templates/user/view.html:102
+msgid "Complete it now!"
+msgstr ""
 
 #: fas/templates/user/view.html:106
+msgid "Reject FPCA"
+msgstr ""
+
+#: fas/templates/user/view.html:110
+msgid "Not Signed"
+msgstr ""
+
+#: fas/templates/user/view.html:110
+msgid "Complete it!"
+msgstr ""
+
+#: fas/templates/user/view.html:113
+msgid "Privacy:"
+msgstr ""
+
+#: fas/templates/user/view.html:115
+msgid "Account Information Private"
+msgstr ""
+
+#: fas/templates/user/view.html:116
+msgid "Account Information Public"
+msgstr ""
+
+#: fas/templates/user/view.html:121
 msgid "Your Roles"
 msgstr "Ваше улоге"
 
-#: fas/templates/user/view.html:107
+#: fas/templates/user/view.html:122
 #, python-format
 msgid "%s's Roles"
 msgstr "Улоге за %s"
 
-#: fas/templates/user/view.html:124
+#: fas/templates/user/view.html:139
 msgid "Status:"
 msgstr "Стање:"
 
-#: fas/templates/user/view.html:130
+#: fas/templates/user/view.html:145
 msgid "Tools:"
 msgstr "Алат:"
 
-#: fas/templates/user/view.html:134
+#: fas/templates/user/view.html:149
 msgid "Invite a New Member..."
 msgstr "Позови новог члана..."
 
-#: fas/templates/user/view.html:135
+#: fas/templates/user/view.html:150
 msgid "Manage Group Membership..."
 msgstr "Управљај чланствима групе..."
 
-#: fas/templates/user/view.html:136
+#: fas/templates/user/view.html:151
 msgid "Manage Group Details..."
 msgstr "Управљај детаљима групе..."
 
-#: fas/templates/user/view.html:140
+#: fas/templates/user/view.html:155
 msgid "Queue:"
 msgstr "Ред:"
 
-#: fas/templates/user/view.html:144
-#, fuzzy, python-format
+#: fas/templates/user/view.html:159
+#, python-format
 msgid ""
-"<strong>%(user)s</strong> requests approval to join <strong>%"
-"(unapproved_role.group)s</strong>."
+"<strong>%(user)s</strong> requests approval to join "
+"<strong>%(unapproved_role.group)s</strong>."
 msgstr ""
-"<strong>%(user)s</strong> захтева одобрење за приступ <strong>%(group)s</"
-"strong>."
 
-#~ msgid "Welcome, %s"
-#~ msgstr "Добро дошли, %s"
+#: fas/tgcaptcha2/validator.py:15
+msgid "Incorrect value."
+msgstr ""
 
-#~ msgid ""
-#~ "The credentials you supplied were not correct or did not grant access to "
-#~ "this resource."
-#~ msgstr ""
-#~ "Идентификатори које сте послали нису коректни или немају дозволу приступа "
-#~ "за овај ресурс."
+#: fas/tgcaptcha2/validator.py:16
+msgid "Too much time elapsed. Please try again."
+msgstr ""
 
-#~ msgid "You must provide your credentials before accessing this resource."
-#~ msgstr "Морате да обезбедите Ваш идентификатор пре приступа ресурсу."
+#: fas/tgcaptcha2/widgets.py:49
+msgid "obfuscated letters"
+msgstr ""
 
-#~ msgid "Please log in."
-#~ msgstr "Молим да се пријавите."
 
-#~ msgid "You have successfully logged out."
-#~ msgstr "Успешно сте се одјавили."
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "%(user)s <%(email)s> has sponsored you for membership in the %(group)s\n"
-#~ "group of the Fedora account system. If applicable, this change should\n"
-#~ "propagate into the e-mail aliases and CVS repository within an hour.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "%(name)s <%(email)s> је спонзорисао Ваше чланство у %(group)s\n"
-#~ "групи у Fedora систему налога. Ако је погодно, ова промена ће бити\n"
-#~ "прослеђена на адресе електронске поште и CVS ризнице у року једног сата.\n"
-#~ "\n"
-#~ "%(joinmsg)s\n"
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "%(user)s <%(email)s> has removed you from the '%(group)s'\n"
-#~ "group of the Fedora Accounts System This change is effective\n"
-#~ "immediately for new operations, and should propagate into the e-mail\n"
-#~ "aliases within an hour.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "%(name)s <%(email)s> је уклоњен из „%(group)s“\n"
-#~ "групе у Fedora систему налога. Ова промена је ефективна\n"
-#~ "одмах за нове операције, и биће прослеђена на адресе \n"
-#~ "електронске поште у року једног сата.\n"
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "%(user)s <%(email)s> has upgraded you to %(status)s status in the\n"
-#~ "'%(group)s' group of the Fedora Accounts System This change is\n"
-#~ "effective immediately for new operations, and should propagate\n"
-#~ "into the e-mail aliases within an hour.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "%(name)s <%(email)s> вас је унапредио у %(status)s статус у оквиру\n"
-#~ "„%(group)s“ групе Fedora система налога. Ова промена је\n"
-#~ "ефективна одмах за нове операције, и биће прослеђена\n"
-#~ "на адресе електронске поште у року од једног сата.\n"
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "%(user)s <%(email)s> has downgraded you to %(status)s status in the\n"
-#~ "'%(group)s' group of the Fedora Accounts System This change is\n"
-#~ "effective immediately for new operations, and should propagate\n"
-#~ "into the e-mail aliases within an hour.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "%(name)s <%(email)s> вас је превео у нижу категорију у %(status)s статус "
-#~ "у оквиру\n"
-#~ "„%(group)s“ групе Fedora система налога. Ова промена је\n"
-#~ "ефективна одмах за нове операције, и биће прослеђена\n"
-#~ "на адресе електронске поште у року од једног сата.\n"
-
-#~ msgid "Login"
-#~ msgstr "Пријава"
-
-#~ msgid "User Name:"
-#~ msgstr "Корисничко име:"
-
-#~ msgid "Forgot Password?"
-#~ msgstr "Заборавили сте лозинку?"
-
-#~ msgid "Sign Up"
-#~ msgstr "Регистрација"
-
-#~ msgid "Encrypt/Sign password reset email"
-#~ msgstr "Шифрирај/потпиши електронску поруку за поновно намештање лозинке"
-
-#~ msgid "'%s' is an illegal username."
-#~ msgstr "„%s“ није дозвољено корисничко име."
-
-#~ msgid "New Group"
-#~ msgstr "Нова група"
-
-#~ msgid "User List"
-#~ msgstr "Списак корисника"
-
-#~ msgid "Group List"
-#~ msgstr "Списак група"
-
-#~ msgid "Human Name"
-#~ msgstr "Људско име"
-
-#~ msgid "Real Name:"
-#~ msgstr "Право име:"
-
-#~ msgid ""
-#~ "\n"
-#~ "Fedora user %(user)s, aka %(name)s <%(email)s> has requested\n"
-#~ "membership for %(applicant)s (%(applicant_name)s) in the %(group)s group "
-#~ "and needs a sponsor.\n"
-#~ "\n"
-#~ "Please go to %(url)s to take action.  \n"
-#~ msgstr ""
-#~ "\n"
-#~ "Fedora корисник %(user)s, тј. %(name)s <%(email)s> је захтевао\n"
-#~ "чланарину за %(applicant)s (%(applicant_name)s) у %(group)s групи и "
-#~ "потребан му је спонзор.\n"
-#~ "\n"
-#~ "Молим Вас посетите %(url)s да реагујете.  \n"
-
-#~ msgid "The OpenID request could not be decoded."
-#~ msgstr "Захтев за OpenID не може бити прочитан."
-
-#~ msgid "Fedora Project OpenID Provider"
-#~ msgstr "OpenID добављач Fedora пројекта"
-
-#~ msgid "Allow <strong>%s</strong> to authenticate to your OpenID identity?"
-#~ msgstr "Дозволи <strong>%s</strong> да аутентификује Ваш OpenID идентитет?"
-
-#~ msgid "Submit"
-#~ msgstr "Пошаљи"
-
-#, fuzzy
-#~ msgid "You have already sucessfully complete the CLA."
-#~ msgstr "Већ сте успешно потписали <a href=\"%s\">CLA</a>."

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright © 2008  Ricky Zhou All rights reserved.
-# Copyright © 2008 Red Hat, Inc. All rights reserved.
+# Copyright © 2008  Ricky Zhou
+# Copyright © 2008-2009 Red Hat, Inc.
 #
 # This copyrighted material is made available to anyone wishing to use, modify,
 # copy, or redistribute it subject to the terms and conditions of the GNU
@@ -18,11 +18,12 @@
 #
 # Author(s): Ricky Zhou <ricky@fedoraproject.org>
 #            Mike McGrath <mmcgrath@redhat.com>
+#            Toshio Kuratomi <toshio@redhat.com>
 #
 import turbogears
 from turbogears import controllers, expose, identity, config
 
-from sqlalchemy.exceptions import InvalidRequestError
+from sqlalchemy.exc import InvalidRequestError
 import sqlalchemy
 from sqlalchemy import select
 
@@ -55,11 +56,10 @@ class JsonRequest(controllers.Controller):
     def person_by_id(self, person_id):
         try:
             person = People.by_id(person_id)
-            person.json_props = {
-                    'People': ('approved_memberships', 'unapproved_memberships')
-                    }
-            person.filter_private()
-            return dict(success=True, person=person)
+            person_data = person.filter_private()
+            person_data['approved_memberships'] = list(person.approved_memberships)
+            person_data['unapproved_memberships'] = list(person.unapproved_memberships)
+            return dict(success=True, person=person_data)
         except InvalidRequestError:
             return dict(success=False)
 
@@ -133,14 +133,16 @@ class JsonRequest(controllers.Controller):
                 PeopleTable.c.ssh_key,
                 PeopleTable.c.email,
                 PeopleTable.c.privacy,
+                PeopleTable.c.alias_enabled
                 ], PeopleTable.c.status == 'active').execute()
-            for id, username, password, human_name, ssh_key, email, privacy in people_list:
+            for id, username, password, human_name, ssh_key, email, privacy, alias_enabled in people_list:
                 people[id] = {
                     'username': username,
                     'password': password,
                     'human_name': human_name,
                     'ssh_key': ssh_key,
                     'email': email,
+                    'alias_enabled': alias_enabled
                 }
 
                 if privacy:
@@ -160,11 +162,10 @@ class JsonRequest(controllers.Controller):
     def person_by_username(self, username):
         try:
             person = People.by_username(username)
-            person.json_props = {
-                'People': ('approved_memberships', 'unapproved_memberships')
-                }
-            person.filter_private()
-            return dict(success=True, person=person)
+            person_data = person.filter_private()
+            person_data['approved_memberships'] = list(person.approved_memberships)
+            person_data['unapproved_memberships'] = list(person.unapproved_memberships)
+            return dict(success=True, person=person_data)
         except InvalidRequestError:
             return dict(success=False)
 

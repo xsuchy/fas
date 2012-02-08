@@ -1,0 +1,72 @@
+====
+NEWS
+====
+
+:Authors: Ricky Zhou, Mike McGrath, Toshio Kuratomi
+:Date: 24 Jan 2011
+:Version: 0.8.11
+
+------
+0.8.11
+------
+* Added feature to allow for email address or username at login (Ian Cole)
+* JSON API: If the "/fpca/reject" method encounters an error talking to the 
+  database the error is now categorized as DBAPIError instead of
+  sqlalchemy.SQLError. python-fedora should not be calling this method. 
+  (Adam M. Dutko) 
+* fas/configs.py: set() now returns DBAPIError instead of SQLError on database
+  save error. (Adam M. Dutko)
+* Implement the audio captcha, gives access to an audio file 'speaking' the
+  content of the captcha. (Pierre-Yves Chibon)
+
+------
+0.8.10
+------
+* Update user template to show "Invalid" if a password field is '!!'
+  (which means that an administrator has removed the password otherwise
+  it would be a password hash).
+* Update home template so that resetpass link works whether or not the URL of
+  the home page had a trailing slash.
+* Bugfix: When a user reset their password via the forgot password page, the
+  check for whether the user was changing to the current password was broken.
+  Fixed so that the current password is not allowed as the new password.
+
+-------
+0.8.9.1
+-------
+* **Important fix** The new password strength checking code was letting users
+  set empty passwords.  This release fixes it.
+
+.. warning::
+
+    The 0.8.9 release includes a validator for password strength checking.
+    This validator was not run if the user did not enter a password.  This
+    allowed users to enter blank passwords.  If you ran the password strength
+    checking code either from the brief time when the 0.8.9 release was
+    available or from snapshots of the code, you should check that none of your
+    users set empty passwords.
+
+-----
+0.8.9
+-----
+* Add password strength checking
+* Add a forgot password link to the front page
+* New, easier to use captcha!
+* Mention that usernames must be ASCII (Adam M. Dutko)
+* In the public key tooltip, mention users can upload multiple ssh keys to FAS. (Adam M. Dutko)
+* No longer show that vacation is a valid status (Adam M. Dutko)
+* Add the ability to remove one's ssh key
+* Fix python-fedora deprecation warnings
+* Now pulling translations from transifex.net
+* Switch to using openssl's random functions if available
+* Use glibc's sha512 crypt hashes when crypting passwords
+* Fix to fasClient to drop privileges before writing out user's SSH key
+* Make the webmaster mail configurable (Adam Dutko)
+* Fix /user/list not returning any people who have not signed the CLA
+* Fix for newer GeoIP data
+* Fix a traceback when disabling invite_only
+* Fix for locale setting
+* Fix when calling selinux functions in fasClient
+* Split the README into README, HACKING and INSTALL files. (Adam M. Dutko)
+* Add a parameter to /group/list to allow returning the group information
+  without members. (Adam M. Dutko)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright © 2008 Red Hat, Inc. All rights reserved.
+# Copyright © 2011 Red Hat, Inc.
 #
 # This copyrighted material is made available to anyone wishing to use, modify,
 # copy, or redistribute it subject to the terms and conditions of the GNU
@@ -28,22 +28,26 @@ template instead of using the generic interface.
 '''
 
 from sqlalchemy.sql import and_
-from sqlalchemy.exceptions import InvalidRequestError, SQLError
+from sqlalchemy.exc import InvalidRequestError, DBAPIError
 
 from turbogears import validate, validators, controllers, expose, flash, \
         error_handler, identity, redirect
 from turbogears.database import session
 
-from fedora.tg.util import request_format
+from fedora.tg.utils import request_format
 
 from fas.model import Configs, People
 from fas.validators import KnownUser
-from fas.auth import canEditUser
+from fas.auth import can_edit_user
+
+from fas import _
 
 class ConfigList(validators.Schema):
     '''Set of validators for the list method of Configs'''
     # pylint: disable-msg=W0232,R0903
-    username = KnownUser
+    def __init__(self):
+        self.username = KnownUser
+
     application = validators.All(validators.UnicodeString,
             validators.Regex(regex='^[a-z0-9-_]+$'),
             # This could also match the db precisely.  But then we'd have to
@@ -70,6 +74,10 @@ class ConfigSet(validators.Schema):
 class Config(controllers.Controller):
     '''Controller that serves generic third party app configs.
     '''
+
+    def __init__(self):
+        pass
+
     @expose(template="fas.templates.error", allow_json=True)
     def error(self, tg_errors=None):
         '''Show a friendly error message'''
@@ -114,7 +122,7 @@ class Config(controllers.Controller):
 
         # Verify user is allowed to view this config
         target = People.by_username(username)
-        if not canEditUser(identity.current.user, target):
+        if not can_edit_user(identity.current.user, target):
             flash(_('You cannot look at configs for %s') % username)
             if request_format() == 'json':
                 return dict(exc='AuthorizationError')
@@ -155,7 +163,7 @@ class Config(controllers.Controller):
 
         # Verify user is allowed to set this config
         target = People.by_username(username)
-        if not canEditUser(identity.current.user, target):
+        if not can_edit_user(identity.current.user, target):
             flash(_('You cannot edit configs for %s') % username)
             if request_format() == 'json':
                 return dict(exc='AuthorizationError')
@@ -179,9 +187,9 @@ class Config(controllers.Controller):
             # ScopedSession really does have a flush() method
             # pylint: disable-msg=E1101
             session.flush()
-        except SQLError, e:
-            flash(_('Error saving the config to the database: %s' % (e)))
-            return dict(exc='SQLError')
+        except DBAPIError, error:
+            flash(_('Error saving the config to the database: %s' % (error)))
+            return dict(exc='DBAPIError')
 
         # On success return an empty dict
         flash(_('Config value successfully updated'))

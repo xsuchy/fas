@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright © 2008  Ricky Zhou All rights reserved.
-# Copyright © 2009 Red Hat, Inc. All rights reserved.
+# Copyright © 2008  Ricky Zhou
+# Copyright © 2012 Red Hat, Inc.
 #
 # This copyrighted material is made available to anyone wishing to use, modify,
 # copy, or redistribute it subject to the terms and conditions of the GNU
@@ -24,7 +24,7 @@
 Release information about the Fedora Accounts System
 '''
 
-VERSION = '0.8.6.2.4'
+VERSION = '0.8.11'
 NAME = 'fas'
 DESCRIPTION = 'The Fedora Account System'
 LONG_DESCRIPTION = '''
@@ -32,7 +32,7 @@ Manage the accounts of contributors to the Fedora Project.
 '''
 AUTHOR = 'Ricky Zhou, Mike McGrath, Toshio Kuratomi, and Yaakov Nemoy'
 EMAIL = 'fedora-infrastructure-list@fedoraproject.org'
-COPYRIGHT = '2007-2008 Red Hat, Inc.'
+COPYRIGHT = '2007-2011 Red Hat, Inc.'
 
 # if it's open source, you might want to specify these
 URL = 'https://admin.fedoraproject.org/accounts/'

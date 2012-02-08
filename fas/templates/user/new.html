@@ -8,6 +8,7 @@
   </head>
   <body>
     <h2>${_('Sign up for a Fedora account')}</h2>
+    <p><strong>${_('NOTE:')}</strong> ${_('Username is permanent')} <em>${_('(i.e. it cannot be changed after registration and will never be deleted from the system).')}</em> ${_('Personal information may be updated or removed at any time.')}</p>
     <form action="${tg.url('/user/create')}" method="post">
       <div class="field">
         <label for="username">${_('Username:')}</label>
@@ -21,6 +22,11 @@
       <div class="field">
         <label for="email">${_('Email:')}</label>
         <input type="text" id="email" name="email" />
+        <script type="text/javascript">var hb1 = new HelpBalloon({dataURL: '${tg.url('/help/get_help/user_email')}'});</script>
+      </div>
+      <div class="field">
+        <label for="email">${_('Verify Email:')}</label>
+        <input type="text" id="email" name="verify_email" />
         <script type="text/javascript">var hb1 = new HelpBalloon({dataURL: '${tg.url('/help/get_help/user_email')}'});</script>
       </div>
       <!--
@@ -45,11 +51,11 @@
         <script type="text/javascript">var hb1 = new HelpBalloon({dataURL: '${tg.url('/help/get_help/user_age_check')}'});</script>
       </div>
       <div class="field">
-        ${HTML(captcha.render())}
-        <label for="captcha">${_('Type the letters in the box')}</label>
+        ${ET(captcha.display())}
+        <label for="captcha">${_('Answer this math equation')}</label>
       </div>
       <div class="field">
-        <input type="submit" value="${_('Sign up!')}" />
+        <input class="sub-button" type="submit" value="${_('Sign up!')}" />
       </div>
     </form>
   </body>
