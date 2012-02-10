@@ -687,7 +687,7 @@ into the e-mail aliases within an hour.
                                 ).order_by(People.username)
 
         people = []
-        if identity.in_any_group(config.get('admingroup', 'accounts'),
+        if identity.in_any_group(config.get('admingroup', 'fas-admin'),
                 config.get('systemgroup', 'fas-system')):
             user = 'admin'
         elif identity.current.anonymous:

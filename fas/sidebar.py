@@ -18,7 +18,7 @@ def getEntries():
 def stockentries():
     entries = []
     if not identity.current.anonymous and (
-            config.get('admingroup') in identity.current.groups
+            config.get('admingroup', 'fas-admin') in identity.current.groups
             or 'sysadmin' in identity.current.groups # this is FedoraProject specific
         ):
         entries.append((_('New Group'), '/group/new'))

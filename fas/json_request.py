@@ -66,7 +66,7 @@ class JsonRequest(controllers.Controller):
     @identity.require(turbogears.identity.not_anonymous())
     @expose("json", allow_json=True)
     def fas_client(self, data=None, force_refresh=None):
-        admin_group = config.get('admingroup', 'accounts')
+        admin_group = config.get('admingroup', 'fas-admin')
         system_group = config.get('systemgroup', 'fas-system')
         thirdparty_group = config.get('thirdpartygroup', 'thirdparty')
 

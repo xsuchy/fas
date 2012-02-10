@@ -556,7 +556,7 @@ If the above information is incorrect, please log in and fix it:
 
         # This replicates what filter_private does.  At some point we might
         # want to figure out a way to pull this into a function
-        if identity.in_any_group(config.get('admingroup', 'accounts'),
+        if identity.in_any_group(config.get('admingroup', 'fas-admin'),
             config.get('systemgroup', 'fas-system')):
             # Admin and system are the same for now
             user = 'admin'
