@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from turbogears import identity
+from turbogears import config
 
 # A list of functions to call to get the various entries that
 #   should be shown in the sidebar
@@ -17,8 +18,8 @@ def getEntries():
 def stockentries():
     entries = []
     if not identity.current.anonymous and (
-            'sysadmin' in identity.current.groups
-            or 'accounts' in identity.current.groups
+            config.get('admingroup') in identity.current.groups
+            or 'sysadmin' in identity.current.groups # this is FedoraProject specific
         ):
         entries.append((_('New Group'), '/group/new'))
         entries.append((_('User List'), '/user/list'))

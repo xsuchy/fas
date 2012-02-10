@@ -296,7 +296,7 @@ def can_create_group(person):
     if isinstance(person, basestring):
         try:
             PersonRoles.query.filter_by(role_status='approved').join('group'
-                    ).filter_by(name='sysadmin').join('member').filter_by(
+                    ).filter_by( name = config.get('admingroup') ).join('member').filter_by(
                             username=person)
             return True
         except InvalidRequestError:
