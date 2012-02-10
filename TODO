@@ -12,3 +12,6 @@ Nice-to-have things:
      install --install-data='/usr/share/fas'
    - Install fas.cfg
    - Install start-fas to the correct directory
+
+ * fas-plugin-admin :
+    - Add an friendly admin web page for FAS

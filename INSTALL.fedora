@@ -2,11 +2,10 @@
 INSTALL the Fedora Account System
 =================================
 
-:Authors: Adam M. Dutko, Xavier Lamien
+:Authors: Adam M. Dutko 
 :Contact: infrastructure@lists.fedoraproject.org
 :Date: Wed, 02 November, 2011
 :For FAS version: 0.8.x
-:Update : Fri, 10 Frebrary, 2012 - <laxathom@lxtnow.net>
 
 This file provides a guideline to new developers hacking on the Fedora Account System and administrators attempting to install the Fedora Account System. It is not yet complete.
 
@@ -19,27 +18,12 @@ Installation Steps
 Step One: Install Required Packages
 ===================================
 
-As a privileged user :
+As a privileged user on a Fedora system run the following:
 
-  * git-core 
-  * postgresql-plpython postgresql-server postgresql-python
-  * python TurboMail 
-  * TurboGears 
-  * pygpgme 
-  * python sqlalchemy 
-  * python genshi
-  * python psycopg2 
-  * pytz  
-  * python babel 
-  * babel 
-  * python GeoIP 
-  * python openid
-  * python-fedora-turbogears 
-  * python migrate 
-  * python memcached 
-  * python tgcaptcha 
-  * python OpenSSL 
-  * gettext
+  yum install git-core postgresql-plpython postgresql-server postgresql-python \
+  python-TurboMail TurboGears pygpgme python-sqlalchemy python-genshi \
+  python-psycopg2 pytz python-babel babel python-GeoIP python-openid \
+  python-fedora-turbogears python-migrate python-memcached python-tgcaptcha pyOpenSSL gettext
 
 NOTE: Please see the HACKING file located in the same directory as this file for caveats specific to various Fedora and RedHat Enterprise Linux releases.
 
@@ -64,10 +48,10 @@ Step Three: Adjust Postgresql Connection Settings
 
 As a privileged user on a Fedora system modify the pg_hba.conf file:
 
-  /!\ NOTE: Please read the HACKING file for exceptions to this step for
+  NOTE: Please read the HACKING file for exceptions to this step for
         newer versions of Fedora.
 
-  vim /var/lib/pgsql/data/pg_hba.conf
+  vi /var/lib/pgsql/data/pg_hba.conf
 
   ADJUST THE CONTENTS AT THE BOTTOM OF THE FILE TO MATCH THE FOLLOWING -->
 
@@ -118,9 +102,15 @@ As the postgres user run the following (be sure to remember your password):
 
   createuser --encrypted --pwprompt fedora
   ** enter the password twice **
-  
 
-Step Seven: Setup the Schema
+Step Seven: Setup plpython for FAS
+=======================================
+
+As the postgres user run the following:
+
+  createlang plpythonu template1
+
+Step Eight: Setup the Schema
 ============================
 
 As the user you are using for development run the following from within the fresh fas clone:
@@ -139,7 +129,7 @@ Then as the user you are using for development run the following from within the
 
   rm -f /tmp/fas2.sql
 
-Step Height: Apply Schema Modifications (NOT DONE - DO NOT USE - SKIP)
+Step Nine: Apply Schema Modifications (NOT DONE - DO NOT USE - SKIP)
 =============================================================
 
 As the user you are using for development run the following from within the fresh fas clone:
@@ -158,7 +148,7 @@ As the user you are using for development run the following from within the fres
 
   python manage.py upgrade
 
-Step Nine: Customize the Configuration File
+Step Ten: Customize the Configuration File
 ==========================================
 
 As the user you are using for development run the following from within the fresh fas clone:
@@ -167,21 +157,21 @@ As the user you are using for development run the following from within the fres
 
 Once the sample file is copied to your local configuration file adjust the following parameters to suit your needs:
 
-  mail.on 			# Set to True if you want to test notifications
-  mail.smtp.server 		# adjust the host as needed
-  sqlalchemy.dburi 		# adjust the password for the postgres FAS host and user
-  server.socket_port 		# change if you want to run on a different port
-  base_url_filter.base_url 	# adjust the port and host as needed
-  fas.url 			# adjust the port and host as needed
+  mail.on # Set to True if you want to test notifications
+  mail.smtp.server # adjust the host as needed
+  sqlalchemy.dburi # adjust the password for the postgres FAS host and user
+  server.socket_port # change if you want to run on a different port
+  base_url_filter.base_url # adjust the port and host as needed
+  fas.url # adjust the port and host as needed
 
 You may also need to change some of the directories and settings in fas/config/app.cfg.
 
-Step Ten: Adjust your Firewall
+Step Eleven: Adjust your Firewall
 =================================
 
 Remember to adjust your firewall to allow TCP traffic through your port of choice configured in Step #10.
 
-Step Eleven: Start FAS
+Step Twelve: Start FAS
 ======================
 
 As the user you are using for development run the following from within the fresh fas clone:

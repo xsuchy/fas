@@ -1,4 +1,5 @@
 -- Copyright © 2008  Red Hat, Inc.
+-- Copyright © 2012  Xavier Lamien
 --
 -- This copyrighted material is made available to anyone wishing to use, modify,
 -- copy, or redistribute it subject to the terms and conditions of the GNU
@@ -16,7 +17,9 @@
 -- Author(s): Toshio Kuratomi <tkuratom@redhat.com>
 --            Ricky Zhou <ricky@fedoraproject.org>
 --            Mike McGrath <mmcgrath@redhat.com>
+--            Xavier Lamien <laxathom@lxtnow.net>
 --
+
 create database fas2 encoding = 'UTF8';
 \c fas2
 
@@ -24,9 +27,9 @@ create procedural language plpythonu
   handler plpythonu_call_handler
   validator plpythonu_validator;
 
+-- Prevent UID conflict from local account user addition on the system.
 CREATE SEQUENCE person_seq;
--- TODO: Set this to start where our last person_id is
-SELECT setval('person_seq', 1111);
+SELECT setval('person_seq', 10000);
 
 CREATE TABLE people (
     -- tg_user::user_id
@@ -69,8 +72,7 @@ CREATE TABLE people (
     latitude numeric,
     longitude numeric,
     privacy BOOLEAN DEFAULT FALSE,
-    alias_enabled BOOLEAN DEFAULT TRUE,
-    check (status in ('active', 'inactive', 'expired', 'admin_disabled'))
+    alias_enabled BOOLEAN DEFAULT TRUE
     --check (gpg_keyid ~ '^[0-9A-F]{17}$')
 );
 
@@ -85,10 +87,7 @@ CREATE TABLE configs (
     -- The value should be a simple value or a json string.
     -- Please create more config keys rather than abusing this with
     -- large datastructures.
-    value TEXT,
-    check (application in ('asterisk', 'moin', 'myfedora' ,'openid', 'yubikey', 'bugzilla')),
-    -- Might end up removing openid, depending on how far we take the provider
-    unique (person_id, application, attribute)
+    value TEXT
 );
 
 create index configs_person_id_idx on configs(person_id);
@@ -116,9 +115,7 @@ CREATE TABLE groups (
     joinmsg TEXT NULL DEFAULT '',
     apply_rules TEXT,
     -- tg_group::created
-    creation TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    check (group_type in ('cla', 'system', 'bugzilla','cvs', 'bzr', 'git', 'hg', 'mtn',
-        'svn', 'shell', 'torrent', 'tracker', 'tracking', 'user')) 
+    creation TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 create index groups_group_type_idx on groups(group_type);
@@ -135,9 +132,7 @@ CREATE TABLE person_roles (
     sponsor_id INTEGER REFERENCES people(id),
     creation TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     approval TIMESTAMP WITH TIME ZONE DEFAULT NULL,
-    primary key (person_id, group_id),
-    check (role_status in ('approved', 'unapproved')),
-    check (role_type in ('user', 'administrator', 'sponsor'))
+    primary key (person_id, group_id)
 );
 
 create index person_roles_person_id_idx on person_roles(person_id);
@@ -149,17 +144,6 @@ cluster person_roles_group_id_idx on person_roles;
 
 -- View for mod_auth_pgsql
 create view user_group as select username, name as groupname from people as p, groups as g, person_roles as r where r.person_id=p.id and r.group_id=g.id and r.role_status='approved'; 
-
--- action r == remove
--- action a == add
-create table bugzilla_queue (
-    email text not null,
-    group_id INTEGER references groups(id) not null,
-    person_id INTEGER references people(id) not null,
-    action CHAR(1) not null,
-    primary key (email, group_id),
-    check (action ~ '[ar]')
-);
 
 -- Log changes to the account system
 create table log (
@@ -225,131 +209,16 @@ create table session (
   expiration_time timestamp
 );
 
---
--- When the fedorabugs role is updated for a person, add them to bugzilla queue.
---
-create or replace function bugzilla_sync() returns trigger as $bz_sync$
-    # Decide which row we are operating on and the action to take
-    if TD['event'] == 'DELETE':
-        # 'r' for removing an entry from bugzilla
-        newaction = 'r'
-        row = TD['old']
-    else:
-        # insert or update
-        row = TD['new']
-        if row['role_status'] == 'approved':
-            # approved so add an entry to bugzilla
-            newaction = 'a'
-        else:
-            # no longer approved so remove the entry from bugzilla
-            newaction = 'r'
+-- action r == remove
+-- action a == add
+CREATE TABLE bugzilla_queue (
+    email text not null,
+    group_id INTEGER references groups(id) not null,
+    person_id INTEGER references people(id) not null,
+    action CHAR(1) not null,
+    primary key (email, group_id),
+    check (action ~ '[ar]')
+);
 
-    # Get the group id for fedorabugs
-    result = plpy.execute("select id from groups where name = 'fedorabugs'", 1)
-    if not result:
-        # Danger Will Robinson!  A basic FAS group does not exist!
-        plpy.error('Basic FAS group fedorabugs does not exist')
-    # If this is not a fedorabugs role, no change needed
-    if row['group_id'] != result[0]['id']:
-        return None
-
-    # Retrieve the bugzilla email address
-    ### FIXME: Once we implement it, we will want to add a check for an email
-    # address in configs::application='bugzilla',person_id=person_id,
-    # attribute='login'
-    plan = plpy.prepare("select email from people where id = $1", ('int4',))
-    result = plpy.execute(plan, (row['person_id'],))
-    if not result:
-        # No email address so nothing can be done
-        return None
-    email = result[0]['email']
-
-    # If there is already a row in bugzilla_queue update, otherwise insert
-    plan = plpy.prepare("select email from bugzilla_queue where email = $1",
-            ('text',))
-    result = plpy.execute(plan, (email,), 1)
-    if result:
-        plan = plpy.prepare("update bugzilla_queue set action = $1"
-                " where email = $2", ('char', 'text'))
-        plpy.execute(plan, (newaction, email))
-    else:
-        plan = plpy.prepare("insert into bugzilla_queue (email, group_id"
-            ", person_id, action) values ($1, $2, $3, $4)",
-                ('text', 'int4', 'int4', 'char'))
-        plpy.execute(plan, (email, row['group_id'], row['person_id'], newaction))
-    return None
-$bz_sync$ language plpythonu;
-
-create trigger role_bugzilla_sync before update or insert or delete
-  on person_roles
-  for each row execute procedure bugzilla_sync();
-
---
--- When an email address changes, check whether it needs to be changed in
--- bugzilla as well.
---
-create or replace function bugzilla_sync_email() returns trigger AS $bz_sync_e$
-    if TD['old']['email'] == TD['new']['email']:
-        # We only care if the email has been changed
-        return None;
-
-    # Get the group id for fedorabugs
-    result = plpy.execute("select id from groups where name = 'fedorabugs'", 1)
-    if not result:
-        # Danger Will Robinson!  A basic FAS group does not exist!
-        plpy.error('Basic FAS group fedorabugs does not exist')
-    fedorabugsId = result[0]['id']
-
-    plan = plpy.prepare("select person_id from person_roles where"
-        " role_status = 'approved' and group_id = $1 "
-        " and person_id = $2", ('int4', 'int4'))
-    result = plpy.execute(plan, (fedorabugsId, TD['old']['id']), 1)
-    if not result:
-        # We only care if Person belongs to fedorabugs
-        return None;
-
-    # Remove the old Email and add the new one
-    changes = []
-    changes.append((TD['old']['email'], fedorabugsId, TD['old']['id'], 'r'))
-    changes.append((TD['new']['email'], fedorabugsId, TD['new']['id'], 'a'))
-
-    for change in changes:
-        # Check if we already have a pending change
-        plan = plpy.prepare("select b.email from bugzilla_queue as b where"
-            " b.email = $1", ('text',))
-        result = plpy.execute(plan, (change[0],), 1)
-        if result:
-            # Yes, update that change
-            plan = plpy.prepare("update bugzilla_queue set email = $1,"
-                " group_id = $2, person_id = $3, action = $4 where "
-                " email = $1", ('text', 'int4', 'int4', 'char'))
-            plpy.execute(plan, change)
-        else:
-            # No, add a new change
-            plan = plpy.prepare("insert into bugzilla_queue"
-                " (email, group_id, person_id, action)"
-                " values ($1, $2, $3, $4)", ('text', 'int4', 'int4', 'char'))
-            plpy.execute(plan, change)
-
-    return None
-$bz_sync_e$ language plpythonu;
-
-create trigger email_bugzilla_sync before update on people
-  for each row execute procedure bugzilla_sync_email();
-
--- For Fas to connect to the database
+-- For Fas to connect to the database with user/role : fedora
 GRANT ALL ON TABLE people, groups, person_roles, bugzilla_queue, configs, configs_id_seq, person_seq, visit, visit_identity, log, log_id_seq, session TO GROUP fedora;
-
--- Create default admin user - Default Password "admin"
-INSERT INTO people (id, username, human_name, password, email) VALUES (100001, 'admin', 'Admin User', '$1$djFfnacd$b6NFqFlac743Lb4sKWXj4/', 'root@localhost');
-
--- Create default groups and populate
-INSERT INTO groups (id, name, display_name, owner_id, group_type, user_can_remove) VALUES (100002, 'cla_done', 'CLA Done Group', (SELECT id from people where username='admin'), 'cla', false);
-INSERT INTO groups (id, name, display_name, owner_id, group_type, user_can_remove) VALUES (101441, 'cla_fedora', 'Fedora CLA Group', (SELECT id from people where username='admin'), 'cla', false);
-INSERT INTO groups (id, name, display_name, owner_id, group_type, user_can_remove) VALUES (155928, 'cla_fpca', 'Signers of the Fedora Project Contributor Agreement', (SELECT id from people where username='admin'), 'cla', false);
-INSERT INTO groups (id, name, display_name, owner_id, group_type) VALUES (100006, 'accounts', 'Account System Admins', (SELECT id from people where username='admin'), 'tracking');
-INSERT INTO groups (id, name, display_name, owner_id, group_type) VALUES (100148, 'fedorabugs', 'Fedora Bugs Group', (SELECT id from people where username='admin'), 'tracking');
-INSERT INTO groups (name, display_name, owner_id, group_type) VALUES ('fas-system', 'System users allowed to get password and key information', (SELECT id from people where username='admin'), 'system');
-
-
-INSERT INTO person_roles (person_id, group_id, role_type, role_status, internal_comments, sponsor_id) VALUES ((SELECT id from people where username='admin'), (select id from groups where name='accounts'), 'administrator', 'approved', 'created at install time', (SELECT id from people where username='admin'));
