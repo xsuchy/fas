@@ -69,7 +69,7 @@ class Help(controllers.Controller):
     def __init__(self):
         '''Create a JsonRequest Controller.'''
 
-    @expose(template="fas.templates.help")
+    @expose(template="help.html")
     def get_help(self, helpid='none'):
         try:
             helpItem = self.help[helpid]

@@ -4,7 +4,7 @@
   xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="master.html" />
   <head>
-    <title>${_('Fedora Accounts System')}</title>
+    <title>${_('%s Accounts System'), config.get('project.name')}</title>
   </head>
   <body>
     <?python
@@ -13,7 +13,8 @@
     <h2>${_('To do queue:')}</h2>
     <ul class="queue">
       <li py:if="not cla" class="unapproved">${Markup(_('FPCA not completed.  To become a full Fedora Contributor please &lt;a href="%s"&gt;complete the FPCA&lt;/a&gt;.') % tg.url('/fpca/'))}</li>
-      <li py:if="not person.ssh_key">${Markup(_('You have not submitted an SSH key, some Fedora resources require an SSH key.  Please submit yours by editing &lt;a href="%s"&gt;My Account&lt;/a&gt;') % tg.url('/user/edit'))}</li>
+      <!-- TODO: Mark this as an optional task based on the group requirements -->
+      <li py:if="not person.ssh_key">${Markup(_('You have not submitted an SSH key, some %s resources require an SSH key.  Please submit yours by editing &lt;a href="%s"&gt;My Account&lt;/a&gt;') % ( config.get('project.name'), tg.url('/user/edit'))) }</li>
     </ul>
     <py:for each="group in sorted(memberships)">
     <py:if test="auth.can_sponsor_group(People.by_username(person['username']), group) and group.unapproved_roles">

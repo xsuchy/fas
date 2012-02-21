@@ -13,8 +13,8 @@
     viewer = People.by_username(tg.identity.user.username)
     viewer = viewer.filter_private()
     ?>
-    <h2 class="account" py:if="personal">${_('Your Fedora Account')}</h2>
-    <h2 class="account" py:if="not personal">${_('%s\'s Fedora Account') % person.username}</h2>
+    <h2 class="account" py:if="personal">${_('Your %s Account') % config.get('project.name')}</h2>
+    <h2 class="account" py:if="not personal">${_('%s\'s %s Account') % (person.username, config.get('project.name'))}</h2>
     <h3>${_('Account Details')} <a href="${tg.url('/user/edit/%s' % person.username)}" py:if="personal or admin">${_('(edit)')}</a></h3>
     <div class="userbox">
       <dl>

@@ -172,7 +172,7 @@ class YubikeyPlugin(controllers.Controller):
         self.path = ''
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template="fas_yubikey.templates.index")
+    @expose(template="yubikey/index.html")
     def index(self):
         username = turbogears.identity.current.user_name
         person = People.by_username(username)
@@ -232,7 +232,7 @@ class YubikeyPlugin(controllers.Controller):
         string = "%s %s %s" % (publicname, internalname, aeskey)
         return dict(key=string)
 
-    @expose(template="fas.templates.error")
+    @expose(template="error.html")
     def error(self, tg_errors=None):
         '''Show a friendly error message'''
         if not tg_errors:
@@ -241,7 +241,7 @@ class YubikeyPlugin(controllers.Controller):
 
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template="fas_yubikey.templates.edit")
+    @expose(template="yubikey/edit.html")
     def edit(self, targetname=None):
         username = turbogears.identity.current.user_name
         person = People.by_username(username)
@@ -253,7 +253,7 @@ class YubikeyPlugin(controllers.Controller):
     @identity.require(turbogears.identity.not_anonymous())
     @validate(validators=YubikeySave())
     @error_handler(error)
-    @expose(template='fas_yubikey.templates.edit')
+    @expose(template='yubikey/edit.html')
     def save(self, targetname, yubikey_enabled, yubikey_prefix):
         person = People.by_username(turbogears.identity.current.user_name)
         target = People.by_username(targetname)
@@ -313,7 +313,7 @@ this change, please contact admin@fedoraproject.org''' % target)
             return '\n'.join(dump_list)
         return '# Sorry, must be in an admin group to get these'
     
-    @expose(template="fas.templates.help")
+    @expose(template="help.html")
     def help(self, id='none'):
         help = { 'none' :               [_('Error'), _('<p>We could not find that help item</p>')],
             'yubikey_prefix':        [_('Yubikey Prefix'), _('<p>The first 12 characters of a yubikey ID</p>')],

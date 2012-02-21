@@ -60,11 +60,11 @@ class OpenID(controllers.Controller):
         store = model.SamadhiStore()
         self.openid = server.Server(store, endpoint_url)
 
-    @expose(template="fas.templates.openid.welcome")
+    @expose(template="openid/welcome.html")
     def index(self):
         return dict(login_url = login_url, id_base_url = id_base_url)
 
-    @expose(template="fas.templates.error")
+    @expose(template="error.html")
     def error(self, tg_errors=None):
         '''Show a friendly error message'''
         if not tg_errors:
@@ -73,7 +73,7 @@ class OpenID(controllers.Controller):
 
     @validate(validators=UserID())
     @error_handler(error)
-    @expose(template="fas.templates.openid.id")
+    @expose(template="openid/id.html")
     def id(self, username):
         person = People.by_username(username)
         if not cla_done(person):
@@ -87,7 +87,7 @@ class OpenID(controllers.Controller):
 
         return results
 
-    @expose(template="fas.templates.openid.yadis", format="xml", content_type="application/xrds+xml")
+    @expose(template="openid/yadis.html", format="xml", content_type="application/xrds+xml")
     def yadis(self, username=None):
         results = dict(discover = discover,
                        endpoint_url = endpoint_url,
@@ -107,7 +107,7 @@ class OpenID(controllers.Controller):
             return self.respond(openid_error)
 
         if openid_request is None:
-            return dict(tg_template = "fas.templates.openid.about",
+            return dict(tg_template = "openid/about.html",
                         endpoint_url = endpoint_url)
 
         elif openid_request.mode in ["checkid_immediate", "checkid_setup"]:
@@ -160,7 +160,7 @@ class OpenID(controllers.Controller):
     def showdecidepage(self, openid_request):
         sreg_req = sreg.SRegRequest.fromOpenIDRequest(openid_request)
 
-        return dict(tg_template='fas.templates.openid.authorizesite',
+        return dict(tg_template='openid/authorizesite.html',
                     identity = openid_request.identity,
                     trust_root = openid_request.trust_root,
                     sreg_req = sreg_req,

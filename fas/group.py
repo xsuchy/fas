@@ -135,7 +135,7 @@ class Group(controllers.Controller):
         return 'tg_format' in cherrypy.request.params and \
                 cherrypy.request.params['tg_format'] == 'json'
 
-    @expose(template="fas.templates.error", allow_json=True)
+    @expose(template="error.html", allow_json=True)
     def error(self, tg_errors=None):
         '''Show a friendly error message'''
         if not tg_errors:
@@ -145,7 +145,7 @@ class Group(controllers.Controller):
     @identity.require(turbogears.identity.not_anonymous())
     @validate(validators=GroupView())
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template="fas.templates.group.view", allow_json=True)
+    @expose(template="group/view.html", allow_json=True)
     def view(self, groupname, order_by='username'):
         '''View group'''
         sort_map = { 'username': 'people_1.username',
@@ -175,7 +175,7 @@ class Group(controllers.Controller):
     @identity.require(turbogears.identity.not_anonymous())
     @validate(validators=GroupMembers())
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template="fas.templates.group.members", allow_json=True)
+    @expose(template="group/members.html", allow_json=True)
     def members(self, groupname, search=u'a*', role_type=None,
                 order_by='username'):
         '''View group'''
@@ -212,7 +212,7 @@ class Group(controllers.Controller):
         return dict(group=group, members=members, search=search)
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template="fas.templates.group.new")
+    @expose(template="group/new.html")
     def new(self):
         '''Display create group form'''
         username = turbogears.identity.current.user_name
@@ -226,7 +226,7 @@ class Group(controllers.Controller):
     @identity.require(turbogears.identity.not_anonymous())
     @validate(validators=GroupCreate())
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template="fas.templates.group.new", allow_json=True)
+    @expose(template="group/new.html", allow_json=True)
     def create(self, name, display_name, owner, group_type, invite_only=0,
                needs_sponsor=0, user_can_remove=1, prerequisite='', 
                joinmsg='', apply_rules='None'):
@@ -281,7 +281,7 @@ class Group(controllers.Controller):
     @identity.require(turbogears.identity.not_anonymous())
     @validate(validators=GroupEdit())
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template="fas.templates.group.edit")
+    @expose(template="group/edit.html")
     def edit(self, groupname):
         '''Display edit group form'''
         username = turbogears.identity.current.user_name
@@ -296,7 +296,7 @@ class Group(controllers.Controller):
     @identity.require(turbogears.identity.not_anonymous())
     @validate(validators=GroupSave())
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template="fas.templates.group.edit")
+    @expose(template="group/edit.html")
     def save(self, groupname, display_name, owner, group_type, 
              needs_sponsor=0, user_can_remove=1, prerequisite='', 
              url='', mailing_list='', mailing_list_url='', invite_only=0,
@@ -345,10 +345,10 @@ class Group(controllers.Controller):
             return dict(group=group)
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template="genshi-text:fas.templates.group.list",
+    @expose(template="genshi-text:group/list.html",
             as_format="plain", accept_format="text/plain",
             format="text", content_type='text/plain; charset=utf-8')
-    @expose(template="fas.templates.group.list", allow_json=True)
+    @expose(template="group/list.html", allow_json=True)
     def list(self, search='*', with_members=True):
         username = turbogears.identity.current.user_name
         person = People.by_username(username)
@@ -378,7 +378,7 @@ class Group(controllers.Controller):
     @identity.require(turbogears.identity.not_anonymous())
     @validate(validators=GroupApply())
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template='fas.templates.group.apply')
+    @expose(template='group/apply.html')
     def application_screen(self, groupname, targetname=None):
         username = turbogears.identity.current.user_name
         person = People.by_username(username)
@@ -407,7 +407,7 @@ class Group(controllers.Controller):
     @identity.require(turbogears.identity.not_anonymous())
     @validate(validators=GroupApply())
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template='fas.templates.group.view', allow_json=True)
+    @expose(template='group/view.html', allow_json=True)
     def apply(self, groupname, targetname=None):
         '''Apply to a group'''
         username = turbogears.identity.current.user_name
@@ -451,15 +451,14 @@ class Group(controllers.Controller):
                     tg_url('/group/view/%s' % groupname)
                 sponsors_addr = '%(group)s-sponsors@%(host)s' % \
                     {'group': group.name, 'host': config.get('email_host')}
-                sponsor_subject = _('Fedora \'%(group)s\' sponsor needed for %(user)s',
-                        locale=locale) % {'user': target.username,
-                                'group': group.name}
+                sponsor_subject = _('%(project_name)s \'%(group)s\' sponsor needed for %(user)s',
+                        locale=locale) % {'project_name' : config.get('project.name'), 'user': target.username, 'group': group.name}
                 sponsors_text = _('''
-Fedora user %(user)s <%(email)s> has requested
+%(project_name)s user %(user)s <%(email)s> has requested
 membership for %(applicant)s in the %(group)s group and needs a sponsor.
 
 Please go to %(url)s to take action.  
-''', locale=locale) % { 'user': person.username,
+''', locale=locale) % { 'project_name' : config.get('project.name'), 'user': person.username,
         'applicant': target.username,
         'email': person.email,
         'url': sponsor_url,
@@ -490,7 +489,7 @@ Thank you for applying for the %(group)s group.
     @identity.require(turbogears.identity.not_anonymous())
     @validate(validators=GroupSponsor())
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template='fas.templates.group.view')
+    @expose(template='group/view.html')
     def sponsor(self, groupname, targetname):
         '''Sponsor user'''
         username = turbogears.identity.current.user_name
@@ -510,12 +509,12 @@ Thank you for applying for the %(group)s group.
                     {'user': target.username, 'group': group.name, 'error': e})
                 turbogears.redirect('/group/view/%s' % group.name)
             else:
-                sponsor_subject = _('Your Fedora \'%s\' membership has been sponsored') % group.name
+                sponsor_subject = _('Your %s \'%s\' membership has been sponsored') % ( config.get('project.name'), group.name )
                 sponsor_text = _('''
 %(user)s <%(email)s> has sponsored you for membership in the %(group)s
-group of the Fedora account system. If applicable, this change should
-propagate into the e-mail aliases and git repository within an hour.
-''') % {'group': group.name, 'user': person.username, 'email': person.email}
+group of the %(project_name)s account system. If applicable, this change should
+propagate into the e-mail aliases within an hour.
+''') % { 'project_name' : config.get('project.name'), 'group': group.name, 'user': person.username, 'email': person.email}
 
                 send_mail(target.email, sponsor_subject, sponsor_text)
 
@@ -529,7 +528,7 @@ propagate into the e-mail aliases and git repository within an hour.
     @identity.require(turbogears.identity.not_anonymous())
     @validate(validators=GroupRemove())
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template='fas.templates.group.view')
+    @expose(template='group/view.html')
     def remove(self, groupname, targetname):
         '''Remove user from group'''
         # TODO: Add confirmation?
@@ -551,13 +550,13 @@ propagate into the e-mail aliases and git repository within an hour.
                     {'user': target.username, 'group': group.name, 'error': e})
                 turbogears.redirect(cherrypy.request.headerMap.get("Referer", "/"))
             else:
-                removal_subject = _('Your Fedora \'%s\' membership has been removed') % group.name
+                removal_subject = _('Your %s \'%s\' membership has been removed') % ( config.get('project.name'), group.name )
                 removal_text = _('''
 %(user)s <%(email)s> has removed you from the '%(group)s'
-group of the Fedora Accounts System This change is effective
+group of the %(project_name)s Accounts System This change is effective
 immediately for new operations, and should propagate into the e-mail
 aliases within an hour.
-''') % {'group': group.name, 'user': person.username, 'email': person.email}
+''') % { 'project_name' : config.get('project.name'), 'group': group.name, 'user': person.username, 'email': person.email}
 
                 send_mail(target.email, removal_subject, removal_text)
 
@@ -572,7 +571,7 @@ aliases within an hour.
     @identity.require(turbogears.identity.not_anonymous())
     @validate(validators=GroupUpgrade())
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template='fas.templates.group.view')
+    @expose(template='group/view.html')
     def upgrade(self, groupname, targetname):
         '''Upgrade user in group'''
         username = turbogears.identity.current.user_name
@@ -592,7 +591,7 @@ aliases within an hour.
                     {'name': target.username, 'group': group.name, 'error': e})
                 turbogears.redirect(cherrypy.request.headerMap.get("Referer", "/"))
             else:
-                upgrade_subject = _('Your Fedora \'%s\' membership has been upgraded') % group.name
+                upgrade_subject = _('Your %s \'%s\' membership has been upgraded') % ( config.get('project.name'), group.name )
 
                 # Should we make person.upgrade return this?
                 role = PersonRoles.query.filter_by(group=group, member=target).one()
@@ -600,10 +599,10 @@ aliases within an hour.
 
                 upgrade_text = _('''
 %(user)s <%(email)s> has upgraded you to %(status)s status in the
-'%(group)s' group of the Fedora Accounts System This change is
+'%(group)s' group of the %(project_name)s Accounts System This change is
 effective immediately for new operations, and should propagate
 into the e-mail aliases within an hour.
-''') % {'group': group.name, 'user': person.username, 'email': person.email, 'status': status}
+''') % { 'project_name' : config.get('project.name'), 'group': group.name, 'user': person.username, 'email': person.email, 'status': status}
 
                 send_mail(target.email, upgrade_subject, upgrade_text)
 
@@ -617,7 +616,7 @@ into the e-mail aliases within an hour.
     @identity.require(turbogears.identity.not_anonymous())
     @validate(validators=GroupDowngrade())
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template='fas.templates.group.view')
+    @expose(template='group/view.html')
     def downgrade(self, groupname, targetname):
         '''Upgrade user in group'''
         username = turbogears.identity.current.user_name
@@ -637,17 +636,17 @@ into the e-mail aliases within an hour.
                     {'name': target.username, 'group': group.name, 'error': e})
                 turbogears.redirect(cherrypy.request.headerMap.get("Referer", "/"))
             else:
-                downgrade_subject = _('Your Fedora \'%s\' membership has been downgraded') % group.name
+                downgrade_subject = _('Your %s \'%s\' membership has been downgraded') % ( config.get('project.name'), group.name )
 
                 role = PersonRoles.query.filter_by(group=group, member=target).one()
                 status = role.role_type
 
                 downgrade_text = _('''
 %(user)s <%(email)s> has downgraded you to %(status)s status in the
-'%(group)s' group of the Fedora Accounts System This change is
+'%(group)s' group of the %(project_name)s Accounts System This change is
 effective immediately for new operations, and should propagate
 into the e-mail aliases within an hour.
-''') % {'group': group.name, 'user': person.username, 'email': person.email, 'status': status}
+''') % { 'project_name' : config.get('project.name'), 'group': group.name, 'user': person.username, 'email': person.email, 'status': status}
 
                 send_mail(target.email, downgrade_subject, downgrade_text)
 
@@ -659,7 +658,7 @@ into the e-mail aliases within an hour.
             return dict()
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template="genshi-text:fas.templates.group.dump", format="text",
+    @expose(template="genshi-text:group/dump.txt", format="text",
             content_type='text/plain; charset=utf-8')
     @expose(allow_json=True)
     def dump(self, groupname=None, role_type=None):
@@ -710,7 +709,7 @@ into the e-mail aliases within an hour.
     @identity.require(identity.not_anonymous())
     @validate(validators=GroupInvite())
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template='fas.templates.group.invite')
+    @expose(template='group/invite.html')
     def invite(self, groupname):
         username = turbogears.identity.current.user_name
         person = People.by_username(username)
@@ -722,7 +721,7 @@ into the e-mail aliases within an hour.
     @identity.require(identity.not_anonymous())
     @validate(validators=GroupSendInvite())
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template='fas.templates.group.invite')
+    @expose(template='group/invite.html')
     def sendinvite(self, groupname, target):
         username = turbogears.identity.current.user_name
         person = People.by_username(username)
@@ -734,7 +733,7 @@ into the e-mail aliases within an hour.
             # user who is sending the invite to select a language since we
             # figure that they know what the proper language will be.for the
             # person they are sending to.
-            invite_subject = ('Come join The Fedora Project!')
+            invite_subject = ('Come join %s!') % config.get('project.organization')
             invite_text = ('''
 %(user)s <%(email)s> has invited you to join the Fedora
 Project!  We are a community of users and developers who produce a

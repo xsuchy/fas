@@ -91,24 +91,24 @@ class ShowPlugin(controllers.Controller):
         self.path = ''
         
     help = Help()
-    @expose(template="fas.templates.error")
+    @expose(template="error.html")
     def error(self, tg_errors=None):
         '''Show a friendly error message'''
         if not tg_errors:
             turbogears.redirect('/')
         return dict(tg_errors=tg_errors)
 
-    @expose(template="fas_show.templates.index")
+    @expose(template="fas_show/index.html")
     @error_handler(error) # pylint: disable-msg=E0602
     def index(self):
         turbogears.redirect('/show/list')
         return dict()
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template="genshi-text:fas_show.templates.list",
+    @expose(template="genshi-text:fas_show/list.txt",
             as_format="plain", accept_format="text/plain",
             format="text", content_type='text/plain; charset=utf-8')
-    @expose(template="fas_show.templates.list", allow_json=True)
+    @expose(template="fas_show/list.html", allow_json=True)
     @error_handler(error) # pylint: disable-msg=E0602
     def list(self, search='*'):
         username = turbogears.identity.current.user_name
@@ -126,7 +126,7 @@ class ShowPlugin(controllers.Controller):
 
     @identity.require(turbogears.identity.not_anonymous())
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template="fas_show.templates.view", allow_json=True)
+    @expose(template="fas_show/view.html", allow_json=True)
     def view(self, show):
         '''View Show'''
         username = turbogears.identity.current.user_name
@@ -140,7 +140,7 @@ class ShowPlugin(controllers.Controller):
         return dict(show=show)
     
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template='fas_show.templates.new')
+    @expose(template='fas_show/new.html')
     @error_handler(error) # pylint: disable-msg=E0602
     def new(self):
         return dict()
@@ -162,7 +162,7 @@ class ShowPlugin(controllers.Controller):
         return dict()
     
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template='fas_show.templates.edit')
+    @expose(template='fas_show/edit.html')
     @error_handler(error) # pylint: disable-msg=E0602
     def edit(self, show):
         show = Show.by_name(show)
@@ -183,7 +183,7 @@ class ShowPlugin(controllers.Controller):
         session.flush()
         turbogears.redirect('/show/view/%s' % name)
 
-    @expose(template="fas_show.templates.join")
+    @expose(template="fas_show/join.html")
     @error_handler(error) # pylint: disable-msg=E0602
     def join(self, show=None):
         if not show:
@@ -218,12 +218,12 @@ class ShowPlugin(controllers.Controller):
 
         turbogears.redirect('/show/join/%s' % show)
     
-    @expose(template='fas_show.templates.success')
+    @expose(template='fas_show/success.html')
     @error_handler(error) # pylint: disable-msg=E0602
     def success(self, show):
         return dict(show=show)
     
-    @expose(template='fas_show.templates.fail')
+    @expose(template='fas_show/fail.html')
     @error_handler(error) # pylint: disable-msg=E0602
     def fail(self, show):
         return dict(show=show)

@@ -64,7 +64,7 @@ class AsteriskPlugin(controllers.Controller):
         self.path = ''
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template="fas_asterisk.templates.index")
+    @expose(template="asterisk/index.html")
     def index(self):
         username = turbogears.identity.current.user_name
         person = People.by_username(username)
@@ -90,7 +90,7 @@ class AsteriskPlugin(controllers.Controller):
         configs = get_configs(Configs.query.filter_by(person_id=person.id, application='asterisk').all())
         return dict(admin=admin, person=person, personal=personal, configs=configs)
 
-    @expose(template="fas.templates.error")
+    @expose(template="error.html")
     def error(self, tg_errors=None):
         '''Show a friendly error message'''
         if not tg_errors:
@@ -99,7 +99,7 @@ class AsteriskPlugin(controllers.Controller):
 
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template="fas_asterisk.templates.edit")
+    @expose(template="asterisk/edit.html")
     def edit(self, targetname=None):
         username = turbogears.identity.current.user_name
         person = People.by_username(username)
@@ -115,7 +115,7 @@ class AsteriskPlugin(controllers.Controller):
     @identity.require(turbogears.identity.not_anonymous())
     @validate(validators=AsteriskSave())
     @error_handler(error)
-    @expose(template='fas_asterisk.templates.edit')
+    @expose(template='asterisk/edit.html')
     def save(self, targetname, asterisk_enabled, asterisk_pass):
         person = People.by_username(turbogears.identity.current.user_name)
         target = People.by_username(targetname)
@@ -159,7 +159,7 @@ class AsteriskPlugin(controllers.Controller):
             return dict(asterisk_attrs=asterisk_attrs)
         return dict()
     
-    @expose(template="fas.templates.help")
+    @expose(template="help.html")
     def help(self, id='none'):
         help = { 'none' :               [_('Error'), _('<p>We could not find that help item</p>')],
             'asterisk_pass':        [_('Asterisk Password'), _('<p>Your Asterisk password needs to be numeric only and should not match your Fedora Password.  <b> You will use this password to log in to asterisk <u>not</u> your normal user account password.</b></p>')],

@@ -186,7 +186,7 @@ class User(controllers.Controller):
                 cherrypy.request.params['tg_format'] == 'json'
 
 
-    @expose(template="fas.templates.error")
+    @expose(template="error.html")
     def error(self, tg_errors=None):
         '''Show a friendly error message'''
         if not tg_errors:
@@ -196,7 +196,7 @@ class User(controllers.Controller):
     @identity.require(identity.not_anonymous())
     @validate(validators= {'username': KnownUser })
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template="fas.templates.user.view", allow_json=True)
+    @expose(template="user/view.html", allow_json=True)
     def view(self, username=None):
         '''View a User.
         '''
@@ -227,7 +227,7 @@ class User(controllers.Controller):
     @identity.require(identity.not_anonymous())
     @validate(validators={ 'targetname' : KnownUser })
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template="fas.templates.user.edit")
+    @expose(template="user/edit.html")
     def edit(self, targetname=None):
         '''Edit a user
         '''
@@ -277,7 +277,7 @@ class User(controllers.Controller):
         'longitude' : validators.Number
     })
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template='fas.templates.user.edit')
+    @expose(template='user/edit.html')
     def save(self, targetname, human_name, telephone, email, status,
             postal_address=None, ssh_key=None, ircnick=None, gpg_keyid=None,
              comments='', locale='en', timezone='UTC', country_code='',
@@ -358,13 +358,13 @@ class User(controllers.Controller):
                 change_subject = _('Email Change Requested for %s') % \
                     person.username
                 change_text = _('''
-You have recently requested to change your Fedora Account System email
+You have recently requested to change your %(project_name)s Account System email
 to this address.  To complete the email change, you must confirm your
 ownership of this email by visiting the following URL (you will need to
-login with your Fedora account first):
+login with your %(project_name)s account first):
 
 %(verifyurl)s/accounts/user/verifyemail/%(token)s
-''') % { 'verifyurl' : config.get('base_url_filter.base_url').rstrip('/'), 'token' : token}
+''') % { 'project_name' : config.get('project.name'), 'verifyurl' : config.get('base_url_filter.base_url').rstrip('/'), 'token' : token}
                 send_mail(email, change_subject, change_text)
             target.ircnick = ircnick
             target.gpg_keyid = gpg_keyid
@@ -387,11 +387,11 @@ login with your Fedora account first):
             turbogears.redirect("/user/edit/%s" % target.username)
             return dict()
         else:
-            change_subject = _('Fedora Account Data Update %s') % \
-                target.username
+            change_subject = _('%s Account Data Update %s') % \
+                (config.get('project.name'), target.username)
             change_text = _('''
 You have just updated information about your account.  If you did not request
-these changes please contact admin@fedoraproject.org and let them know.  Your
+these changes please contact admin@%(hostname)s and let them know.  Your
 updated information is:
 
   username:       %(username)s
@@ -410,7 +410,8 @@ updated information is:
 If the above information is incorrect, please log in and fix it:
 
    %(editurl)s/accounts/user/edit/%(username)s
-''') % { 'username'       : target.username,
+''') % { 'hostname'       : config.get('project.hostname'),
+	 'username'       : target.username,
          'ircnick'        : target.ircnick,
          'telephone'      : target.telephone,
          'locale'         : target.locale,
@@ -430,7 +431,7 @@ If the above information is incorrect, please log in and fix it:
             return dict()
 
     @identity.require(identity.not_anonymous())
-    @expose(template="fas.templates.user.list", allow_json=True)
+    @expose(template="user/list.html", allow_json=True)
     def dump(self, search=u'a*', groups=''):
         ''' Return a list of users sorted by search
 
@@ -480,7 +481,7 @@ If the above information is incorrect, please log in and fix it:
     #   limit = validators.Int()
     #@validate(validators=UserList())
     @identity.require(identity.not_anonymous())
-    @expose(template="fas.templates.user.list", allow_json=True)
+    @expose(template="user/list.html", allow_json=True)
     def list(self, search=u'a*', fields=None, limit=None):
         '''List users
 
@@ -719,7 +720,7 @@ If the above information is incorrect, please log in and fix it:
         return dict(emails=emails)
 
     @identity.require(identity.not_anonymous())
-    @expose(template='fas.templates.user.verifyemail')
+    @expose(template='user/verifyemail.html')
     def verifyemail(self, token, cancel=False):
         ''' Used to verify the email address after a user has changed it
 
@@ -777,7 +778,7 @@ If the above information is incorrect, please log in and fix it:
         turbogears.redirect('/user/view/%s' % username)
         return dict()
 
-    @expose(template='fas.templates.user.new')
+    @expose(template='user/new.html')
     def new(self):
         ''' Displays the user with a form to to fill out to to sign up
 
@@ -791,7 +792,7 @@ If the above information is incorrect, please log in and fix it:
             turbogears.redirect('/user/view/%s' % identity.current.user_name)
         return dict(captcha=CAPTCHA, show=show)
 
-    @expose(template='fas.templates.new')
+    @expose(template='new.html')
     @validate(validators=UserCreate())
     @error_handler(error) # pylint: disable-msg=E0602
     def create(self, username, human_name, email, verify_email, telephone=None,
@@ -896,15 +897,15 @@ If the above information is incorrect, please log in and fix it:
         person.old_password = generate_password()['hash']
         session.flush()
         newpass = generate_password()
-        send_mail(person.email, _('Welcome to the Fedora Project!'), _('''
-You have created a new Fedora account!
+        send_mail(person.email, _('Welcome to %(project_organization)s!'), _('''
+You have created a new %(project_name)s account!
 Your username is: %(username)s
 Your new password is: %(password)s
 
 Please go to %(base_url)s%(webpath)s/user/changepass
 to change it.
 
-Welcome to the Fedora Project. Now that you've signed up for an
+Welcome to %(project_organization)s. Now that you've signed up for an
 account you're probably desperate to start contributing, and with that
 in mind we hope this e-mail might guide you in the right direction to
 make this process as easy as possible.
@@ -935,7 +936,9 @@ your feet as a Fedora contributor.
 
 And finally, from all of us here at the Fedora Project, we're looking
 forward to working with you!
-''') % {'username': person.username,
+''') % {'project_name' : config.get('project.name'),
+	'project_organization' : config.get('project.organization'),
+	'username': person.username,
         'password': newpass['pass'],
         'base_url': config.get('base_url_filter.base_url'),
         'webpath': config.get('server.webpath')})
@@ -943,7 +946,7 @@ forward to working with you!
         return person
 
     @identity.require(identity.not_anonymous())
-    @expose(template="fas.templates.user.changepass")
+    @expose(template="user/changepass.html")
     def changepass(self):
         ''' Provides forms for user to change password
 
@@ -954,7 +957,7 @@ forward to working with you!
     @identity.require(identity.not_anonymous())
     @validate(validators=UserSetPassword())
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template="fas.templates.user.changepass")
+    @expose(template="user/changepass.html")
     def setpass(self, currentpassword, password, passwordcheck):
         username = identity.current.user_name
         person  = People.by_username(username)
@@ -995,7 +998,7 @@ forward to working with you!
             turbogears.redirect('/user/view/%s' % identity.current.user_name)
             return dict()
 
-    @expose(template="fas.templates.user.resetpass")
+    @expose(template="user/resetpass.html")
     def resetpass(self):
         ''' Prompt user to reset password
 
@@ -1006,7 +1009,7 @@ forward to working with you!
             turbogears.redirect('/user/view/%s' % identity.current.user_name)
         return dict()
 
-    @expose(template="fas.templates.user.resetpass")
+    @expose(template="user/resetpass.html")
     def sendtoken(self, username, email, encrypted=False):
         ''' Email token to user for password reset
 
@@ -1100,7 +1103,7 @@ To change your password (or to cancel the request), please visit
                     turbogears.flash(_(
                         'Your password reset email could not be encrypted.'))
                     return dict()
-        send_mail(email, _('Fedora Project Password Reset'), mail)
+        send_mail(email, _('%s Project Password Reset') % config.get('projet.name'), mail)
         person.passwordtoken = token
         Log(author_id=person.id,
             description='Password reset sent for %s' % person.username)
@@ -1109,7 +1112,7 @@ To change your password (or to cancel the request), please visit
         return dict()
 
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template="fas.templates.user.verifypass")
+    @expose(template="user/verifypass.html")
     @validate(validators={'username' : KnownUser})
     def verifypass(self, username, token, cancel=False):
         ''' Verifies whether or not the user has a password change request
@@ -1148,7 +1151,7 @@ To change your password (or to cancel the request), please visit
         return dict(person=person, token=token)
 
     @error_handler(error) # pylint: disable-msg=E0602
-    @expose(template="fas.templates.user.verifypass")
+    @expose(template="user/verifypass.html")
     @validate(validators=UserResetPassword())
     def setnewpass(self, username, token, password, passwordcheck):
         ''' Sets a new password for a user
@@ -1220,7 +1223,7 @@ To change your password (or to cancel the request), please visit
         return dict()
 
     @identity.require(identity.not_anonymous())
-    @expose(template="fas.templates.user.gencert")
+    @expose(template="user/gencert.html")
     def gencert(self):
         ''' Displays a simple text link to users to click to actually get a
             certificate
@@ -1230,9 +1233,9 @@ To change your password (or to cancel the request), please visit
         return dict()
 
     @identity.require(identity.not_anonymous())
-    @expose(template="genshi:fas.templates.user.gencertdisabled",
+    @expose(template="genshi:user/gencertdisabled.html",
         allow_json=True, content_type='text/html')
-    @expose(template="genshi-text:fas.templates.user.cert", format="text",
+    @expose(template="genshi-text:user/cert.txt", format="text",
         content_type='application/x-x509-user-cert', allow_json=True)
     def dogencert(self):
         ''' Generates a user certificate
@@ -1329,15 +1332,15 @@ To change your password (or to cancel the request), please visit
             person.username
         gencert_text = _('''
 You have generated a new SSL certificate.  If you did not request this,
-please cc admin@fedoraproject.org and let them know.
+please cc admin@%(hostname)s and let them know.
 
 Note that certificates generated prior to the current one have been
 automatically revoked, and should stop working within the hour.
-''')
+''') % { 'hostname' : config.get('project.name') }
         send_mail(person.email, gencert_subject, gencert_text)
         Log(author_id=person.id, description='Certificate generated for %s' %
             person.username)
-        return dict(tg_template="genshi-text:fas.templates.user.cert",
+        return dict(tg_template="genshi-text:user/cert.txt",
                 cla=True, cert=certdump, key=keydump)
 
     @identity.require(identity.in_group(

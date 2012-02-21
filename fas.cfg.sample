@@ -2,6 +2,10 @@
 
 # TODO: better namespacing (maybe a [fas] section)
 # admingroup is for humans that can see and do anything
+project.name = 'Fedora'
+project.organization = 'The Fedora Project'
+
+project.hostname = 'fedoraproject.org'
 
 ###
 ### OpenID Support
@@ -145,6 +149,7 @@ mail.encoding = 'utf-8'
 mail.transport = 'smtp'
 mail.manager = 'demand'
 
+#[plugin]
 # Enable yubikeys
 yubi_server_prefix='http://localhost/yk-val/verify?id='
 ykksm_db="postgres://ykksmimporter:ykksmimporter@localhost/ykksm"

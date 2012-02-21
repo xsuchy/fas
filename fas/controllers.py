@@ -157,7 +157,7 @@ class Root(plugin.RootController):
     def getpluginident(self):
         return 'fas'
 
-    @expose(template="fas.templates.welcome", allow_json=True)
+    @expose(template="welcome.html", allow_json=True)
     def index(self):
         if turbogears.identity.not_anonymous():
             if request_format() == 'json':
@@ -168,7 +168,7 @@ class Root(plugin.RootController):
         return dict(now=time.ctime())
 
     @identity.require(identity.not_anonymous())
-    @expose(template="fas.templates.home", allow_json=True)
+    @expose(template="home.html", allow_json=True)
     def home(self):
         user_name = turbogears.identity.current.user_name
         person = People.by_username(user_name)
@@ -177,11 +177,11 @@ class Root(plugin.RootController):
         person = person.filter_private()
         return dict(person=person, memberships=person['memberships'], cla=undeprecated_cla)
 
-    @expose(template="fas.templates.about")
+    @expose(template="about.html")
     def about(self):
         return dict()
 
-    @expose(template="fas.templates.login", allow_json=True)
+    @expose(template="login.html", allow_json=True)
     def login(self, forward_url=None, *args, **kwargs):
         '''Page to become authenticated to the Account System.
 

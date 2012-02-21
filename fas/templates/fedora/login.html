@@ -6,7 +6,7 @@
   <xi:include href="${tg.fedora_template('login.html')}" />
 
   <head>
-    <title>${_('Login to the Fedora Accounts System')}</title>
+    <title>${_('Login to the %s Accounts System') % config.get('project.name')}</title>
   </head>
 
   <body>

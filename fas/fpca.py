@@ -58,7 +58,7 @@ class FPCA(controllers.Controller):
         '''Create a FPCA Controller.'''
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template="fas.templates.fpca.index")
+    @expose(template="fpca/index.html")
     def index(self):
         '''Display the FPCAs (and accept/do not accept buttons)'''
         show = {}
@@ -115,7 +115,7 @@ class FPCA(controllers.Controller):
         return 'tg_format' in cherrypy.request.params and \
                 cherrypy.request.params['tg_format'] == 'json'
 
-    @expose(template="fas.templates.error")
+    @expose(template="error.html")
     def error(self, tg_errors=None):
         '''Show a friendly error message'''
         if not tg_errors:
@@ -123,7 +123,7 @@ class FPCA(controllers.Controller):
         return dict(tg_errors=tg_errors)
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template = "genshi-text:fas.templates.fpca.fpca", format = "text",
+    @expose(template = "genshi-text:fpca/fpca.txt", format = "text",
             content_type = 'text/plain; charset=utf-8')
     def text(self):
         '''View FPCA as text'''
@@ -133,7 +133,7 @@ class FPCA(controllers.Controller):
         return dict(person=person, date=datetime.utcnow().ctime())
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template = "genshi-text:fas.templates.fpca.fpca", format = "text",
+    @expose(template = "genshi-text:fpca/fpca.txt", format = "text",
             content_type = 'text/plain; charset=utf-8')
     def download(self):
         '''Download FPCA'''
@@ -143,7 +143,7 @@ class FPCA(controllers.Controller):
         return dict(person=person, date=datetime.utcnow().ctime())
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template="fas.templates.user.view", allow_json=True)
+    @expose(template="user/view.html", allow_json=True)
     def reject(self, person_name):
         '''Reject a user's FPCA.
 
@@ -223,7 +223,7 @@ Thanks!
             turbogears.redirect('/user/view/%s' % person_name)
 
     @identity.require(turbogears.identity.not_anonymous())
-    @expose(template="fas.templates.fpca.index")
+    @expose(template="fpca/index.html")
     def send(self, human_name, telephone, country_code, postal_address=None,
         confirm=False, agree=False):
         '''Send FPCA'''
@@ -350,7 +350,7 @@ If you need to revoke it, please visit this link:
         # Sigh..  if only there were a nicer way.
         plugin = TextTemplateEnginePlugin()
         cla_text += plugin.transform(dict(person=person),
-                    'fas.templates.fpca.fpca').render(method='text',
+                    'fas.templates.fedora.fpca.fpca').render(method='text',
                     encoding=None)
 
         send_mail(config.get('legal_cla_email'), cla_subject, cla_text)

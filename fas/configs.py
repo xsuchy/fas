@@ -78,7 +78,7 @@ class Config(controllers.Controller):
     def __init__(self):
         pass
 
-    @expose(template="fas.templates.error", allow_json=True)
+    @expose(template="error.html", allow_json=True)
     def error(self, tg_errors=None):
         '''Show a friendly error message'''
         # Only tg controller methods are served via the web so we have to have
