@@ -73,6 +73,24 @@
         <input py:if="not group.prerequisite" type="text" id="prerequisite" name="prerequisite" />
         &nbsp;<script type="text/javascript">var group_prerequisite = new HelpBalloon({dataURL: '${tg.url('/help/get_help/group_prerequisite')}'});</script>
       </div>
+      <py:if test="extras_field">
+          <div class="field">
+              <py:for each="field in extras_field">
+                  <label for="prerequisite">${field['name']} :</label>
+                      <select name="extras_list">
+                          <py:for each="data in sorted(field['data'])">
+                              <!-- <option py:if="not data.data_set" value='None'>${_('None')}</option> -->
+                              <option value="${data.name}">${data.name} (${data.desc})</option>
+                              <option py:if="data.data_set" value='None'>${_('None')}</option>
+                          </py:for>
+                      </select>
+              </py:for>
+<!--
+        <input py:if="group.prerequisite" type="text" id="prerequisite" name="prerequisite" value="${group.prerequisite.name}" />
+        <input py:if="not group.prerequisite" type="text" id="prerequisite" name="prerequisite" /> -->
+        &nbsp;<script type="text/javascript">var group_prerequisite = new HelpBalloon({dataURL: '${tg.url('/help/get_help/group_prerequisite')}'});</script>
+          </div>
+      </py:if>
       <div class="field">
         <label for="joinmsg">${_('Group Join Message:')}</label>
         <textarea id="joinmsg" name="joinmsg">${group.joinmsg}</textarea>

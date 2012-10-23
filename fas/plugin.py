@@ -69,6 +69,12 @@ class PluginControllerMixin(object):
             if hasattr(plugin, 'delPlugin'):
                 plugin.delPlugin(controller)
 
+    def getList(controller):
+        pluginClass = []
+        for pluginEntry in pkg_resources.iter_entry_points('fas.plugins'):
+            pluginClass.append( pluginEntry.load() )
+        return pluginClass
+
 class RootController(controllers.RootController, PluginControllerMixin):
     def __init__(self, *args, **kwargs):
         super(controllers.RootController, self).__init__(*args, **kwargs)
@@ -82,6 +88,11 @@ class Controller(controllers.Controller, PluginControllerMixin):
         super(controllers.Controller, self).__init__(*args, **kwargs)
         self.plugins = []
         self.loadplugins()
+
+class PluginManager(PluginControllerMixin):
+    def __init__(self, *args, **kwargs):
+        PluginControllerMixin.__init__(self, *args, **kwargs)
+        self.plugins = []
 
 __all__ = [PluginControllerMixin, RootController, Controller,
     BadPathException, PathUnavailableException]

@@ -50,6 +50,8 @@ from fas.validators import UnknownGroup, KnownGroup, ValidGroupType, \
         ValidRoleSort, KnownUser
 
 from fas.util import send_mail
+from fas import plugin
+from plugin import PluginManager
 
 class GroupView(validators.Schema):
     groupname = KnownGroup
@@ -159,6 +161,14 @@ class Group(controllers.Controller):
         person = People.by_username(username)
         group = Groups.by_name(groupname)
 
+        # Add plugins' option field if any
+        #TODO: move this to PluginManager
+        #extras_field = []
+        plugins = PluginManager()
+        for plugin in plugins.getList():
+            if hasattr(plugin, 'setGroupViewField'):
+                extras_field = plugin.setGroupViewField(group)
+
         if not can_view_group(person, group):
             turbogears.flash(_("You cannot view '%s'") % group.name)
             turbogears.redirect('/group/list')
@@ -170,7 +180,7 @@ class Group(controllers.Controller):
             and_(Groups.name==groupname,
                 PersonRoles.role_status=='unapproved')).order_by(sort_map[order_by])
         unsponsored.json_props = {'PersonRoles': ['member']}
-        return dict(group=group, sponsor_queue=unsponsored)
+        return dict(group=group, sponsor_queue=unsponsored, extras_field=extras_field)
 
     @identity.require(turbogears.identity.not_anonymous())
     @validate(validators=GroupMembers())
@@ -218,18 +228,26 @@ class Group(controllers.Controller):
         username = turbogears.identity.current.user_name
         person = People.by_username(username)
 
+        # Add plugins' option field if any
+        #TODO: move this to PluginManager
+        extras_field = None
+        plugins = PluginManager()
+        for plugin in plugins.getList():
+            if hasattr(plugin, 'setGroupEditField'):
+                extras_field = plugin.setGroupEditField()
+
         if not can_create_group(person):
             turbogears.flash(_('Only FAS adminstrators can create groups.'))
             turbogears.redirect('/')
-        return dict()
+        return dict(extras_field=extras_field)
 
     @identity.require(turbogears.identity.not_anonymous())
     @validate(validators=GroupCreate())
     @error_handler(error) # pylint: disable-msg=E0602
     @expose(template="group/new.html", allow_json=True)
     def create(self, name, display_name, owner, group_type, invite_only=0,
-               needs_sponsor=0, user_can_remove=1, prerequisite='', 
-               joinmsg='', apply_rules='None'):
+               needs_sponsor=0, user_can_remove=1, prerequisite='',
+               joinmsg='', apply_rules='None', **kw):
         '''Create a group'''
 
         groupname = name
@@ -261,6 +279,15 @@ class Group(controllers.Controller):
             Log(author_id=person.id, description='%s created group %s' %
                 (person.username, group.name))
             session.flush()
+
+            # Add plugins' option field if any
+            #TODO: move this to PluginManager
+            #extras_field = []
+            #plugins = PluginManager()
+            #for plugin in plugins.getList():
+            #    if hasattr(plugin, 'saveGroupField'):
+            #        plugin.saveGroupField(group.name, [kw])
+
         except TypeError:
             turbogears.flash(_("The group: '%s' could not be created.") % groupname)
             return dict()
@@ -274,6 +301,13 @@ class Group(controllers.Controller):
             except KeyError:
                 turbogears.flash(_("The group: '%(group)s' has been created, but '%(user)s' could not be added as a group administrator.") % {'group': group.name, 'user': owner.username})
             else:
+                # Add plugins' option field if any
+                #TODO: move this to PluginManager
+                #extras_field = []
+                plugins = PluginManager()
+                for plugin in plugins.getList():
+                    if hasattr(plugin, 'saveGroupFieldData'):
+                        plugin.saveGroupFieldData(person_owner, group, [kw])
                 turbogears.flash(_("The group: '%s' has been created.") % group.name)
             turbogears.redirect('/group/view/%s' % group.name)
             return dict()
@@ -288,10 +322,18 @@ class Group(controllers.Controller):
         person = People.by_username(username)
         group = Groups.by_name(groupname)
 
+        # Add plugins' option field if any
+        #TODO: move this to PluginManager
+        extras_field = None
+        plugins = PluginManager()
+        for plugin in plugins.getList():
+            if hasattr(plugin, 'setGroupEditField'):
+                extras_field = plugin.setGroupEditField(group)
+
         if not can_admin_group(person, group):
             turbogears.flash(_("You cannot edit '%s'.") % group.name)
             turbogears.redirect('/group/view/%s' % group.name)
-        return dict(group=group)
+        return dict(group=group, extras_field=extras_field)
 
     @identity.require(turbogears.identity.not_anonymous())
     @validate(validators=GroupSave())
@@ -300,11 +342,19 @@ class Group(controllers.Controller):
     def save(self, groupname, display_name, owner, group_type, 
              needs_sponsor=0, user_can_remove=1, prerequisite='', 
              url='', mailing_list='', mailing_list_url='', invite_only=0,
-             irc_channel='', irc_network='', joinmsg='', apply_rules="None"):
+             irc_channel='', irc_network='', joinmsg='', apply_rules="None", **kw):
         '''Edit a group'''
         username = turbogears.identity.current.user_name
         person = People.by_username(username)
         group = Groups.by_name(groupname)
+
+        # Add plugins' option field if any
+        #TODO: move this to PluginManager
+        #extras_field = []
+        plugins = PluginManager()
+        for plugin in plugins.getList():
+            if hasattr(plugin, 'addGroupField'):
+                extras_field = plugin.addGroupField(group)
 
         if not can_edit_group(person, group):
             turbogears.flash(_("You cannot edit '%s'.") % group.name)
@@ -333,8 +383,15 @@ class Group(controllers.Controller):
                 group.irc_network = irc_network
                 group.joinmsg = joinmsg
                 group.apply_rules = apply_rules
-                # Log here
                 session.flush()
+                # Add plugins' option field if any
+                #TODO: move this to PluginManager
+                #extras_field = []
+                #plugins = PluginManager()
+                for plugin in plugins.getList():
+                    if hasattr(plugin, 'saveGroupFieldData'):
+                        plugin.saveGroupFieldData(owner, group, [kw])
+                # Log here
             except:
                 turbogears.flash(_('The group details could not be saved.'))
             else:
@@ -342,7 +399,7 @@ class Group(controllers.Controller):
                     (person.username, group.name))
                 turbogears.flash(_('The group details have been saved.'))
                 turbogears.redirect('/group/view/%s' % group.name)
-            return dict(group=group)
+            return dict(group=group, extras_field=extras_field)
 
     @identity.require(turbogears.identity.not_anonymous())
     @expose(template="genshi-text:group/list.html",

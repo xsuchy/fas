@@ -84,6 +84,15 @@
         <dt>${_('Prerequisite:')}</dt>
             <dd py:if="group.prerequisite">${group.prerequisite.name}&nbsp;</dd>
             <dd py:if="not group.prerequisite">&nbsp;</dd>
+        <py:if test="extras_field">
+            <py:for each="field in extras_field">
+                <dt>${field['name']} :</dt>
+                <py:if test="field['data']">
+                    <dd>${field['data'].name}&nbsp;</dd>
+                </py:if>
+                       <!--         <dd>${_('No')}&nbsp;</dd> -->
+            </py:for>
+        </py:if>
         <dt>${_('Created:')}</dt><dd>${group.creation}&nbsp;</dd>
         <py:if test="can_sponsor">
         <dt>${_('Add User:')}</dt>

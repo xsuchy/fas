@@ -49,6 +49,17 @@
         <input type="text" id="prerequisite" name="prerequisite" value="${tg.config('cla_done_group', 'cla_done')}" />
         <script type="text/javascript">var group_prerequisite = new HelpBalloon({dataURL: '${tg.url('/help/get_help/group_prerequisite')}'});</script>
       </div>
+      <py:if test='extras_field'>
+          <div class="field">
+              <py:for each="field in extras_field">
+                  <label for="prerequicla">${field['name']}:</label>
+                  <select name="extras_list">
+                      <option py:for="data in field['data']" value="${data.name}">${data.name} (${data.desc})</option>
+                      <option value=''>${_('None')}</option>
+                  </select>
+              </py:for>
+          </div>
+      </py:if>
       <div class="field">
         <label for="joinmsg">${_('Join Message:')}</label>
         <textarea id="joinmsg" name="joinmsg"></textarea>

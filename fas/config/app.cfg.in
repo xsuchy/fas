@@ -16,18 +16,17 @@ sqlalchemy.convert_unicode=True
 # tg.defaultview = "kid"
 tg.defaultview = "genshi"
 
-# The following kid settings determine the settings used by the kid serializer.
-
 # File-system path names to be use to search for templates.
 genshi.search_path = "%(package_dir)s/templates/fedora:%(package_dir)s/templates/plugins"
 
 # Whether the template loader should check the last modification time of
 # template files and relaod them if they have changed ("yes" or "no").
-genshi.auto_reload = "no"
+#genshi.auto_reload = "yes"
+
 
 # One of (html|html-strict|xhtml|xhtml-strict|xml|json)
 # kid.outputformat="html"
-genshi.outputformat = "xhtml"
+genshi.outputformat = "html"
 
 # When @#%*( TG supports this....
 #genshi.outputformat = "html"
@@ -38,7 +37,7 @@ genshi.encoding="utf-8"
 
 # The sitetemplate is used for overall styling of a site that
 # includes multiple TurboGears applications
-# tg.sitetemplate="<packagename.templates.templatename>"
+tg.sitetemplate="<fas.templates.fedora.templatename>"
 
 # Allow every exposed function to be called as json,
 # tg.allow_json = False
@@ -74,12 +73,13 @@ session_filter.on = True
 # i18n
 i18n.run_template_filter = True
 i18n.domain = 'fas'
-i18n.locale_dir = '@LOCALEDIR@'
+i18n.locale_dir = '%(top_level_dir)s/../locale'
 
 # VISIT TRACKING
 # Each visit to your application will be assigned a unique visit ID tracked via
 # a cookie sent to the visitor's browser.
 # --------------
+
 
 # Enable Visit tracking
 visit.on=True
@@ -164,21 +164,21 @@ identity.saprovider.model.group="fas.model.Groups"
 # gzip_filter.mime_types = ["application/x-javascript", "text/javascript", "text/html", "text/css", "text/plain"]
 [/robots.txt]
 static_filter.on = True
-static_filter.dir = "@DATADIR@/static/robots.txt"
+static_filter.dir = "%(top_level_dir)s/static/robots.txt"
 
 [/fedora-server-ca.cert]
 static_filter.on = True
-static_filter.dir = "@DATADIR@/static/fedora-server-ca.cert"
+static_filter.dir = "%(top_level_dir)s/static/fedora-server-ca.cert"
 
 [/fedora-upload-ca.cert]
 static_filter.on = True
-static_filter.dir = "@DATADIR@/static/fedora-upload-ca.cert"
+static_filter.dir = "%(top_level_dir)s/static/fedora-upload-ca.cert"
 
 [/static]
 static_filter.on = True
-static_filter.dir = "@DATADIR@/static"
+static_filter.dir = "%(top_level_dir)s/static"
 
 [/favicon.ico]
 static_filter.on = True
-static_filter.file = "@DATADIR@/static/images/favicon.ico"
+static_filter.file = "%(top_level_dir)s/static/images/favicon.ico"
 
