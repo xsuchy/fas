@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:py="http://genshi.edgewall.org/"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="../master.html" />
+  <head>
+    <title>${_('View Licenses')}</title>
+  </head>
+  <body>
+    <?python
+    import genshi.template.plugin
+    master = genshi.template.plugin.MarkupTemplateEnginePlugin().load_template('fas.templates.fedora.master')
+    from fas import auth
+    from fas.model import People
+    viewer = People.by_username(tg.identity.user.username)
+    viewer = viewer.filter_private()
+?>
+    <h2>${_('Your Contributor licenses Agreement')}<br/></h2>
+    <h3 py:if="personal">${_('Available licenses')}</h3>
+        <ul id="rolespanel">
+        <py:for each="cla in cla_data['form']">
+            <li class="role">
+                <h4><a href="${tg.url('/cla/form/%s') % cla}">${cla.desc}</a></h4> (${cla.name})
+                <dl>
+                    <dt>${_('Status:')}</dt>
+                    <dd>
+                        <span class="approved" py:if="cla.signed">${_('Signed')}</span>
+                        <span class="unapproved" py:if="not cla.signed">${_('Not signed')}</span>
+                    </dd>
+                    <py:if test="personal">
+                    <dt>${_('Action:')}</dt>
+                    <dd>
+                        <ul class="tools">
+                            <li>
+                                <a py:if="not cla.signed" href="${tg.url('/cla/form/%s' % cla)}"> 
+                                    ${_('Complete it!')}
+                                </a>
+                                <a py:if="cla.signed" href="${tg.url('/cla/form/%s' % cla)}"> 
+                                    ${_('View License Agreement...')}
+                                </a>
+                            </li>
+                            <li><a py:if="cla.signed" href="${tg.url('/cla/revoke/%s' % cla.id)}">${_('Revoke...')}</a></li>
+                            <li><a href="${tg.url('/cla/edit/%s' % cla.name)}">${_('Manage License Agreement...')}</a></li>
+                        </ul>
+                    </dd>
+                    <dd>
+                        <h4> Applicable Groups </h4>
+                        <py:for each="role in sorted(person['roles'], lambda x,y: cmp(x.group.name, y.group.name))">
+                            <ul class="queue">
+                                <li py:for="approved_role in role.group.approved_roles[:5]">
+                                    <a href="${tg.url('/group/view/%s' % role.group.name)}">
+                                    ${Markup(_('%(group)s') % {'group': role.group.name})}</a>
+                                </li>
+                            </ul>
+                        </py:for>
+                    </dd>
+                    </py:if> 
+                </dl>
+            </li>
+        </py:for>
+      </ul>
+  </body>
+</html>

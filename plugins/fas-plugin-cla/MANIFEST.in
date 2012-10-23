@@ -1,0 +1,4 @@
+include fas_cla/__init__.py
+include fas_cla/clamodel.py
+include fas_cla/templates/*.html
+include fas_cla/templates/*.py
