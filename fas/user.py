@@ -1464,7 +1464,7 @@ automatically revoked, and should stop working within the hour.
         fas.fedmsgshim.send_message(topic="user.update", msg={
             'agent': person.username,
             'user': person.username,
-            'fields': 'certificate',
+            'fields': ['certificate'],
         })
         return dict(tg_template="genshi-text:fas.templates.user.cert",
                 cla=True, cert=certdump, key=keydump)
