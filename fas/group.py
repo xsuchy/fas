@@ -37,6 +37,7 @@ import cherrypy
 import sqlalchemy
 from sqlalchemy import select, func
 from sqlalchemy.sql import and_
+from sqlalchemy.orm import eagerload
 
 import re
 
