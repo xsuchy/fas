@@ -49,7 +49,7 @@ class BugzillaPlugin(controllers.Controller):
         else:
             personal = False
         configs = get_configs(Configs.query.filter_by(person_id=person.id, application='bugzilla').all())
-        
+
         if 'bugzilla_email' in configs:
             is_set = True
         else:
@@ -74,7 +74,7 @@ class BugzillaPlugin(controllers.Controller):
         self.log.info('Bugzilla plugin shutting down')
         if self.sidebarentries in sidebar.entryfuncs:
             sidebar.entryfuncs.remove(self.sidebarentries)
-            
+
     def sidebarentries(self):
         return [('Bugzilla plugin', self.path)]
 
